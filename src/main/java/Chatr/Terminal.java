@@ -1,5 +1,6 @@
 package Chatr;
 
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -11,7 +12,8 @@ public class Terminal {
 
 	public static String getUserInput() {
 		try {
-			return scan.nextLine();
+			String s = scan.nextLine();
+			return s;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return getUserInput();
@@ -22,11 +24,21 @@ public class Terminal {
 		scan.close();
 	}
 
-	public static void display(String... lines) {
+	public static void display(String...lines) {
 		for (String line : lines) {
-			if (!line.isEmpty()){
-				System.out.println(line);
-			}
+			display(line);
+		}
+	}
+
+	public static void display(String line) {
+		if (!line.isEmpty()) {
+			System.out.println(line);
+		}
+	}
+
+	public static void display(List<Message> messages) {
+		for (Message message : messages) {
+			display(message);
 		}
 	}
 

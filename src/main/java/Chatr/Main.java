@@ -1,8 +1,7 @@
 package Chatr;
 
-import Chatr.Connection.Connection;
+import Chatr.Connection.ConnectionManager;
 
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -22,18 +21,19 @@ public class Main {
 		} else {
 			System.out.printf("Connecting to  : %s \n\n", url.toURI());
 		}
-		Connection connection = new Connection(url, server);
+		ConnectionManager connection = new ConnectionManager(url, server);
 
 		System.out.println("Enter your Username:");
-		String userName = Terminal.getUserInput();
+		String userName = server ? "server" : Terminal.getUserInput();
 
-		System.out.println("Enter your Message:");
 		while (true) {
+//			Terminal.close();
+			Terminal.display(connection.getNewMessages());
+			System.out.println("Enter your Message:");
 			String text = Terminal.getUserInput();
 			Message message = new Message(userName, "02", text);
 			Terminal.display(message);
 			connection.postMessage(message);
-			Terminal.display(connection.getNewMessages());
 		}
 	}
 }
