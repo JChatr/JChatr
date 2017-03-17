@@ -29,7 +29,8 @@ public class ServerThread extends Thread {
 			System.out.println("connected to: " + socket.getRemoteSocketAddress());
 			// the server has to always talk first
 			out.println(JSONConverter.toJSON(new Message()));
-				socket.shutdownOutput();
+			socket.shutdownOutput();
+
 			String input;
 			while ((input = in.readLine()) != null) {
 				System.out.println(input);
@@ -37,8 +38,8 @@ public class ServerThread extends Thread {
 				if (m != null) {
 					Terminal.display(m);
 				}
-				socket.shutdownInput();
 			}
+			socket.shutdownInput();
 
 			System.out.println("disconnected from: " + socket.getRemoteSocketAddress());
 		} catch (IOException e) {
