@@ -26,14 +26,14 @@ public class ServerThread extends Thread {
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
-			System.out.println("connected to: " + socket.getRemoteSocketAddress());
+//			System.out.println("connected to: " + socket.getRemoteSocketAddress());
 			// the server has to always talk first
 			out.println(JSONConverter.toJSON(new Message()));
 			socket.shutdownOutput();
 
 			String input;
 			while ((input = in.readLine()) != null) {
-				System.out.println(input);
+//				System.out.println(input);
 				Message m = JSONConverter.fromJSON(input, Message.class);
 				if (m != null) {
 					Terminal.display(m);
@@ -41,7 +41,7 @@ public class ServerThread extends Thread {
 			}
 			socket.shutdownInput();
 
-			System.out.println("disconnected from: " + socket.getRemoteSocketAddress());
+//			System.out.println("disconnected from: " + socket.getRemoteSocketAddress());
 		} catch (IOException e) {
 			System.err.println("ERROR");
 			e.printStackTrace();

@@ -25,12 +25,15 @@ public class Client implements Connection {
 
 	@Override
 	public void post(String json) {
+		outBuffer.clear();
 		outBuffer.add(json);
 		connect();
 	}
 
 	@Override
 	public List<String> get() {
+		inBuffer.clear();
+		outBuffer.clear();
 		connect();
 		return inBuffer;
 	}
