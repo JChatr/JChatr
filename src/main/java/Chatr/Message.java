@@ -5,7 +5,8 @@ public class Message
     private String sender;
     private String recipient;
     private String content;
-    boolean isEmpty = false;
+    private boolean isEmpty = false;
+    private final long timestamp = System.currentTimeMillis();
 
     public Message (){
         isEmpty = true;
@@ -20,6 +21,7 @@ public class Message
     public String getContent() {
         return this.content;
     }
+
     public String getSender(){
         return this.sender;
     }
@@ -28,8 +30,16 @@ public class Message
         return this.recipient;
     }
 
+    public long getTime(){
+        return this.timestamp;
+    }
+
     public boolean isEmpty() {
         return isEmpty;
     }
 
+    @Override
+    public String toString() {
+        return timestamp + " : " + sender + " : " + content;
+    }
 }

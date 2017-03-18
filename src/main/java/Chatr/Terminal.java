@@ -44,7 +44,7 @@ public class Terminal {
 
 	public static void display(Message message) {
 		if (!message.isEmpty()) {
-			System.out.printf("START\n%5s : %s\nEND\n", message.getSender(), message.getContent());
+			System.out.printf("%5s : %s\n" , message.getSender(), message.getContent());
 		}
 	}
 }
