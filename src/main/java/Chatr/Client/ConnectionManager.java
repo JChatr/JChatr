@@ -1,15 +1,11 @@
 package Chatr.Client;
 
 import Chatr.Message;
-import Chatr.Terminal;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by max on 17.03.17.
- */
 public class ConnectionManager {
 	private URL url;
 	private Connection connection;
@@ -19,6 +15,7 @@ public class ConnectionManager {
 		this.connection = new Client(url);
 	}
 
+	// GET messages -> parse -> return as List
 	public List<Message> getNewMessages() {
 		List<Message> messages = new ArrayList<>();
 		List<String> jsons = connection.get();
@@ -30,6 +27,7 @@ public class ConnectionManager {
 		return messages;
 	}
 
+	// parse -> POST message
 	public void postMessage(Message message) {
 		String json = JSONConverter.toJSON(message);
 		connection.post(json);

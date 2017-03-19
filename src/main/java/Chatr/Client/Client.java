@@ -9,9 +9,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by max on 17.03.17.
- */
 public class Client implements Connection {
 	private URL url;
 	private List<String> inBuffer = new ArrayList<>();
@@ -34,7 +31,10 @@ public class Client implements Connection {
 		return inBuffer;
 	}
 
-	// There is always guaranteed to be at least one message that will be sent
+	// Protocol:
+	// 1. POST the last known message to the client
+	// 2. POST all new posted messages to the server
+	// 3. GET only the new messages from the server
 	private void connect() {
 		String remote = "";
 		try (
@@ -42,6 +42,7 @@ public class Client implements Connection {
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
+			// after writing to the in- / output the connection has to get shutdown
 			// Sending
 			for (String json : outBuffer) {
 				out.println(json);
@@ -59,6 +60,8 @@ public class Client implements Connection {
 		}
 	}
 
+	// clear inBuffer, always keep the last element from outBuffer
+	// there always has to be the last sent message in the outBuffer
 	private void clearBuffers() {
 		inBuffer.clear();
 		if (outBuffer.size() != 0){

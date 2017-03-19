@@ -5,10 +5,7 @@ import Chatr.Message;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
-
-/**
- * Created by max on 17.03.17.
- */
+// Multithreaded server spawns a new Thread for each connection
 public class Server {
 	DBCache dbCache;
 	URL url;

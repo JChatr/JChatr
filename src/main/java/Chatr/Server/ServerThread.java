@@ -1,8 +1,5 @@
 package Chatr.Server;
 
-import Chatr.Client.JSONConverter;
-import Chatr.Message;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,9 +8,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by max on 17.03.17.
- */
 public class ServerThread extends Thread {
 	private Socket socket;
 	private DBCache dbCache;
@@ -42,13 +36,14 @@ public class ServerThread extends Thread {
 			}
 			socket.shutdownInput();
 			// Processing
+			// Figure out what messages to send to send to the client
 			MessageParser parse = new MessageParser(dbCache, inCache);
 			List<String> newerMessages = parse.getNewerMessages();
 			// Sending
+			// only send the required messages
 			for (String obj: newerMessages) {
 				out.println(obj);
 			}
-
 			socket.shutdownOutput();
 			socket.close();
 //			System.out.println("disconnected from: " + remote);

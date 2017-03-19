@@ -3,19 +3,14 @@ package Chatr;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by max on 17.03.17.
- */
 public class Terminal {
-
 	private static Scanner scan = new Scanner(System.in);
 
 	public static String getUserInput() {
 		try {
-			String s = scan.nextLine();
-			return s;
+			return scan.nextLine();
 		} catch (Exception e) {
-			e.printStackTrace();
+//			e.printStackTrace();
 			return getUserInput();
 		}
 	}
@@ -31,7 +26,7 @@ public class Terminal {
 	}
 
 	public static void display(String line) {
-		if (!line.isEmpty()) {
+		if (!line.trim().isEmpty()) {
 			System.out.println(line);
 		}
 	}

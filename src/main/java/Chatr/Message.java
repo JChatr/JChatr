@@ -6,6 +6,7 @@ public class Message
     private String recipient;
     private String content;
     private boolean isEmpty = false;
+    // timestamp is always guaranteed to be set
     private final long timestamp = System.currentTimeMillis();
 
     public Message (){
@@ -37,7 +38,7 @@ public class Message
     public boolean isEmpty() {
         return isEmpty;
     }
-
+    // make debug printing easier
     @Override
     public String toString() {
         return timestamp + " : " + sender + " : " + content;

@@ -5,12 +5,8 @@ import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * Created by max on 17.03.17.
- */
+// uses Gson to convert object to / form JSON
 public class JSONConverter {
-
 	private static Gson parser = new Gson();
 
 	public static String toJSON(Object obj){

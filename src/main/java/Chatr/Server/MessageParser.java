@@ -6,14 +6,13 @@ import Chatr.Message;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by data on 18/03/17.
- */
 public class MessageParser {
 	private DBCache dbCache;
 	private List<String> inCache;
 	private List<Message> inCacheParsed;
 
+	// needs connection to the Database as well as the all the sent messages
+	// from the client
 	protected MessageParser(DBCache dbCache, List<String> inCache) {
 		this.dbCache = dbCache;
 		this.inCache = inCache;
@@ -21,6 +20,8 @@ public class MessageParser {
 		storeMessages();
 	}
 
+	// parse the messages from JSON to Objects
+	// store in the Database
 	private void storeMessages() {
 		for (String json : inCache) {
 			Message m = JSONConverter.fromJSON(json, Message.class);
@@ -29,20 +30,23 @@ public class MessageParser {
 		}
 	}
 
+	// find the newer messages and parse them to JSON
 	@SuppressWarnings("Unchecked")
 	protected List<String> getNewerMessages() {
-			dbCache.print();
+		// print the entire content of the Database to the console
+		dbCache.print();
 		if (!inCacheParsed.isEmpty()) {
+			// need to get oldest & newest message to determinate the range of messages to send
 			Message oldest = inCacheParsed.get(0);
 			Message newest = oldest;
 			for (Message m : inCacheParsed) {
 				oldest = (m.getTime() < oldest.getTime()) ? m : oldest;
 				newest = (m.getTime() > oldest.getTime()) ? m : oldest;
 			}
-
 			System.out.println("oldest = " + oldest);
 
 			List<Message> newer = dbCache.getRange(oldest.getTime(), newest.getTime());
+			// print the messages that will be sent to the client
 			System.out.println("newer = " + newer);
 			return JSONConverter.toJSON(newer);
 		} else {
