@@ -1,5 +1,7 @@
 package Chatr;
 
+import java.util.Formatter;
+
 public class Message
 {
     private String sender;
@@ -41,6 +43,6 @@ public class Message
     // make debug printing easier
     @Override
     public String toString() {
-        return timestamp + " : " + sender + " : " + content;
+        return String.format("%s | %5s -> %5s | %s", timestamp, sender, recipient, content);
     }
 }

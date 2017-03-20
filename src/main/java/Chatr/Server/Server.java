@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.URL;
 // Multithreaded server spawns a new Thread for each connection
-public class Server {
+public class Server implements Runnable {
 	DBCache dbCache;
 	URL url;
 
@@ -15,7 +15,8 @@ public class Server {
 		this.dbCache = new DBCache<Message>();
 	}
 
-	public void start() {
+	@Override
+	public void run() {
 		System.out.println("server running");
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())){
 			while(true) {

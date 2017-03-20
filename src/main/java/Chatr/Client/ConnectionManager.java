@@ -1,12 +1,13 @@
 package Chatr.Client;
 
 import Chatr.Message;
+import Chatr.Terminal;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConnectionManager {
+public class ConnectionManager implements Runnable {
 	private URL url;
 	private Connection connection;
 
@@ -31,5 +32,20 @@ public class ConnectionManager {
 	public void postMessage(Message message) {
 		String json = JSONConverter.toJSON(message);
 		connection.post(json);
+	}
+
+	@Override
+	public void run() {
+		while (true) {
+			List<Message> messages = getNewMessages();
+			if (!messages.isEmpty()) {
+				Terminal.display(messages);
+			}
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

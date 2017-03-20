@@ -28,7 +28,6 @@ public class ServerThread extends Thread {
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
-//			System.out.println("connected to: " + remote);
 			// Receiving
 			String fromClient;
 			while ((fromClient = in.readLine()) != null) {
@@ -46,7 +45,6 @@ public class ServerThread extends Thread {
 			}
 			socket.shutdownOutput();
 			socket.close();
-//			System.out.println("disconnected from: " + remote);
 		} catch (IOException e) {
 			System.err.println("ERROR");
 			e.printStackTrace();

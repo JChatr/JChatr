@@ -12,7 +12,7 @@ import java.util.List;
 public class Client implements Connection {
 	private URL url;
 	private List<String> inBuffer = new ArrayList<>();
-	private List<String> outBuffer = new ArrayList<>();
+	private List<String> unifiedBuffer = new ArrayList<>();
 
 	protected Client(URL url) {
 		this.url = url;
@@ -20,13 +20,14 @@ public class Client implements Connection {
 
 	@Override
 	public void post(String json) {
-		clearBuffers();
-		outBuffer.add(json);
-//		connect();
+		primeBuffers();
+		unifiedBuffer.add(json);
+		connect();
 	}
 
 	@Override
 	public List<String> get() {
+		primeBuffers();
 		connect();
 		return inBuffer;
 	}
@@ -44,14 +45,15 @@ public class Client implements Connection {
 		) {
 			// after writing to the in- / output the connection has to get shutdown
 			// Sending
-			for (String json : outBuffer) {
-				out.println(json);
+			for (String data : unifiedBuffer) {
+				out.println(data);
 			}
 			socket.shutdownOutput();
 
 			// Receiving
 			String fromServer;
 			while ((fromServer = in.readLine()) != null) {
+				unifiedBuffer.add(fromServer);
 				inBuffer.add(fromServer);
 			}
 			socket.shutdownInput();
@@ -60,12 +62,12 @@ public class Client implements Connection {
 		}
 	}
 
-	// clear inBuffer, always keep the last element from outBuffer
-	// there always has to be the last sent message in the outBuffer
-	private void clearBuffers() {
+	// clear inBuffer, always keep the last element from unifiedBuffer
+	// there always has to be the last sent message in the unifiedBuffer
+	private void primeBuffers() {
 		inBuffer.clear();
-		if (outBuffer.size() != 0){
-			outBuffer.subList(0, outBuffer.size() -1).clear();
+		if (!unifiedBuffer.isEmpty()) {
+			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
 		}
 	}
 }

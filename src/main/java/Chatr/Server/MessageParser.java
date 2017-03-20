@@ -33,26 +33,25 @@ public class MessageParser {
 	// find the newer messages and parse them to JSON
 	@SuppressWarnings("Unchecked")
 	protected List<String> getNewerMessages() {
-		// print the entire content of the Database to the console
-		dbCache.print();
 		if (!inCacheParsed.isEmpty()) {
 			// need to get oldest & newest message to determinate the range of messages to send
-			Message oldest = inCacheParsed.get(0);
-			Message newest = oldest;
+			Message newest = inCacheParsed.get(0);
 			for (Message m : inCacheParsed) {
-				oldest = (m.getTime() < oldest.getTime()) ? m : oldest;
-				newest = (m.getTime() > oldest.getTime()) ? m : oldest;
+				newest = (m.getTime() > newest.getTime()) ? m : newest;
 			}
-			System.out.println("oldest = " + oldest);
-
-			List<Message> newer = dbCache.getRange(oldest.getTime(), newest.getTime());
+			List<Message> newer = dbCache.getNewer(newest.getTime());
 			// print the messages that will be sent to the client
-			System.out.println("newer = " + newer);
+			if (!newer.isEmpty()) {
+				dbCache.print();
+				System.out.println("newer = " + newer);
+			}
 			return JSONConverter.toJSON(newer);
 		} else {
-			List<Message> newer = dbCache.getRange(0L, System.currentTimeMillis());
-			System.out.println("oldest = " + null);
-			System.out.println("newer = " + newer);
+			List<Message> newer = dbCache.getNewer(0L);
+			if (!newer.isEmpty()) {
+				dbCache.print();
+				System.out.println("newer = " + newer);
+			}
 			return JSONConverter.toJSON(newer);
 		}
 	}
