@@ -24,24 +24,28 @@ public class Client {
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
 		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * @param data
+	 * POSTs the request to the Server
+	 *
+	 * @param request request for the server respond to
 	 */
-	public void post(String data) {
-		primeBuffers();
-		unifiedBuffer.add(data);
+	public void post(String request) {
+//		primeBuffers();
+		unifiedBuffer.add(request);
 		connect();
 	}
 
 	/**
-	 * @return
+	 * POST request to the Server return response
+	 *
+	 * @return separated lines of the Server's response
 	 */
 	public List<String> get(String request) {
-		primeBuffers();
-		connect();
+		post(request);
 		return inBuffer;
 	}
 
@@ -49,9 +53,9 @@ public class Client {
 
 	/**
 	 * Protocol:
-	 * 1. POST the last known message to the client
-	 * 2. POST all new posted messages to the server
-	 * 3. GET only the new messages from the server
+	 * 1. Send request
+	 * 2. read all lines of the response from the server
+	 * 3. close connection
 	 */
 	private void connect() {
 		String remote = "";
@@ -70,7 +74,6 @@ public class Client {
 			// Receiving
 			String fromServer;
 			while ((fromServer = in.readLine()) != null) {
-				unifiedBuffer.add(fromServer);
 				inBuffer.add(fromServer);
 			}
 			socket.shutdownInput();
@@ -83,11 +86,11 @@ public class Client {
 	 * clear inBuffer, always keep the last element from unifiedBuffer
 	 * there always has to be the last sent message in the unifiedBuffer
 	 */
-	private void primeBuffers() {
-
-		inBuffer.clear();
-		if (!unifiedBuffer.isEmpty()) {
-			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
-		}
-	}
+//	private void primeBuffers() {
+//
+//		inBuffer.clear();
+//		if (!unifiedBuffer.isEmpty()) {
+//			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
+//		}
+//	}
 }
