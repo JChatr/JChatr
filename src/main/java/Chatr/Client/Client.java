@@ -1,41 +1,58 @@
 package Chatr.Client;
 
+import Chatr.Helper.CONFIG;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client implements Connection {
+/**
+ *
+ */
+public class Client {
 	private URL url;
 	private List<String> inBuffer = new ArrayList<>();
 	private List<String> unifiedBuffer = new ArrayList<>();
 
-	protected Client(URL url) {
-		this.url = url;
+	protected Client() {
+		try {
+			this.url = new URL(CONFIG.SERVER_ADDRESS);
+		} catch (MalformedURLException e) {
+		}
 	}
 
-	@Override
-	public void post(String json) {
+	/**
+	 * @param data
+	 */
+	public void post(String data) {
 		primeBuffers();
-		unifiedBuffer.add(json);
+		unifiedBuffer.add(data);
 		connect();
 	}
 
-	@Override
-	public List<String> get() {
+	/**
+	 * @return
+	 */
+	public List<String> get(String request) {
 		primeBuffers();
 		connect();
 		return inBuffer;
 	}
 
-	// Protocol:
-	// 1. POST the last known message to the client
-	// 2. POST all new posted messages to the server
-	// 3. GET only the new messages from the server
+	//
+
+	/**
+	 * Protocol:
+	 * 1. POST the last known message to the client
+	 * 2. POST all new posted messages to the server
+	 * 3. GET only the new messages from the server
+	 */
 	private void connect() {
 		String remote = "";
 		try (
@@ -62,9 +79,12 @@ public class Client implements Connection {
 		}
 	}
 
-	// clear inBuffer, always keep the last element from unifiedBuffer
-	// there always has to be the last sent message in the unifiedBuffer
+	/**
+	 * clear inBuffer, always keep the last element from unifiedBuffer
+	 * there always has to be the last sent message in the unifiedBuffer
+	 */
 	private void primeBuffers() {
+
 		inBuffer.clear();
 		if (!unifiedBuffer.isEmpty()) {
 			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
