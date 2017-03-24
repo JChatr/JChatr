@@ -1,20 +1,20 @@
 package Chatr.Server;
 
-import Chatr.Client.JSONConverter;
-import Chatr.Message;
+import Chatr.Converstation.Message;
+import Chatr.Helper.JSONTransformer;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageParser {
-	private DBCache dbCache;
+	private L1Cache l1Cache;
 	private List<String> inCache;
 	private List<Message> inCacheParsed;
 
 	// needs connection to the Database as well as the all the sent messages
 	// from the client
-	protected MessageParser(DBCache dbCache, List<String> inCache) {
-		this.dbCache = dbCache;
+	protected MessageParser(L1Cache l1Cache, List<String> inCache) {
+		this.l1Cache = l1Cache;
 		this.inCache = inCache;
 		inCacheParsed = new ArrayList<>();
 		storeMessages();
@@ -24,9 +24,9 @@ public class MessageParser {
 	// store in the Database
 	private void storeMessages() {
 		for (String json : inCache) {
-			Message m = JSONConverter.fromJSON(json, Message.class);
+			Message m = JSONTransformer.fromJSON(json, Message.class);
 			inCacheParsed.add(m);
-			dbCache.put(m.getTime(), m);
+			l1Cache.put(m.getTime(), m);
 		}
 	}
 
@@ -39,20 +39,20 @@ public class MessageParser {
 			for (Message m : inCacheParsed) {
 				newest = (m.getTime() > newest.getTime()) ? m : newest;
 			}
-			List<Message> newer = dbCache.getNewer(newest.getTime());
+			List<Message> newer = l1Cache.getNewer(newest.getTime());
 			// print the messages that will be sent to the client
 			if (!newer.isEmpty()) {
-				dbCache.print();
+				l1Cache.print();
 				System.out.println("newer = " + newer);
 			}
-			return JSONConverter.toJSON(newer);
+			return JSONTransformer.toJSON(newer);
 		} else {
-			List<Message> newer = dbCache.getNewer(0L);
+			List<Message> newer = l1Cache.getNewer(0L);
 			if (!newer.isEmpty()) {
-				dbCache.print();
+				l1Cache.print();
 				System.out.println("newer = " + newer);
 			}
-			return JSONConverter.toJSON(newer);
+			return JSONTransformer.toJSON(newer);
 		}
 	}
 }

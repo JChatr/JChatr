@@ -1,7 +1,8 @@
 package Chatr.Client;
 
-import Chatr.Message;
-import Chatr.Terminal;
+import Chatr.Converstation.Message;
+import Chatr.Helper.JSONTransformer;
+import Chatr.Helper.Terminal;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ConnectionManager implements Runnable {
 		List<String> jsons = connection.get();
 		for (String json : jsons) {
 			if (!json.trim().isEmpty()) {
-				messages.add(JSONConverter.fromJSON(json, Message.class));
+				messages.add(JSONTransformer.fromJSON(json, Message.class));
 			}
 		}
 		return messages;
@@ -30,7 +31,7 @@ public class ConnectionManager implements Runnable {
 
 	// parse -> POST message
 	public void postMessage(Message message) {
-		String json = JSONConverter.toJSON(message);
+		String json = JSONTransformer.toJSON(message);
 		connection.post(json);
 	}
 

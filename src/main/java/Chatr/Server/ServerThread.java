@@ -10,14 +10,14 @@ import java.util.List;
 
 public class ServerThread extends Thread {
 	private Socket socket;
-	private DBCache dbCache;
+	private L1Cache l1Cache;
 	private String remote;
 	private List<String> inCache;
 
-	protected ServerThread(Socket socket, DBCache cache) {
+	protected ServerThread(Socket socket, L1Cache cache) {
 		super("ServerTread");
 		this.socket = socket;
-		this.dbCache = cache;
+		this.l1Cache = cache;
 		this.remote = socket.getRemoteSocketAddress().toString();
 		this.inCache = new ArrayList<>();
 	}
@@ -36,7 +36,7 @@ public class ServerThread extends Thread {
 			socket.shutdownInput();
 			// Processing
 			// Figure out what messages to send to send to the client
-			MessageParser parse = new MessageParser(dbCache, inCache);
+			MessageParser parse = new MessageParser(l1Cache, inCache);
 			List<String> newerMessages = parse.getNewerMessages();
 			// Sending
 			// only send the required messages

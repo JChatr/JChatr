@@ -1,6 +1,4 @@
-package Chatr;
-
-import java.util.Formatter;
+package Chatr.Converstation;
 
 public class Message
 {

@@ -1,11 +1,13 @@
 package Chatr;
 
 import Chatr.Client.ConnectionManager;
+import Chatr.Converstation.Message;
+import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
 
 import java.net.URL;
 
-public class Main {
+public class Main_tmpTesting_ {
 	public static void main(String[] args) throws Exception {
 		// parse command line arguments
 		URL url = new URL(args[0]);

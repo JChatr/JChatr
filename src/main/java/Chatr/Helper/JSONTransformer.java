@@ -1,4 +1,4 @@
-package Chatr.Client;
+package Chatr.Helper;
 
 import com.google.gson.Gson;
 import com.sun.istack.internal.NotNull;
@@ -6,7 +6,7 @@ import com.sun.istack.internal.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 // uses Gson to convert object to / form JSON
-public class JSONConverter {
+public class JSONTransformer {
 	private static Gson parser = new Gson();
 
 	public static String toJSON(Object obj){

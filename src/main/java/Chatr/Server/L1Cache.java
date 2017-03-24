@@ -9,11 +9,11 @@ import java.util.Map;
 // this cache represents an L1 implementation of the Database (Key, Value store)
 // K -> Timestamp of the entry
 // V -> Value @ the specified timestamp
-public class DBCache<V> {
+public class L1Cache<V> {
 
 	private Map<Long, V> cache;
 
-	public DBCache() {
+	public L1Cache() {
 		this.cache = new LinkedHashMap<>();
 	}
 
