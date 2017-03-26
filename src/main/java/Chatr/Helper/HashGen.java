@@ -5,9 +5,6 @@ import java.security.MessageDigest;
 
 
 public class HashGen {
-	
-	
-	
 
 	/**
 	 * This method gives either an ID in plaintext, or the ID as an MD5 hash.
@@ -23,7 +20,6 @@ public class HashGen {
 		}
 		
 	}
-	
 	
 	/**
 	 * This methot converts any String into an MD5 hash.
@@ -47,7 +43,5 @@ public class HashGen {
 		return "";
 
 	}
-	
-	
 
 }
