@@ -8,11 +8,18 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Thread of the server handling the connection
+ */
 public class ServerThread extends Thread {
 	private Socket socket;
 	private String remote;
 	private List<String> inCache;
 
+	/**
+	 * Instantiates the ServerThread
+	 * @param socket open socket to use for connecting to the client
+	 */
 	protected ServerThread(Socket socket) {
 		super("ServerTread");
 		this.socket = socket;
@@ -20,6 +27,9 @@ public class ServerThread extends Thread {
 		this.inCache = new ArrayList<>();
 	}
 
+	/**
+	 * starts the Thread
+	 */
 	@Override
 	public void run() {
 		try (
@@ -39,7 +49,7 @@ public class ServerThread extends Thread {
 			List<String> response = handler.getResponse();
 			// Sending
 			// only send the required messages
-			for (String obj: response) {
+			for (String obj : response) {
 				out.println(obj);
 			}
 			socket.shutdownOutput();

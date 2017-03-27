@@ -4,6 +4,9 @@ import Chatr.Converstation.Message;
 import Chatr.Helper.CRUD;
 import Chatr.Helper.JSONTransformer;
 
+/**
+ * Request wrapper internal to the server
+ */
 public class Request {
 	private CRUD type;
 	private String conversationID;
@@ -16,7 +19,7 @@ public class Request {
 	 * @param conversationID ID of the conversation to be modified
 	 * @param message        attached message as a JSON string
 	 */
-	public Request(String crud, String conversationID, String message) {
+	protected Request(String crud, String conversationID, String message) {
 		this.type = parseType(crud);
 		this.conversationID = conversationID;
 		this.message = parseMessage(message, type);
@@ -29,7 +32,7 @@ public class Request {
 	 * @param crudRAW raw string to parse
 	 * @return enum type of the string
 	 */
-	private CRUD parseType(String crudRAW) {
+	protected CRUD parseType(String crudRAW) {
 		switch (crudRAW) {
 			case "CREATE":
 				return CRUD.CREATE;
@@ -58,15 +61,15 @@ public class Request {
 		return new Message();
 	}
 
-	public Message getMessage() {
+	protected Message getMessage() {
 		return this.message;
 	}
 
-	public String getConversationID() {
+	protected String getConversationID() {
 		return this.conversationID;
 	}
 
-	public CRUD getRequestType() {
+	protected CRUD getRequestType() {
 		return this.type;
 	}
 }

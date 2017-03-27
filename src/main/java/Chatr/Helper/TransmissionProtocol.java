@@ -62,8 +62,8 @@ public class TransmissionProtocol {
 				return new ArrayList<>();
 			case DELETE:
 				return new ArrayList<>();
+			default:
+				return null;
 		}
-		// this is the java c being overly concerned, doesn't recognize that this will never be reached
-		return null;
 	}
 }

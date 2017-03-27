@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 
 public class Manager {
 	public static void main(String[] args) throws Exception {
-
 		List<Message> messages = new ArrayList<>();
 
 		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
@@ -29,7 +28,7 @@ public class Manager {
 				if (!messages.isEmpty()) {
 					messages.subList(0, messages.size() - 1).clear();
 				}
-				List<Message> m = Connection.getNewMessages(chatroom, messages.get(0));
+				List<Message> m = Connection.updateConversation(chatroom, messages.get(0));
 				Terminal.display(m);
 				messages.addAll(m);
 				try {
@@ -46,7 +45,7 @@ public class Manager {
 			String text = Terminal.getUserInput();
 			Message message = new Message(userName, "default", text);
 			Terminal.display(message);
-			Connection.postMessage(chatroom, message);
+			Connection.postToConversation(chatroom, message);
 			messages.add(message);
 		}
 	}

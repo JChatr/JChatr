@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Connects to the server and sends / receives Requests
  */
 public class Client {
 	private URL url;
@@ -33,7 +33,7 @@ public class Client {
 	 *
 	 * @param request request for the server respond to
 	 */
-	public void post(String request) {
+	protected void post(String request) {
 //		primeBuffers();
 		unifiedBuffer.add(request);
 		connect();
@@ -44,7 +44,7 @@ public class Client {
 	 *
 	 * @return separated lines of the Server's response
 	 */
-	public List<String> get(String request) {
+	protected List<String> get(String request) {
 		post(request);
 		return inBuffer;
 	}
