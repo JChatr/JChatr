@@ -1,4 +1,4 @@
-package Chatr;
+package Chatr.Server;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

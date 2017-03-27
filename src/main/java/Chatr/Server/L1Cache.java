@@ -28,12 +28,13 @@ public class L1Cache<V> {
 	 *
 	 * @param start
 	 * @return
+	 * @throws NoSuchElementException
 	 */
-	public synchronized List<V> getNewer(String ID, Long start) throws Exception {
+	public synchronized List<V> getNewer(String ID, Long start) throws NoSuchElementException {
 		List<V> list = new ArrayList<>();
 		Map<Long, V> messages;
 		if ((messages = conversations.get(ID)) == null) {
-			throw new Exception();
+			throw new NoSuchElementException();
 		}
 		for (Map.Entry<Long, V> entry : messages.entrySet()) {
 			if (entry.getKey() > start) {
@@ -41,6 +42,24 @@ public class L1Cache<V> {
 			}
 		}
 		return list;
+	}
+
+	/**
+	 * Gets the specified element from the Cache
+	 *
+	 * @param ID        ID to get the Item at
+	 * @param timestamp timestamp to get the Item at
+	 * @return the element if found at the specified ID and Timestamp
+	 * @throws NoSuchElementException
+	 */
+	public synchronized V get(String ID, Long timestamp) throws NoSuchElementException {
+		try {
+			V obj = conversations.get(ID).get(timestamp);
+			if (obj == null) throw new NoSuchElementException();
+			else return obj;
+		} catch (NullPointerException e) {
+			throw new NoSuchElementException();
+		}
 	}
 
 	/**
