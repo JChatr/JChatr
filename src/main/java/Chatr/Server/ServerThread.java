@@ -8,20 +8,28 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Thread of the server handling the connection
+ */
 public class ServerThread extends Thread {
 	private Socket socket;
-	private L1Cache l1Cache;
 	private String remote;
 	private List<String> inCache;
 
-	protected ServerThread(Socket socket, L1Cache cache) {
+	/**
+	 * Instantiates the ServerThread
+	 * @param socket open socket to use for connecting to the client
+	 */
+	protected ServerThread(Socket socket) {
 		super("ServerTread");
 		this.socket = socket;
-		this.l1Cache = cache;
 		this.remote = socket.getRemoteSocketAddress().toString();
 		this.inCache = new ArrayList<>();
 	}
 
+	/**
+	 * starts the Thread
+	 */
 	@Override
 	public void run() {
 		try (
@@ -36,11 +44,12 @@ public class ServerThread extends Thread {
 			socket.shutdownInput();
 			// Processing
 			// Figure out what messages to send to send to the client
-			MessageParser parse = new MessageParser(l1Cache, inCache);
-			List<String> newerMessages = parse.getNewerMessages();
+			MessageHandler handler = new MessageHandler(inCache);
+			handler.processRequests();
+			List<String> response = handler.getResponse();
 			// Sending
 			// only send the required messages
-			for (String obj: newerMessages) {
+			for (String obj : response) {
 				out.println(obj);
 			}
 			socket.shutdownOutput();

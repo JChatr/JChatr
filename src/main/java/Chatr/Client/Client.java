@@ -1,41 +1,62 @@
 package Chatr.Client;
 
+import Chatr.Helper.CONFIG;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client implements Connection {
+/**
+ * Connects to the server and sends / receives Requests
+ */
+public class Client {
 	private URL url;
 	private List<String> inBuffer = new ArrayList<>();
 	private List<String> unifiedBuffer = new ArrayList<>();
 
-	protected Client(URL url) {
-		this.url = url;
+	protected Client() {
+		try {
+			this.url = new URL(CONFIG.SERVER_ADDRESS);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 	}
 
-	@Override
-	public void post(String json) {
-		primeBuffers();
-		unifiedBuffer.add(json);
+	/**
+	 * POSTs the request to the Server
+	 *
+	 * @param request request for the server respond to
+	 */
+	protected void post(String request) {
+//		primeBuffers();
+		unifiedBuffer.add(request);
 		connect();
 	}
 
-	@Override
-	public List<String> get() {
-		primeBuffers();
-		connect();
+	/**
+	 * POST request to the Server return response
+	 *
+	 * @return separated lines of the Server's response
+	 */
+	protected List<String> get(String request) {
+		post(request);
 		return inBuffer;
 	}
 
-	// Protocol:
-	// 1. POST the last known message to the client
-	// 2. POST all new posted messages to the server
-	// 3. GET only the new messages from the server
+	//
+
+	/**
+	 * Protocol:
+	 * 1. Send request
+	 * 2. read all lines of the response from the server
+	 * 3. close connection
+	 */
 	private void connect() {
 		String remote = "";
 		try (
@@ -53,7 +74,6 @@ public class Client implements Connection {
 			// Receiving
 			String fromServer;
 			while ((fromServer = in.readLine()) != null) {
-				unifiedBuffer.add(fromServer);
 				inBuffer.add(fromServer);
 			}
 			socket.shutdownInput();
@@ -62,12 +82,15 @@ public class Client implements Connection {
 		}
 	}
 
-	// clear inBuffer, always keep the last element from unifiedBuffer
-	// there always has to be the last sent message in the unifiedBuffer
-	private void primeBuffers() {
-		inBuffer.clear();
-		if (!unifiedBuffer.isEmpty()) {
-			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
-		}
-	}
+	/**
+	 * clear inBuffer, always keep the last element from unifiedBuffer
+	 * there always has to be the last sent message in the unifiedBuffer
+	 */
+//	private void primeBuffers() {
+//
+//		inBuffer.clear();
+//		if (!unifiedBuffer.isEmpty()) {
+//			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
+//		}
+//	}
 }
