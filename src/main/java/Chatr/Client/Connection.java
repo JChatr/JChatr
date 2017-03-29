@@ -13,13 +13,13 @@ public class Connection {
 
 	/**
 	 * creates a new conversation on the server and adds the specified users
-	 *
+	 * TODO: clean tmp Data up!!!
 	 * @param conversationID ID of the new conversation
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
 	public static boolean createConversation(String conversationID, List<String> userIDs) {
-		new Client().post(TransmissionProtocol.build(CRUD.UPDATE, conversationID, tmpData));
+		new Client().post(TransmissionProtocol.build(CRUD.UPDATE, conversationID, new Message()));
 		return true;
 	}
 
