@@ -12,6 +12,8 @@ public class User {
 	private String userName = "";
 	private String userID = HashGen.getID(false);
 	public String userPicture = "";
+	private String email = "";
+	private String emailMD5 = "";
 
 	/**
 	 * This method is used to get the user name.
@@ -50,5 +52,9 @@ public class User {
 	 */
 	public String getUserID(){
 		return userID;
+	}
+	
+	public void setEmail(String email){
+		this.email = email.toLowerCase();
 	}
 }
