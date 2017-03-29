@@ -19,7 +19,7 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean createConversation(String conversationID, List<String> userIDs) {
-		new Client().post(TransmissionProtocol.build(CRUD.UPDATE, conversationID, tmpData));
+		new Client().post(TransmissionProtocol.build(CRUD.UPDATE, conversationID, new Message()));
 		return true;
 	}
 

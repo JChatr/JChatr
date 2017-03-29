@@ -1,4 +1,4 @@
-package Chatr.Server;
+package Chatr.Database;
 
 
 import java.util.*;

@@ -1,6 +1,8 @@
 package Chatr.Server;
 
 import Chatr.Converstation.Message;
+import Chatr.Database.Database;
+import Chatr.Database.L1Cache;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.JSONTransformer;
 
