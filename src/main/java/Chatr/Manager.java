@@ -28,7 +28,7 @@ public class Manager {
 				if (!messages.isEmpty()) {
 					messages.subList(0, messages.size() - 1).clear();
 				}
-				List<Message> m = Connection.updateConversation(chatroom, messages.get(0));
+				List<Message> m = Connection.readConversation(chatroom, messages.get(0));
 				Terminal.display(m);
 				messages.addAll(m);
 				try {
@@ -45,7 +45,7 @@ public class Manager {
 			String text = Terminal.getUserInput();
 			Message message = new Message(userName, "default", text);
 			Terminal.display(message);
-			Connection.postToConversation(chatroom, message);
+			Connection.updateConversation(chatroom, message);
 			messages.add(message);
 		}
 	}
