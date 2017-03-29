@@ -1,41 +1,53 @@
 package Chatr;
 
 
-import Chatr.Client.ConnectionManager;
+import Chatr.Client.Connection;
 import Chatr.Converstation.Message;
+import Chatr.Helper.CONFIG;
 import Chatr.Helper.Terminal;
-import Chatr.Server.Server;
 
-import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
 
 public class Manager {
 	public static void main(String[] args) throws Exception {
-		// parse command line arguments
-		URL url = new URL(args[0]);
-		boolean server = false;
-		if (args.length > 1 && "server".equals(args[1])) {
-			server = true;
-		}
-		// set up server
-		if (server) {
-			System.out.printf("Setting up Server at : %s \n\n", url.toURI());
-			(new Thread(new Server(url))).start();
-		} else {
-			System.out.printf("Connecting to  : %s \n\n", url.toURI());
-		}
+		List<Message> messages = new ArrayList<>();
+
+		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
 		System.out.println("Enter your Username:");
 		String userName = Terminal.getUserInput();
-		// start the client as a new Thread and GET every 500 ms
-		ConnectionManager connection = new ConnectionManager(url);
-		(new Thread(connection)).start();
+		System.out.println("Enter the chat room you want to connect to:");
+		String chatroom = Terminal.getUserInput();
+		messages.add(new Message(userName, "02", "DEFAULT SENT CONTENT"));
+
+		// Start the client pulling in a specified interval
+		// print messages to the Terminal if there are new ones
+		Executors.newSingleThreadExecutor().execute(() -> {
+			while (true) {
+				if (!messages.isEmpty()) {
+					messages.subList(0, messages.size() - 1).clear();
+				}
+				List<Message> m = Connection.updateConversation(chatroom, messages.get(0));
+				Terminal.display(m);
+				messages.addAll(m);
+				try {
+					Thread.sleep(CONFIG.CLIENT_PULL_TIMER);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
 		// app loop
-		// if message is getting sent GET set to update
+		// if message is set, post to server
 		while (true) {
 			// read message from user and print to Terminal
 			String text = Terminal.getUserInput();
 			Message message = new Message(userName, "default", text);
 			Terminal.display(message);
-			connection.postMessage(message);
+			Connection.postToConversation(chatroom, message);
+			messages.add(message);
 		}
 	}
 }
+

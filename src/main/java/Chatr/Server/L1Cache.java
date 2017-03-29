@@ -1,30 +1,42 @@
 package Chatr.Server;
 
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-// this cache represents an L1 implementation of the Database (Key, Value store)
+// this messages represents an L1 implementation of the Database (Key, Value store)
 // K -> Timestamp of the entry
 // V -> Value @ the specified timestamp
+
+/**
+ * @param <V>
+ */
 public class L1Cache<V> {
 
-	private Map<Long, V> cache;
+	private Map<String, Map<Long, V>> conversations;
 
 	public L1Cache() {
-		this.cache = new LinkedHashMap<>();
+		this.conversations = new HashMap<>();
 	}
 
-	public synchronized Map<Long, V> get() {
-		return this.cache;
-	}
+//	public synchronized Map<Long, V> get() {
+//		return this.messages;
+//	}
 
-	// GET all entries of the DB within the specified range exclusive
-	public synchronized List<V> getNewer(Long start) {
+	/**
+	 * GET all entries of the DB within the specified range exclusive
+	 * TODO: create custom exception
+	 *
+	 * @param start
+	 * @return
+	 * @throws NoSuchElementException
+	 */
+	public synchronized List<V> getNewer(String ID, Long start) throws NoSuchElementException {
 		List<V> list = new ArrayList<>();
-		for (Map.Entry<Long, V> entry : cache.entrySet()) {
+		Map<Long, V> messages;
+		if ((messages = conversations.get(ID)) == null) {
+			throw new NoSuchElementException();
+		}
+		for (Map.Entry<Long, V> entry : messages.entrySet()) {
 			if (entry.getKey() > start) {
 				list.add(entry.getValue());
 			}
@@ -32,22 +44,65 @@ public class L1Cache<V> {
 		return list;
 	}
 
-	public synchronized void put(Long timestamp, V obj) {
-		cache.putIfAbsent(timestamp, obj);
-	}
-
-	public synchronized boolean isEmpty() {
-		return cache.isEmpty();
-	}
-
-	public synchronized void clear() {
-		cache.clear();
-	}
-
-	public synchronized void print() {
-		System.out.println("\nEntries in the Database: " + cache.size());
-		for (V v : cache.values()) {
-			System.out.println(v);
+	/**
+	 * Gets the specified element from the Cache
+	 *
+	 * @param ID        ID to get the Item at
+	 * @param timestamp timestamp to get the Item at
+	 * @return the element if found at the specified ID and Timestamp
+	 * @throws NoSuchElementException
+	 */
+	public synchronized V get(String ID, Long timestamp) throws NoSuchElementException {
+		try {
+			V obj = conversations.get(ID).get(timestamp);
+			if (obj == null) throw new NoSuchElementException();
+			else return obj;
+		} catch (NullPointerException e) {
+			throw new NoSuchElementException();
 		}
+	}
+
+	/**
+	 * Inserts the Object at the specified ID and timestamp if not already present.
+	 *
+	 * @param ID        ID to insert at
+	 * @param timestamp timestamp to insert at
+	 * @param obj       Object to insert at the ID and timestamp
+	 * @return weather or not the insertion was successful
+	 */
+	public synchronized boolean put(String ID, Long timestamp, V obj) {
+		conversations.putIfAbsent(ID, new LinkedHashMap<>());
+		Map<Long, V> messages = conversations.get(ID);
+		boolean inserted = messages.putIfAbsent(timestamp, obj) == null;
+		return inserted;
+	}
+
+	/**
+	 * @return
+	 */
+	public synchronized boolean isEmpty() {
+		return conversations.isEmpty();
+	}
+
+	/**
+	 *
+	 */
+	public synchronized void clear() {
+		conversations.clear();
+	}
+
+	/**
+	 * prints the content of the entire Cache to the console
+	 */
+	public synchronized void print() {
+		int count = 0;
+		for (Map.Entry<String, Map<Long, V>> messages : conversations.entrySet()) {
+			System.out.printf("Conversation: %s\n", messages.getKey());
+			for (V v : messages.getValue().values()) {
+				System.out.println(" |-- " + v);
+				count++;
+			}
+		}
+		System.out.printf("Entries in the Database: %d\n", count);
 	}
 }
