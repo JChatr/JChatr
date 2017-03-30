@@ -5,19 +5,25 @@ import Chatr.Client.Connection;
 import Chatr.Converstation.Message;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Terminal;
+import Chatr.Server.Server;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
 
+/**
+ * starts the app
+ * TODO: NEEDS to be rewritten
+ */
 public class Manager {
 	public static void main(String[] args) throws Exception {
-		List<Message> messages = new ArrayList<>();
+		startServer();
 
+		List<Message> messages = new ArrayList<>();
 		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
-		System.out.println("Enter your Username:");
+		System.out.print("Enter your Username: ");
 		String userName = Terminal.getUserInput();
-		System.out.println("Enter the chat room you want to connect to:");
+		System.out.print("Enter the chat room you want to connect to: ");
 		String chatroom = Terminal.getUserInput();
 		messages.add(new Message(userName, "02", "DEFAULT SENT CONTENT"));
 
@@ -48,6 +54,13 @@ public class Manager {
 			Connection.updateConversation(chatroom, message);
 			messages.add(message);
 		}
+	}
+
+	/**
+	 * this method is for testing purposes ONLY delete when manager gets properly implemented
+	 */
+	private static void startServer() {
+		new Thread(new Server()).start();
 	}
 }
 
