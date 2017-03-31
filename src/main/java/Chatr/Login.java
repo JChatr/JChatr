@@ -6,12 +6,12 @@ import Chatr.Converstation.User;
 public class Login {
 	
 	public static User loginUser(String userID){
-		if(Connection.readUser(userID) != null){
-			return Connection.readUser(userID);
+		User user = null;
+		if( (user = Connection.readUser(userID) )!= null){
+			return user;
 		} else {
-			User u = new User("userName");
+			user = new User(userID);
+			return user;
 		}
-		
-		return new User("");
 	}
 }
