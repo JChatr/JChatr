@@ -14,6 +14,14 @@ public class User {
 	public String userPicture = "";
 	private String email = "";
 	private String emailMD5 = "";
+	
+	/**
+	 * Constructor to create user object with the user name.
+	 * @param userName The name of the user.
+	 */
+	public User(String userName){
+		this.userName = userName;
+	}
 
 	/**
 	 * This method is used to get the user name.

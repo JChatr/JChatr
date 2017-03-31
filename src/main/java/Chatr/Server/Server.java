@@ -3,6 +3,7 @@ package Chatr.Server;
 import Chatr.Helper.CONFIG;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
@@ -28,13 +29,13 @@ public class Server implements Runnable {
 	 */
 	@Override
 	public void run() {
-		System.out.println("server running");
-		try (ServerSocket serverSocket = new ServerSocket(url.getPort())){
-			while(true) {
+		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
+			System.out.println("Server started at: " + CONFIG.SERVER_ADDRESS);
+			while (true) {
 				new ServerThread(serverSocket.accept()).start();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (Throwable e) {
+			System.out.println("Server already started at: " + CONFIG.SERVER_ADDRESS);
 		}
 	}
 }

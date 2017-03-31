@@ -1,10 +1,10 @@
 package Chatr.Client;
 
 import Chatr.Converstation.Message;
+import Chatr.Converstation.PrivateConversation;
 import Chatr.Converstation.User;
 import Chatr.Helper.CRUD;
 import Chatr.Helper.TransmissionProtocol;
-import sun.plugin2.message.Conversation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static List<Conversation> readConversations(String userID) {
+	public static List<PrivateConversation> readConversations(String userID) {
 		return new ArrayList<>();
 	}
 

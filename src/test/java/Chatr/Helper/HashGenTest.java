@@ -19,13 +19,15 @@ public class HashGenTest {
 		id1 = HashGen.getID(true);
 		id2 = HashGen.getID(true);
 		assertFalse(id1==id2);
+		
+		
 	}
+	
 	
 	@Test
 	public void clearCase(){
 		assertTrue(HashGen.getID(true).matches("\\d+"));
 		assertFalse(HashGen.getID(false).matches("\\d+"));
 	}
-
 
 }

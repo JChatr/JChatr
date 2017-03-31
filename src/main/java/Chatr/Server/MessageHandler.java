@@ -81,8 +81,8 @@ public class MessageHandler {
 		try {
 			List<Message> newer = l1Cache.getNewer(request.getConversationID(), timestamp);
 			if (!newer.isEmpty()) {
-				l1Cache.print();
-				System.out.println("newer = " + newer);
+//				l1Cache.print();
+//				System.out.println("newer = " + newer);
 				answer.addAll(JSONTransformer.toJSON(newer));
 			}
 		} catch (Exception e) {
