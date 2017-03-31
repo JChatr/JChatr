@@ -2,6 +2,7 @@ package Chatr.Converstation;
 import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.*;
 
 public class Conversation {
@@ -9,41 +10,55 @@ public class Conversation {
     private String conversationID =new String(); //Hash generieren, dann final
     private String conversationName=new String();
     private Set<User> members= new HashSet<>();
+    private List<Message> messages= new ArrayList<>();
+    private User localUser;
 
-    private enum ConverastionState{
-        CREATE, READ, UPDATE, DELETE
+
+
+    private Conversation(String conversationName,Collection<User> members, User localUSer){
+
+        this.members.addAll(members);
+        this.members.add(localUSer);
+        this.localUser=localUser;
+
+        this.conversationName=conversationName;
+        this.conversationID=HashGen.getID(false);
+
+        this.create();
     }
 
 
-
-    private Conversation(String conversationName,Collection<User> member){
-
-        this.members.addAll(member);
-    }
-
-    private Conversation(User member){
+    private Conversation(User member, User localUser){
 
         this.members.add(member);
+        this.members.add(localUser);
+        this.localUser= localUser;
+
+
+        this.conversationName=member.getUserName();
+        this.conversationID=HashGen.getID(false);
+
+        this.create();
     }
 
-    static public Conversation newConversation(User member){
-        Conversation pCon= new Conversation(member);
+
+
+    static public Conversation newConversation(User member, User localUser){
+        Conversation pCon= new Conversation(member, localUser);
+
 
         return pCon;
     }
 
-    static public Conversation  newGroupConversation(String conversationName,Collection<User> members){
 
-        Conversation pGCon= new Conversation(conversationName, members);
+    static public Conversation  newGroupConversation(String conversationName,Collection<User> members, User localUser){
 
-        for(User member : pGCon.members){
-
-        }
-
-        Connection.createConversation(this.conversationID, this.conversationName)
+        Conversation pGCon= new Conversation(conversationName, members, localUser);
 
         return pGCon;
     }
+
+
 
     private void create(){
 
@@ -53,7 +68,17 @@ public class Conversation {
             memberIDs.add(member.getUserID());
         }
 
-        //Connection.createConversation();
+        Connection.createConversation(this.conversationID, memberIDs);
+    }
+
+    public void delete(){
+
+        Connection.deleteConversation(this.conversationID);
+
+    }
+
+    public void read(){
+        Connection.readConversation(this.conversationID,NULL);
     }
 
 }
