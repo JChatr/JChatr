@@ -88,7 +88,7 @@ public class Connection {
 	 * @return User Object from the server
 	 */
 	public static User readUser(String userID) {
-		return new User();
+		return new User(userID);
 	}
 
 	/**

@@ -10,17 +10,17 @@ import Chatr.Helper.HashGen;
 public class User {
 
 	private String userName = "";
-	private String userID = HashGen.getID(false);
+	private String userID = "";
+	//private String userID = HashGen.getID(false);
 	public String userPicture = "";
-	private String email = "";
-	private String emailMD5 = "";
-	
+		
 	/**
 	 * Constructor to create user object with the user name.
 	 * @param userName The name of the user.
 	 */
 	public User(String userName){
 		this.userName = userName;
+		this.userID = userName;
 	}
 
 	/**
@@ -61,8 +61,5 @@ public class User {
 	public String getUserID(){
 		return userID;
 	}
-	
-	public void setEmail(String email){
-		this.email = email.toLowerCase();
-	}
+		
 }
