@@ -3,6 +3,7 @@ import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
 
 import javax.jws.soap.SOAPBinding;
+import java.lang.reflect.Member;
 import java.util.*;
 
 public class Conversation {
@@ -78,7 +79,39 @@ public class Conversation {
     }
 
     public void read(){
-        Connection.readConversation(this.conversationID,NULL);
+
+        Connection.readConversation(this.conversationID,null);
+
     }
+
+    public void newMessage(String content) throws Exception {
+
+        if(content.trim().isEmpty()){
+
+        }
+        else{
+        messages.add(new Message(localUser.getUserID(), content));
+
+        Connection.updateConversation(this.conversationID, messages.get(messages.size()-1));
+        }
+    }
+
+    public List<Message> getMessages(){
+        return messages;
+    }
+
+    public Set<User> getMembers(){
+        return members;
+    }
+
+    public void setMessages(List<Message> messages){
+        this.messages.addAll(messages);
+    }
+
+    public void setMembers(Set<User> members){
+        this.members.addAll(members);
+    }
+
+
 
 }
