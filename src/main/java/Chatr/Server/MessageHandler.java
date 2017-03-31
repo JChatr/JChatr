@@ -1,6 +1,7 @@
 package Chatr.Server;
 
 import Chatr.Converstation.Message;
+import Chatr.Database.Database;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.JSONTransformer;
 
@@ -11,7 +12,7 @@ import java.util.List;
  * server side message logic
  */
 public class MessageHandler {
-	private L1Cache l1Cache;
+	private Database database;
 	private List<Request> requests;
 	private List<String> answer = new ArrayList<>();
 
@@ -20,7 +21,7 @@ public class MessageHandler {
 	 * @param request request from the client
 	 */
 	protected MessageHandler(List<String> request) {
-		this.l1Cache = Initializer.l1Cache;
+		this.database = Database.getCachedDatabase();
 		requests = parseRequests(request);
 	}
 
@@ -42,7 +43,7 @@ public class MessageHandler {
 	/**
 	 * Directs requests to the corresponding methods
 	 */
-	public void processRequests() {
+	public void routeRequests() {
 		for (Request request : requests) {
 			switch (request.getRequestType()) {
 				case CREATE:
@@ -67,7 +68,7 @@ public class MessageHandler {
 	 */
 	private void create(Request request) {
 		Message m = request.getMessage();
-		l1Cache.put(request.getConversationID(), m.getTime(), m);
+		database.put(request.getConversationID(), m.getTime(), m);
 	}
 
 	/**
@@ -79,9 +80,9 @@ public class MessageHandler {
 		Message m = request.getMessage();
 		long timestamp = (m.isEmpty()) ? 0L : m.getTime();
 		try {
-			List<Message> newer = l1Cache.getNewer(request.getConversationID(), timestamp);
+			List<Message> newer = database.getNewer(request.getConversationID(), timestamp);
 			if (!newer.isEmpty()) {
-//				l1Cache.print();
+//				database.print();
 //				System.out.println("newer = " + newer);
 				answer.addAll(JSONTransformer.toJSON(newer));
 			}

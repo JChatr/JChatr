@@ -1,9 +1,8 @@
 package Chatr.Server;
 
+import Chatr.Database.Database;
 import Chatr.Helper.CONFIG;
 
-import java.io.IOException;
-import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
