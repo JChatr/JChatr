@@ -3,7 +3,6 @@ package Chatr.Database;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.PrivateConversation;
 import Chatr.Converstation.User;
-import org.omg.PortableServer.POAPackage.NoServantHelper;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -13,13 +12,17 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Database {
 	// USERID | USER_OBJ
+	// ConcurrenHashMap
 	private Map<String, User> users;
 	// USERID | CONV_LIST
-	private Map<String, List<String>> link;
+	// ConcurrentHashMap -> ArrayList
+	private Map<String, List<String>> links;
 	// CONV_ID | MESSAGE_TS | MESSAGE
+	// ConcurrentHashMap -> LinkedHashMap
 	private Map<String, Map<Long, Message>> conversations;
 
 	private static Database instance;
+
 	/**
 	 * enforces the singleton pattern
 	 *
@@ -34,23 +37,27 @@ public class Database {
 	 */
 	private Database() {
 		this.users = new ConcurrentHashMap<>();
-		this.link = new ConcurrentHashMap<>();
+		this.links = new ConcurrentHashMap<>();
 		this.conversations = new ConcurrentHashMap<>();
 	}
 
 
 	/**
-	 * @param user
-	 * @return
+	 * adds a User to the users Table
+	 *
+	 * @param user user object to add
+	 * @return if the insertion was successful
 	 */
 	public boolean addUser(User user) {
-		return users.putIfAbsent(user.getUserID(), user) != null;
+		return users.putIfAbsent(user.getUserID(), user) == null;
 	}
 
 	/**
-	 * @param userID
-	 * @return
-	 * @throws NoSuchElementException
+	 * read the user from the users table
+	 *
+	 * @param userID userID to read at
+	 * @return the found user object if contained in the table
+	 * @throws NoSuchElementException if no such user is found
 	 */
 	public User readUser(String userID) throws NoSuchElementException {
 		User u;
@@ -59,41 +66,44 @@ public class Database {
 	}
 
 	/**
-	 * @param user
-	 * @return
+	 * updates the data for the user in the table
+	 *
+	 * @param user user data to update
+	 * @return if the update was successful
 	 */
 	public boolean updateUser(User user) {
 		return users.put(user.getUserID(), user) != null;
 	}
 
 	/**
-	 * @param userID
-	 * @return
+	 * deletes the user from the table
+	 *
+	 * @param userID userID to delete at
+	 * @return if the deletion was successful
 	 */
 	public boolean deleteUser(String userID) {
 		boolean remove = users.remove(userID) != null;
-		remove &= link.remove(userID) != null;
+		remove &= links.remove(userID) != null;
 		return remove;
 	}
 
 	/**
-	 * @param userID
-	 * @return
+	 * adds a conversation to the database and links it to it's members
+	 *
+	 * @param conversation conversation data to add
+	 * @return if the insertion was successful
 	 */
-	public List<PrivateConversation> readUserConversations(String userID) {
-		User user = users.get(userID);
-		List<PrivateConversation> userConv = new ArrayList<>();
-		for (String conversation : link.get(userID)) {
-			userConv.add(readConversation(conversation));
-		}
-		return userConv;
+	public boolean addConversation(PrivateConversation conversation) {
+		linkConversation(conversation.getUser(), conversation.getId());
+		return conversations.putIfAbsent(conversation.getId(), new LinkedHashMap<>()) == null;
 	}
 
 	/**
 	 * TODO: assemble conversation
+	 * reads and assembles a conversation from the database
 	 *
-	 * @param conversationID
-	 * @return
+	 * @param conversationID conversationID to read at
+	 * @return the assembled conversation
 	 */
 	public PrivateConversation readConversation(String conversationID) {
 		conversations.get(conversationID);
@@ -101,46 +111,51 @@ public class Database {
 	}
 
 	/**
-	 * @param conversationID
-	 * @param timestamp
-	 * @return
+	 * deltes a conversation from the datatbase
+	 *
+	 * @param conversationID ID to delte at
+	 * @return if the deletion was successful
 	 */
-	public List<Message> readNewerMessages(String conversationID, Long timestamp) {
-		Map<Long, Message> messages = conversations.get(conversationID);
-		List<Message> out = Collections.synchronizedList(new ArrayList<Message>());
-		messages.forEach((ts, m) -> {
-			if (ts > timestamp) out.add(m);
-		});
-		return out;
+	public boolean deleteConversation(String conversationID) {
+		unLinkConversation(conversationID);
+		return conversations.remove(conversationID) != null;
 	}
 
 	/**
-	 * @param conversationID
-	 * @param messages
-	 * @return
+	 * adds a List of messages to a conversation
+	 *
+	 * @param conversationID ID of the conversation to add to
+	 * @param messages       messages to add
+	 * @return if the insertion was successful
 	 */
 	public boolean addMessage(final String conversationID, final List<Message> messages) {
 		boolean result = true;
-		messages.forEach(m ->
-				result &= addMessage(conversationID, m));
+		for (Message m : messages) result &= addMessage(conversationID, m);
 		return result;
 	}
 
 	/**
-	 * @param conversationID
-	 * @param message
-	 * @return
+	 * adds a message to a conversation
+	 *
+	 * @param conversationID ID of the conversation to add to
+	 * @param message        message to add
+	 * @return if the insertion was successful
 	 */
 	public boolean addMessage(String conversationID, Message message) {
-		conversations.putIfAbsent(conversationID, new LinkedHashMap<>());
-		return conversations.get(conversationID).put(message.getTime(), message) != null;
+		try {
+			return conversations.get(conversationID).put(message.getTime(), message) != null;
+		} catch (NullPointerException e) {
+			return false;
+		}
 	}
 
 	/**
-	 * @param conversationID
-	 * @param timestamp
-	 * @return
-	 * @throws NoSuchElementException
+	 * reads a message from the specified conversation
+	 *
+	 * @param conversationID ID to read from
+	 * @param timestamp      message timestamp to read from
+	 * @return the read message
+	 * @throws NoSuchElementException if such message is found
 	 */
 	public Message readMessage(String conversationID, Long timestamp) throws NoSuchElementException {
 		try {
@@ -151,9 +166,11 @@ public class Database {
 	}
 
 	/**
-	 * @param conversationID
-	 * @param timestamp
-	 * @return
+	 * deletes a message from the table
+	 *
+	 * @param conversationID ID of the conversation to delte at
+	 * @param timestamp      timestamp to delete at
+	 * @return if the deletion was successful
 	 */
 	public boolean deleteMessage(String conversationID, Long timestamp) {
 		try {
@@ -164,9 +181,11 @@ public class Database {
 	}
 
 	/**
-	 * @param conversationID
-	 * @param message
-	 * @return
+	 * updates the data of a message in the table
+	 *
+	 * @param conversationID ID of the conversation to update
+	 * @param message        message to update the data for
+	 * @return if the update was successful
 	 */
 	public boolean updateMessage(String conversationID, Message message) {
 		try {
@@ -177,10 +196,52 @@ public class Database {
 	}
 
 	/**
-	 * @param userID
-	 * @param conversationID
+	 * links a conversation to all given useIDs
+	 *
+	 * @param userIDs        users to links to
+	 * @param conversationID ID to links
 	 */
-	private void linkUser(String userID, Stirng conversationID) {
+	private void linkConversation(List<String> userIDs, String conversationID) {
+		for (String userID : userIDs) {
+			links.putIfAbsent(userID, new ArrayList<>());
+			links.get(userID).add(conversationID);
+		}
+	}
 
+	/**
+	 * breaks all links for that ID
+	 *
+	 * @param conversationID ID to break the links for
+	 */
+	private void unLinkConversation(final String conversationID) {
+		links.values().forEach(cons -> cons.remove(conversationID));
+	}
+
+	/**
+	 * reads all conversations for that user
+	 * @param userID ID to read & assemble for
+	 * @return List of conversations for that user
+	 */
+	public List<PrivateConversation> readUserConversations(String userID) {
+		List<PrivateConversation> userConv = new ArrayList<>();
+		for (String conversation : links.get(userID)) {
+			userConv.add(readConversation(conversation));
+		}
+		return userConv;
+	}
+
+	/**
+	 * reads all newer messages than the provided timestamp
+	 * @param conversationID ID to read from
+	 * @param timestamp timestamp to compare the read messages to
+	 * @return all newer messages from that conversation
+	 */
+	public List<Message> readNewerMessages(String conversationID, Long timestamp) {
+		Map<Long, Message> messages = conversations.get(conversationID);
+		List<Message> out = new ArrayList<>();
+		messages.forEach((ts, m) -> {
+			if (ts > timestamp) out.add(m);
+		});
+		return out;
 	}
 }
