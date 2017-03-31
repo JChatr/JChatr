@@ -1,6 +1,8 @@
 package Chatr.Client;
 
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.JSONTransformer;
+import Chatr.Server.Transmission;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,9 +35,10 @@ public class Client {
 	 *
 	 * @param request request for the server respond to
 	 */
-	protected void post(String request) {
+	protected void post(Transmission request) {
 //		primeBuffers();
-		unifiedBuffer.add(request);
+
+		unifiedBuffer.addAll(JSONTransformer.toJSON(requests));
 		connect();
 	}
 

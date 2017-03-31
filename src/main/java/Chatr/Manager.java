@@ -2,7 +2,9 @@ package Chatr;
 
 
 import Chatr.Client.Connection;
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
+import Chatr.Converstation.User;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
@@ -18,15 +20,8 @@ import java.util.concurrent.Executors;
 public class Manager {
 	public static void main(String[] args) throws Exception {
 		startServer();
-
+		setupConversation();
 		List<Message> messages = new ArrayList<>();
-		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
-		System.out.print("Enter your Username: ");
-		String userName = Terminal.getUserInput();
-		System.out.print("Enter the chat room you want to connect to: ");
-		String chatroom = Terminal.getUserInput();
-		messages.add(new Message(userName, "02", "DEFAULT SENT CONTENT"));
-
 		// Start the client pulling in a specified interval
 		// print messages to the Terminal if there are new ones
 		Executors.newSingleThreadExecutor().execute(() -> {
@@ -61,6 +56,16 @@ public class Manager {
 	 */
 	private static void startServer() {
 		new Thread(new Server()).start();
+	}
+
+	private static Conversation setupConversation(){
+		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
+		System.out.print("Enter your Username: ");
+		String userName = Terminal.getUserInput();
+		System.out.print("who do you want to chat with ? : ");
+		String chatroom = Terminal.getUserInput();
+		Conversation conversation = Conversation.newConversation(new User(chatroom), new User(userName));
+		return conversation;
 	}
 }
 

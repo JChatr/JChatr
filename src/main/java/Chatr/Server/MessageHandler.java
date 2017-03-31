@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class MessageHandler {
 	private Database database;
-	private List<Request> requests;
+	private List<Transmission> requests;
 	private List<String> answer = new ArrayList<>();
 
 	/**
@@ -30,11 +30,11 @@ public class MessageHandler {
 	 * @param requests requests from the Client
 	 * @return parsed List of all the requests to the server by the client
 	 */
-	private List<Request> parseRequests(List<String> requests) {
-		List<Request> parsed = new ArrayList<>();
+	private List<Transmission> parseRequests(List<String> requests) {
+		List<Transmission> parsed = new ArrayList<>();
 		for (String request : requests) {
 			String[] partials = request.split(CONFIG.SEPARATOR);
-			Request req = new Request(partials[0], partials[1], partials[2]);
+			Transmission req = new Transmission(partials[0], partials[1], partials[2]);
 			parsed.add(req);
 		}
 		return parsed;
@@ -44,7 +44,7 @@ public class MessageHandler {
 	 * Directs requests to the corresponding methods
 	 */
 	public void routeRequests() {
-		for (Request request : requests) {
+		for (Transmission request : requests) {
 			switch (request.getRequestType()) {
 				case CREATE:
 					create(request);
@@ -66,7 +66,7 @@ public class MessageHandler {
 	 * stores Message in the Cache
 	 * @param request Message wrapped in a request
 	 */
-	private void create(Request request) {
+	private void create(Transmission request) {
 		Message m = request.getMessage();
 		database.put(request.getConversationID(), m.getTime(), m);
 	}
@@ -76,14 +76,13 @@ public class MessageHandler {
 	 * @param request Message wrapped in a request
 	 */
 	@SuppressWarnings("Unchecked")
-	private void read(Request request) {
+	private void read(Transmission request) {
 		Message m = request.getMessage();
 		long timestamp = (m.isEmpty()) ? 0L : m.getTime();
 		try {
 			List<Message> newer = database.getNewer(request.getConversationID(), timestamp);
 			if (!newer.isEmpty()) {
-//				database.print();
-//				System.out.println("newer = " + newer);
+
 				answer.addAll(JSONTransformer.toJSON(newer));
 			}
 		} catch (Exception e) {
@@ -94,7 +93,7 @@ public class MessageHandler {
 	 * Updates a request in the Cache
 	 * @param request Message wrapped in a request
 	 */
-	private void update(Request request) {
+	private void update(Transmission request) {
 
 	}
 
@@ -102,7 +101,7 @@ public class MessageHandler {
 	 * Deletes a Message from the Cache
 	 * @param request Message wrapped in a request
 	 */
-	private void delete(Request request) {
+	private void delete(Transmission request) {
 
 	}
 

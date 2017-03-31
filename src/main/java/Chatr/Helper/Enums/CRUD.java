@@ -1,4 +1,4 @@
-package Chatr.Helper;
+package Chatr.Helper.Enums;
 
 
 public enum CRUD {
