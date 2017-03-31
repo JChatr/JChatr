@@ -45,7 +45,7 @@ public class ServerThread extends Thread {
 			// Processing
 			// Figure out what messages to send to send to the client
 			MessageHandler handler = new MessageHandler(inCache);
-			handler.processRequests();
+			handler.routeRequests();
 			List<String> response = handler.getResponse();
 			// Sending
 			// only send the required messages

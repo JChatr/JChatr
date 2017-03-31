@@ -1,6 +1,5 @@
 package Chatr.Server;
 
-import Chatr.Database.L1Cache;
 import org.junit.Test;
 
 import java.util.ArrayList;
