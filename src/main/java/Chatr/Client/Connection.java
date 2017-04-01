@@ -3,14 +3,17 @@ package Chatr.Client;
 import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
-import Chatr.Helper.Enums.CRUD;
-import Chatr.Helper.Enums.RequestType;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+
+import static Chatr.Helper.Enums.Crud.*;
+import static Chatr.Helper.Enums.Request.*;
 
 
 public class Connection {
@@ -27,9 +30,10 @@ public class Connection {
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
-	public static void createConversation(String conversationID, Collection<String> userIDs) {
-		Transmission request = build(RequestType.CONVERSATION, CRUD.UPDATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
+	public static boolean createConversation(String conversationID, Collection<String> userIDs) {
+		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
+		Transmission response = client.get(request);
+		return true;
 	}
 
 	/**
@@ -39,9 +43,9 @@ public class Connection {
 	 * @param newest         newest message in the local copy of the conversation
 	 * @return new Messages from the server
 	 */
-	public static List<Message> readConversation(String conversationID, Message newest) {
-		Transmission request = build(RequestType.CONVERSATION, CRUD.READ, conversationID, newest);
-		List<String> response = new Client().get(request);
+	public static List<Message> readNewMessages(String conversationID, Message newest) {
+		Transmission request = build(MESSAGE, READ, conversationID, newest);
+		List<Transmission> response = client.getMultiple(request);
 		return parse(response);
 	}
 
@@ -53,20 +57,20 @@ public class Connection {
 	 * @return the users conversations
 	 */
 	public static List<Conversation> readAllConversations(String userID) {
-		Transmission request = build(RequestType.CONVERSATION, CRUD.READ, userID, null);
-		Transmission response = new Client().get(request);
+		Transmission request = build(CONVERSATION, READ, userID, null);
+		Transmission response = client.get(request);
 		return parse(response);
 	}
 
 	/**
 	 * Add a new message to a conversation
 	 *
-	 * @param conversationID ID of the conversation to post the message to
-	 * @param message        Message to post
+	 * @param conversationID ID of the conversation to get the message to
+	 * @param message        Message to get
 	 * @return if the operation was successful
 	 */
-	public static boolean updateConversation(String conversationID, Message message) {
-		new Client().post(build(RequestType.CONVERSATION, CRUD.CREATE, conversationID, message));
+	public static boolean addMessage(String conversationID, Message message) {
+		client.get(build(MESSAGE, UPDATE, conversationID, message));
 		return true;
 	}
 
@@ -77,7 +81,7 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean deleteConversation(String conversationID) {
-		new Client().post(build(RequestType.CONVERSATION, CRUD.DELETE, conversationID, null));
+		client.get(build(CONVERSATION, DELETE, conversationID, null));
 		return true;
 	}
 
@@ -89,7 +93,7 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean createUser(String userID, User userData) {
-		new Client().post(build(RequestType.USER, CRUD.CREATE, userID, userData));
+		client.get(build(USER, CREATE, userID, userData));
 		return true;
 	}
 
@@ -101,9 +105,9 @@ public class Connection {
 	 * @return User Object from the server
 	 */
 	public static User readUser(String userID) {
-		Transmission request = build(RequestType.USER, CRUD.READ, userID, null);
-
-		return new User();
+		Transmission request = build(USER, READ, userID, null);
+		Transmission response = client.get(request);
+		return parse(response);
 	}
 
 	/**
@@ -112,7 +116,9 @@ public class Connection {
 	 * @return all users known to the server
 	 */
 	public static List<User> readUsers() {
-		return new ArrayList<>();
+		Transmission request = build(USER, READ, null, null);
+		Transmission response = client.get(request);
+		return parse(response);
 	}
 
 	/**
@@ -123,7 +129,9 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean updateUser(String userID, User userData) {
-		return true;
+		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission response = client.get(request);
+		return parse(response);
 	}
 
 	/**
@@ -133,11 +141,13 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean deleteUser(String userID) {
-		return true;
+		Transmission request = build(USER, DELETE, userID, null);
+		Transmission response = client.get(request);
+		return parse(response);
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Transmission build(RequestType type, CRUD operation, String ID, Object data) {
+	private static Transmission build(Request type, Crud operation, String ID, Object data) {
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
@@ -156,13 +166,8 @@ public class Connection {
 						request.setUserIDs(list);
 						break;
 				}
+				break;
 			case USER:
-				request.setUser((User) data);
-				break;
-			case CONNECTED:
-				request.setUser((User) data);
-				break;
-			case DISCONNECTED:
 				request.setUser((User) data);
 				break;
 		}
@@ -170,6 +175,15 @@ public class Connection {
 	}
 	@SuppressWarnings("unchecked")
 	private static <T> T parse(Transmission request) {
+		switch (request.getRequestType()){
+			case CONVERSATION:
+			case MESSAGE:
+			case CONNECTED:
+			case DISCONNECTED:
+			case NOTIFICATION:
+			case STATUS:
+			case USER:
+		}
 		return (T) new Object();
 	}
 

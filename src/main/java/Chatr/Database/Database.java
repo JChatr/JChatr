@@ -1,7 +1,7 @@
 package Chatr.Database;
 
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
-import Chatr.Converstation.PrivateConversation;
 import Chatr.Converstation.User;
 
 import java.util.*;
@@ -87,16 +87,16 @@ public class Database {
 		return remove;
 	}
 
-	/**
-	 * adds a conversation to the database and links it to it's members
-	 *
-	 * @param conversation conversation data to add
-	 * @return if the insertion was successful
-	 */
-	public boolean addConversation(PrivateConversation conversation) {
-		linkConversation(conversation.getUser(), conversation.getId());
-		return conversations.putIfAbsent(conversation.getId(), new LinkedHashMap<>()) == null;
-	}
+//	/**
+//	 * adds a conversation to the database and links it to it's members
+//	 *
+//	 * @param conversation conversation data to add
+//	 * @return if the insertion was successful
+//	 */
+//	public boolean addConversation(Conversation conversation) {
+//		linkConversation(conversation.getMembers(), conversation.getID());
+//		return conversations.putIfAbsent(conversation.getId(), new LinkedHashMap<>()) == null;
+//	}
 
 	/**
 	 * TODO: assemble conversation
@@ -105,9 +105,9 @@ public class Database {
 	 * @param conversationID conversationID to read at
 	 * @return the assembled conversation
 	 */
-	public PrivateConversation readConversation(String conversationID) {
+	public Conversation readConversation(String conversationID) {
 		conversations.get(conversationID);
-		return new PrivateConversation();
+		return null;
 	}
 
 	/**
@@ -214,7 +214,7 @@ public class Database {
 	 * @param conversationID ID to break the links for
 	 */
 	private void unLinkConversation(final String conversationID) {
-		links.values().forEach(cons -> cons.remove(conversationID));
+		links.values().forEach(c -> c.remove(conversationID));
 	}
 
 	/**
@@ -222,8 +222,8 @@ public class Database {
 	 * @param userID ID to read & assemble for
 	 * @return List of conversations for that user
 	 */
-	public List<PrivateConversation> readUserConversations(String userID) {
-		List<PrivateConversation> userConv = new ArrayList<>();
+	public List<Conversation> readUserConversations(String userID) {
+		List<Conversation> userConv = new ArrayList<>();
 		for (String conversation : links.get(userID)) {
 			userConv.add(readConversation(conversation));
 		}

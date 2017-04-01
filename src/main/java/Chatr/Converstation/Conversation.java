@@ -1,5 +1,6 @@
 package Chatr.Converstation;
 
+import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
 
 import java.util.*;
@@ -10,8 +11,9 @@ public class Conversation {
 	private String conversationID;
 	private String conversationName;
 	private Set<User> members = new HashSet<>();
-	private List<Message> messages = new ArrayList<>();
+	private LinkedList<Message> messages = new LinkedList<>();
 	private User localUser;
+	private Message trash = new Message();
 
 	private Conversation(String conversationName, Collection<User> members, User localUSer) {
 		this.members.addAll(members);
@@ -28,18 +30,19 @@ public class Conversation {
 		this.localUser = localUser;
 		this.conversationName = member.getUserName();
 		this.conversationID = HashGen.getID(false);
+		Connection.createConversation(conversationID, this.getMemberIDs());
 	}
 
 
 	static public Conversation newConversation(User member, User localUser) {
-		Conversation pCon = new Conversation(member, localUser);
-		return pCon;
+		return new Conversation(member, localUser);
 	}
 
-	public void newMessage(String content) throws Exception {
-		if (content.trim().isEmpty()) {
-		} else {
-			messages.add(new Message(localUser.getUserID(), content));
+	public void newMessage(String content) {
+		if (!content.trim().isEmpty()) {
+			Message message = new Message(localUser.getUserID(), content);
+			messages.add(message);
+			Connection.addMessage(conversationID, message);
 		}
 	}
 
@@ -47,14 +50,19 @@ public class Conversation {
 		return messages;
 	}
 
-	public List<User> getMembers() {
-		List<User> us = new ArrayList<>();
-		members.forEach(us::add);
+	public List<String> getMemberIDs() {
+		List<String> us = new ArrayList<>();
+		members.forEach(m -> us.add(m.getUserID()));
 		return us;
 	}
 
 	public void addMessages(List<Message> messages) {
 		this.messages.addAll(messages);
+	}
+
+	public void addMember(User member) {
+		members.add(member);
+
 	}
 
 	public void addMembers(Set<User> members) {
@@ -63,6 +71,14 @@ public class Conversation {
 
 	public String getID() {
 		return this.conversationID;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Message> update() {
+		Message latest = messages.isEmpty() ? trash : messages.getLast();
+		return Connection.readNewMessages(conversationID, latest);
 	}
 
 }

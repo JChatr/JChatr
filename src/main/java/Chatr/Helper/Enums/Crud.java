@@ -1,6 +1,6 @@
 package Chatr.Helper.Enums;
 
 
-public enum CRUD {
+public enum Crud {
 	CREATE, READ, UPDATE, DELETE
 }

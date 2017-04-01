@@ -1,6 +1,5 @@
 package Chatr.Server;
 
-import Chatr.Database.Database;
 import Chatr.Helper.CONFIG;
 
 import java.net.MalformedURLException;

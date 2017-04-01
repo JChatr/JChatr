@@ -2,41 +2,45 @@ package Chatr.Server;
 
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
-import Chatr.Helper.Enums.CRUD;
-import Chatr.Helper.Enums.RequestType;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
+import Chatr.Manager;
 
 import java.util.List;
 
 /**
- * Transmission wrapper internal to the server
+ * Transmission wrapper used  as a datastore in client / server communication
  */
 public class Transmission {
-	private RequestType type;
-	private CRUD crud;
+	private Request type;
+	private Crud crud;
 	private String conversationID;
 	private Message message;
 	private User user;
-	private String userID;
+	private String localUserID;
 	private List<String> userIDs;
+	private byte[] img;
+	private byte[] voice;
 
-	public Transmission(RequestType type, CRUD crud) {
+	public Transmission(Request type, Crud crud) {
 		this.type = type;
 		this.crud = crud;
+		this.localUserID = Manager.localUser.getUserID();
 	}
 
-	public RequestType getRequestType(){
+	public Request getRequestType(){
 		return type;
 	}
 
-	public void setRequestType(RequestType type) {
+	public void setRequestType(Request type) {
 		this.type = type;
 	}
 
-	public CRUD getCRUD(){
+	public Crud getCRUD(){
 		return crud;
 	}
 
-	public void setCRUD(CRUD crud) {
+	public void setCRUD(Crud crud) {
 		this.crud = crud;
 	}
 
@@ -70,5 +74,18 @@ public class Transmission {
 
 	public void setUserIDs(List<String> userIDs) {
 		this.userIDs = userIDs;
+	}
+
+	public String getLocalUserID() {
+		return localUserID;
+	}
+
+	public void setLocalUserID(String userID) {
+		this.localUserID = userID;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s -> %s @%s", type, crud, this.hashCode());
 	}
 }
