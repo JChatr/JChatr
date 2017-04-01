@@ -15,7 +15,6 @@ import java.util.List;
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
-
 public class Connection {
 
 	private static Client client = new Client();

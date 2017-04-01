@@ -50,7 +50,7 @@ public class ServerThread extends Thread {
 			// Figure out what messages to send to send to the client
 			MessageHandler handler = new MessageHandler(inCache);
 			handler.routeRequests();
-			List<Transmission> response = handler.getResponse();
+			List<Transmission> response = handler.getResponses();
 			// Sending
 			// only send the required messages
 			for (Transmission obj : response) {

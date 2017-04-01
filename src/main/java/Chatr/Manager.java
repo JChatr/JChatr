@@ -25,7 +25,7 @@ public class Manager {
 
 	public static void main(String[] args) {
 		startServer();
-		initialPull();
+//		backgroundUpdates();
 		currentChat = initialize();
 		userInteraction();
 		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
@@ -95,10 +95,16 @@ public class Manager {
 		return Conversation.newConversation(new User(otherUser), localUser);
 	}
 
-	private static void initialPull(){
+	private static void backgroundUpdates() {
 		Executors.newSingleThreadExecutor().execute(() -> {
 			userChats = Connection.readAllConversations(localUser.getUserID());
-			users = Connection.readUsers();
+			while (true) {
+				users = Connection.readUsers();
+				try {
+					Thread.sleep(CONFIG.CLIENT_PULL_TIMER * 10);
+				} catch (InterruptedException e) {
+				}
+			}
 		});
 	}
 }
