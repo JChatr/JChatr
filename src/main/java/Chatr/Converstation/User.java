@@ -1,5 +1,6 @@
 package Chatr.Converstation;
 
+import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
 
 /**
@@ -14,6 +15,7 @@ public class User {
 	public String userPicture = "";
 	private String email = "";
 	private String emailMD5 = "";
+	private Status status;
 	
 	/**
 	 * Constructor to create user object with the user name.
@@ -34,8 +36,9 @@ public class User {
 	/**
 	 * This method is used to set the path of the profile path.
 	 */
-	public void setProfileImg(String imgPath){
+	public User setProfileImg(String imgPath){
 		userPicture = imgPath;
+		return this;
 	}
 	
 	/**
@@ -50,8 +53,9 @@ public class User {
 	 * This method is used to set the user name.
 	 * @param newName The new user name.
 	 */
-	public void setUserName(String newName){
+	public User setUserName(String newName){
 		userName = newName;
+		return this;
 	}
 	
 	/**
@@ -62,7 +66,17 @@ public class User {
 		return userID;
 	}
 	
-	public void setEmail(String email){
+	public User setEmail(String email){
 		this.email = email.toLowerCase();
+		return this;
+	}
+
+	public Status getStatus() {
+		return status;
+	}
+
+	public User setStatus(Status status) {
+		this.status = status;
+		return this;
 	}
 }

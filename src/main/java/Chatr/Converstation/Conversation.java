@@ -38,6 +38,10 @@ public class Conversation {
 		return new Conversation(member, localUser);
 	}
 
+	static public Conversation newConversation() {
+		return new Conversation();
+	}
+
 	public void newMessage(String content) {
 		if (!content.trim().isEmpty()) {
 			Message message = new Message(localUser.getUserID(), content);

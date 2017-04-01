@@ -46,13 +46,12 @@ public class ServerThread extends Thread {
 			}
 			socket.shutdownInput();
 //			System.out.println("request" + inCache);
+
 			// Processing
-			// Figure out what messages to send to send to the client
 			MessageHandler handler = new MessageHandler(inCache);
-			handler.routeRequests();
-			List<Transmission> response = handler.getResponses();
+			List<Transmission> response = handler.process();
+
 			// Sending
-			// only send the required messages
 			for (Transmission obj : response) {
 				String outJSON = JSONTransformer.toJSON(obj);
 				out.println(outJSON);

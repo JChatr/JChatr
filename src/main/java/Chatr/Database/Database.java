@@ -55,14 +55,12 @@ public class Database {
 	/**
 	 * read the user from the users table
 	 *
-	 * @param userID userID to read at
 	 * @return the found user object if contained in the table
-	 * @throws NoSuchElementException if no such user is found
 	 */
-	public User readUser(String userID) throws NoSuchElementException {
-		User u;
-		if ((u = users.get(userID)) == null) throw new NoSuchElementException();
-		else return u;
+	public List<User> readUsers() {
+		List<User> users = new ArrayList<>();
+		this.users.forEach((uID, user) -> users.add(user));
+		return users;
 	}
 
 	/**
@@ -87,16 +85,20 @@ public class Database {
 		return remove;
 	}
 
-//	/**
-//	 * adds a conversation to the database and links it to it's members
-//	 *
-//	 * @param conversation conversation data to add
-//	 * @return if the insertion was successful
-//	 */
-//	public boolean addConversation(Conversation conversation) {
-//		linkConversation(conversation.getMembers(), conversation.getID());
-//		return conversations.putIfAbsent(conversation.getId(), new LinkedHashMap<>()) == null;
-//	}
+	/**
+	 * adds a conversation to the database and links it to it's members
+	 *
+	 * @param conversationID conversation data to add
+	 * @return if the insertion was successful
+	 */
+	public boolean addConversation(String conversationID, List<String> userIDs) {
+		addUsersConveration(conversationID, userIDs);
+		return conversations.putIfAbsent(conversationID, new LinkedHashMap<>()) == null;
+	}
+
+	public boolean addUsersConveration(String conversationID, List<String> userIDs) {
+		return linkConversation(userIDs, conversationID);
+	}
 
 	/**
 	 * TODO: assemble conversation
@@ -106,6 +108,8 @@ public class Database {
 	 * @return the assembled conversation
 	 */
 	public Conversation readConversation(String conversationID) {
+		List<User> members = followLinksUser(conversationID);
+		Conversation.newConversation();
 		conversations.get(conversationID);
 		return null;
 	}
@@ -201,13 +205,30 @@ public class Database {
 	 * @param userIDs        users to links to
 	 * @param conversationID ID to links
 	 */
-	private void linkConversation(List<String> userIDs, String conversationID) {
+	private boolean linkConversation(List<String> userIDs, String conversationID) {
+		boolean status = true;
 		for (String userID : userIDs) {
-			links.putIfAbsent(userID, new ArrayList<>());
-			links.get(userID).add(conversationID);
+			status &= links.putIfAbsent(userID, new ArrayList<>()) == null;
+			status &= links.get(userID).add(conversationID);
 		}
+		return status;
 	}
 
+	private List<User> followLinksUser(String conversationID) {
+		List<User> linkedUsers = new LinkedList<>();
+		for (Map.Entry<String, List<String>> link : links.entrySet()) {
+			for (String conversation : link.getValue()) {
+				if (conversation.equals(conversationID)) {
+					linkedUsers.add(users.get(link.getKey()));
+				}
+			}
+		}
+		return linkedUsers;
+	}
+
+	private List<Conversation> followLinksConversation(String userID) {
+		return null;
+	}
 	/**
 	 * breaks all links for that ID
 	 *
@@ -219,6 +240,7 @@ public class Database {
 
 	/**
 	 * reads all conversations for that user
+	 *
 	 * @param userID ID to read & assemble for
 	 * @return List of conversations for that user
 	 */
@@ -232,8 +254,9 @@ public class Database {
 
 	/**
 	 * reads all newer messages than the provided timestamp
+	 *
 	 * @param conversationID ID to read from
-	 * @param timestamp timestamp to compare the read messages to
+	 * @param timestamp      timestamp to compare the read messages to
 	 * @return all newer messages from that conversation
 	 */
 	public List<Message> readNewerMessages(String conversationID, Long timestamp) {

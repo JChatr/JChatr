@@ -14,12 +14,13 @@ import java.util.List;
 public class Transmission {
 	private Request type;
 	private Crud crud;
+	private String localUserID;
 	private String conversationID;
 	private Message message;
 	private List<Message> messages;
 	private User user;
-	private String localUserID;
 	private List<String> userIDs;
+	private List<User> users;
 	private Boolean status;
 	private byte[] img;
 	private byte[] voice;
@@ -84,6 +85,15 @@ public class Transmission {
 		return this;
 	}
 
+	public List<User> getUsers() {
+		return this.users;
+	}
+
+	public Transmission setUsers(List<User> users) {
+		this.users = users;
+		return this;
+	}
+
 	public List<String> getUserIDs() {
 		return userIDs;
 	}
@@ -112,13 +122,18 @@ public class Transmission {
 	}
 
 	public Transmission reset() {
-		this.message = null;
-//		this.user = null;
-		this.localUserID = null;
-		this.userIDs = null;
-		this.img = null;
-		this.voice = null;
-		this.status = null;
+//		type = null;
+//		crud = null;
+//		localUserID = null;
+		conversationID = null;
+		message = null;
+		messages = null;
+		user = null;
+		userIDs = null;
+		users = null;
+		status = null;
+		img = null;
+		voice = null;
 		return this;
 	}
 
