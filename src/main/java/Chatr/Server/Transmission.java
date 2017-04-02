@@ -9,6 +9,7 @@ import Chatr.Manager;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Transmission wrapper used  as a datastore in client / server communication
@@ -21,10 +22,12 @@ public class Transmission {
 	private Message message;
 	private List<Message> messages;
 	private User user;
-	private List<String> userIDs;
-	private List<User> users;
+	private Set<String> userIDs;
+	private String userID;
+	private Set<User> users;
 	private Boolean status;
 	private Conversation conversation;
+	private Set<Conversation> conversations;
 	private byte[] img;
 	private byte[] voice;
 
@@ -88,20 +91,20 @@ public class Transmission {
 		return this;
 	}
 
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return this.users;
 	}
 
-	public Transmission setUsers(List<User> users) {
+	public Transmission setUsers(Set<User> users) {
 		this.users = users;
 		return this;
 	}
 
-	public List<String> getUserIDs() {
+	public Set<String> getUserIDs() {
 		return userIDs;
 	}
 
-	public Transmission setUserIDs(List<String> userIDs) {
+	public Transmission setUserIDs(Set<String> userIDs) {
 		this.userIDs = userIDs;
 		return this;
 	}
@@ -133,6 +136,24 @@ public class Transmission {
 		return this;
 	}
 
+	public String getUserID(){
+		return this.userID;
+	}
+
+	public Transmission setUserID(String userID) {
+		this.userID = userID;
+		return this;
+	}
+
+	public Set<Conversation> getConversations(){
+		return this.conversations;
+	}
+
+	public Transmission setConversations(Set<Conversation> conversations) {
+		this.conversations = conversations;
+		return this;
+	}
+
 	public Transmission reset() {
 //		type = null;
 //		crud = null;
@@ -142,9 +163,11 @@ public class Transmission {
 		messages = null;
 		user = null;
 		userIDs = null;
+		userID = null;
 		users = null;
 		status = null;
 		conversation = null;
+		conversations = null;
 		img = null;
 		voice = null;
 		return this;
@@ -156,7 +179,7 @@ public class Transmission {
 		try {
 			for (Field field : this.getClass().getDeclaredFields()) {
 				if (field.get(this) != null) {
-					sb.append(field.getName()).append(": ").append(field.get(this)).append(" | ");
+					sb.append(field.getName()).append(": ").append(field.get(this)).append(", ");
 				}
 			}
 		} catch (IllegalAccessException e) {

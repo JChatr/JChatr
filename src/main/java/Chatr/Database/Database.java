@@ -15,8 +15,8 @@ public class Database {
 	// ConcurrenHashMap
 	private Map<String, User> users;
 	// USERID | CONV_LIST
-	// ConcurrentHashMap -> ArrayList
-	private Map<String, List<String>> links;
+	// ConcurrentHashMap -> HashSet
+	private Map<String, Set<String>> links;
 	// CONV_ID | MESSAGE_TS | MESSAGE
 	// ConcurrentHashMap -> LinkedHashMap
 	private Map<String, Map<Long, Message>> conversations;
@@ -57,8 +57,8 @@ public class Database {
 	 *
 	 * @return the found user object if contained in the table
 	 */
-	public List<User> readUsers() {
-		List<User> users = new ArrayList<>();
+	public Set<User> readUsers() {
+		Set<User> users = new HashSet<>();
 		this.users.forEach((uID, user) -> users.add(user));
 		return users;
 	}
@@ -91,13 +91,14 @@ public class Database {
 	 * @param conversationID conversation data to add
 	 * @return if the insertion was successful
 	 */
-	public boolean addConversation(String conversationID, List<String> userIDs) {
-		addUsersConveration(conversationID, userIDs);
+	public boolean addConversation(String conversationID, Set<String> userIDs) {
+		linkConversation(conversationID, userIDs);
 		return conversations.putIfAbsent(conversationID, new LinkedHashMap<>()) == null;
 	}
 
-	public boolean addUsersConveration(String conversationID, List<String> userIDs) {
-		return linkConversation(userIDs, conversationID);
+	public boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+		unLinkConversation(conversationID);
+		return linkConversation(conversationID, userIDs);
 	}
 
 	/**
@@ -106,13 +107,26 @@ public class Database {
 	 * @param conversationID conversationID to read at
 	 * @return the assembled conversation
 	 */
-	public Conversation readConversation(String conversationID) {
+	public Conversation readConversation(String conversationID, String userID) {
 		Set<User> members = followLinksUser(conversationID);
 		Conversation build = Conversation.newConversation();
-		build.setID(conversationID);
-		build.addMembers(members);
+		build.setID(conversationID).setLocalUserID(userID).setMembers(members);
 		build.addMessages(readNewerMessages(conversationID, 0L));
 		return build;
+	}
+
+	/**
+	 * reads all conversations for that user
+	 *
+	 * @param userID ID to read & assemble forl.forEach(c -> System.out.println(c)
+	 * @return List of conversations for that user
+	 */
+	public Set<Conversation> readUserConversations(String userID) {
+		Set<Conversation> userConv = new HashSet<>();
+		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
+			userConv.add(readConversation(conversationID, userID));
+		}
+		return userConv;
 	}
 
 	/**
@@ -125,19 +139,6 @@ public class Database {
 		unLinkConversation(conversationID);
 		return conversations.remove(conversationID) != null;
 	}
-
-//	/**
-//	 * adds a List of messages to a conversation
-//	 *
-//	 * @param conversationID ID of the conversation to add to
-//	 * @param messages       messages to add
-//	 * @return if the insertion was successful
-//	 */
-//	public boolean addMessage(final String conversationID, final List<Message> messages) {
-//		boolean result = true;
-//		for (Message m : messages) result &= addMessage(conversationID, m);
-//		return result;
-//	}
 
 	/**
 	 * adds a message to a conversation
@@ -173,6 +174,20 @@ public class Database {
 	}
 
 	/**
+	 * updates the data of a message in the table
+	 *
+	 * @param conversationID ID of the conversation to update
+	 * @param message        message to update the data for
+	 * @return if the update was successful
+	 */
+	public boolean updateMessage(String conversationID, Message message) {
+		try {
+			return conversations.get(conversationID).put(message.getTime(), message) != null;
+		} catch (NullPointerException e) {
+			return false;
+		}
+	}
+	/**
 	 * deletes a message from the table
 	 *
 	 * @param conversationID ID of the conversation to delte at
@@ -188,20 +203,6 @@ public class Database {
 		}
 	}
 
-	/**
-	 * updates the data of a message in the table
-	 *
-	 * @param conversationID ID of the conversation to update
-	 * @param message        message to update the data for
-	 * @return if the update was successful
-	 */
-	public boolean updateMessage(String conversationID, Message message) {
-		try {
-			return conversations.get(conversationID).put(message.getTime(), message) != null;
-		} catch (NullPointerException e) {
-			return false;
-		}
-	}
 
 	/**
 	 * links a conversation to all given useIDs
@@ -209,10 +210,10 @@ public class Database {
 	 * @param userIDs        users to links to
 	 * @param conversationID ID to links
 	 */
-	private boolean linkConversation(List<String> userIDs, String conversationID) {
+	private boolean linkConversation(String conversationID, Set<String> userIDs) {
 		boolean status = true;
 		for (String userID : userIDs) {
-			status &= links.putIfAbsent(userID, new ArrayList<>()) == null;
+			status &= links.putIfAbsent(userID, new HashSet<>()) == null;
 			status &= links.get(userID).add(conversationID);
 		}
 		return status;
@@ -220,7 +221,7 @@ public class Database {
 
 	private Set<User> followLinksUser(String conversationID) {
 		Set<User> linkedUsers = new HashSet<>();
-		for (Map.Entry<String, List<String>> link : links.entrySet()) {
+		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
 			for (String conversation : link.getValue()) {
 				if (conversation.equals(conversationID)) {
 					linkedUsers.add(users.get(link.getKey()));
@@ -240,20 +241,6 @@ public class Database {
 	}
 
 	/**
-	 * reads all conversations for that user
-	 *
-	 * @param userID ID to read & assemble for
-	 * @return List of conversations for that user
-	 */
-	public List<Conversation> readUserConversations(String userID) {
-		List<Conversation> userConv = new ArrayList<>();
-		for (String conversationID : links.get(userID)) {
-			userConv.add(readConversation(conversationID));
-		}
-		return userConv;
-	}
-
-	/**
 	 * reads all newer messages than the provided timestamp
 	 *
 	 * @param conversationID ID to read from
@@ -267,5 +254,21 @@ public class Database {
 			if (ts > timestamp) out.add(m);
 		});
 		return out;
+	}
+
+	public void print(){
+		System.out.println("USERS:");
+		users.forEach((id, u) -> System.out.println("  - " + u));
+
+		System.out.println("LINKS:");
+		links.forEach((id, l) -> System.out.println("  - " + id + ":"+ l));
+
+		System.out.println("CONVERSATIONS:");
+		for (Map.Entry<String, Map<Long, Message>> c : conversations.entrySet()) {
+			System.out.println("  - " + c.getKey());
+			for (Message m : c.getValue().values()) {
+				System.out.println("    - " + m);
+			}
+		}
 	}
 }

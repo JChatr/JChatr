@@ -1,5 +1,7 @@
 package Chatr.Server;
 
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
 
 import java.io.BufferedReader;
@@ -9,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
 
 /**
  * Thread of the server handling the connection
@@ -46,7 +49,7 @@ public class ServerThread extends Thread {
 				inCache.add(data);
 			}
 			socket.shutdownInput();
-			System.out.println("request  = " + inCache);
+				System.out.println("request  = " + inCache);
 
 			// Processing
 			MessageHandler handler = new MessageHandler(inCache);

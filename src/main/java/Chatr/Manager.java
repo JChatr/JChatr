@@ -6,13 +6,13 @@ import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Helper.CONFIG;
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
-import Chatr.Server.Transmission;
 
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 /**
@@ -22,25 +22,33 @@ import java.util.concurrent.Executors;
 public class Manager {
 	public static User localUser;
 	private static Conversation currentChat;
-	private static List<Conversation> userChats;
+	private static Set<Conversation> userChats;
 	private static boolean blockOutput = false;
-	private static List<User> users;
+	private static Set<User> users;
 
 	public static void main(String[] args) {
 		startServer();
-		currentChat = initialize();
-		backgroundUpdates();
+		initialize();
 		userInteraction();
 		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
+		int counter = 0;
 		while (true) {
+			// pull Messages
 			for (Conversation c : userChats) {
-				List<Message> messages = currentChat.update();
-				if (!blockOutput) Terminal.display(messages);
+				List<Message> messages = c.update();
+				if (!blockOutput) Terminal.display(messages, c.getID());
 				try {
 					Thread.sleep(CONFIG.CLIENT_PULL_TIMER);
 				} catch (InterruptedException e) {
 				}
 			}
+			counter++;
+			if (counter == 10) {
+				userChats.addAll(Connection.readAllConversations(localUser.getUserID()));
+				users = Connection.readUsers();
+				counter = 0;
+			}
+
 		}
 	}
 
@@ -55,10 +63,11 @@ public class Manager {
 		Executors.newSingleThreadExecutor().execute(() -> {
 			while (true) {
 				String userInput = Terminal.getUserInput();
-				if (userInput.toLowerCase().equals("menu")) {
+				if (userInput.toLowerCase().trim().equals("menu")) {
 					menu();
+				} else {
+					Terminal.display(currentChat.newMessage(userInput), currentChat.getID());
 				}
-				Terminal.display(currentChat.newMessage(userInput));
 			}
 		});
 	}
@@ -73,45 +82,59 @@ public class Manager {
 		switch (Terminal.getUserInput().toLowerCase()) {
 			case "add":
 				System.out.println("enter the username you want to invite: ");
-				currentChat.addMember(findUser(Terminal.getUserInput()));
+				currentChat.addMember(findUser());
+				break;
 			case "change":
 				System.out.println("enter the new chat rooms name: ");
+				currentChat = changeChat();
+				break;
 		}
 		System.out.println("exiting menu");
 		blockOutput = false;
 	}
 
-	private static User findUser(final String userName) {
+	private static User findUser() {
+		Terminal.display("USERS: ");
+		users.forEach(u -> {
+			if (!u.equals(localUser))
+				Terminal.display(String.format("  - NAME: %5.5s | ID: %5.5s", u.getUserName(), u.getUserID()));
+		});
+		String userName = Terminal.getUserInput();
 		for (User user : users) {
-			if (user.getUserName().equals(userName)) return user;
+			if (user.getUserName().equals(userName)) {
+				Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
+				return user;
+			}
 		}
-		System.out.println("could not find that user, please enter another username:  ");
-		return findUser(Terminal.getUserInput());
+		Terminal.display("could not find that user, please enter another username:  ");
+		return findUser();
 	}
 
-	private static Conversation initialize() {
+	private static Conversation changeChat(){
+		Terminal.display("CHATS");
+		userChats.forEach(conversation -> Terminal.display(String.format("  - ID: %5.5s", conversation.getID())));
+		String conversation = Terminal.getUserInput();
+		for (Conversation c: userChats) {
+			if (c.getID().startsWith(conversation.toLowerCase())) {
+				Terminal.display(String.format("switched to Chat: %5.5s", c.getID()));
+				return c;
+			}
+		}
+		Terminal.display("could not find that chat, please try again");
+		return changeChat();
+	}
+
+	private static void initialize() {
 		System.out.print("Enter your Username: ");
 		String userName = Terminal.getUserInput();
 		localUser = new User(userName);
-		Connection.createUser(localUser.getUserID(), localUser);
 		System.out.print("who do you want to chat with ? : ");
 		String otherUser = Terminal.getUserInput();
-		return Conversation.newConversation(new User(otherUser), localUser);
-	}
-
-	private static void backgroundUpdates() {
-		userChats = Connection.readAllConversations(localUser.getUserID());
-		Executors.newSingleThreadExecutor().execute(() -> {
-			while (true) {
-				userChats = Connection.readAllConversations(localUser.getUserID());
-				users = Connection.readUsers();
-				try {
-					Thread.sleep(CONFIG.CLIENT_PULL_TIMER * 10);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
+		Connection.createUser(localUser.getUserID(), localUser);
+		currentChat = Conversation.newConversation(new User(otherUser), localUser);
+		userChats = new HashSet<>();
+		userChats.add(currentChat);
+		users = Connection.readUsers();
 	}
 }
 

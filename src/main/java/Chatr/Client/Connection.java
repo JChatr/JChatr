@@ -15,6 +15,7 @@ import static Chatr.Helper.Enums.Request.*;
 public class Connection {
 
 	private static Client client = new Client();
+
 	private Connection() {
 
 	}
@@ -26,10 +27,10 @@ public class Connection {
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, Collection<String> userIDs) {
+	public static boolean createConversation(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getStatus();
 	}
 
 	/**
@@ -39,10 +40,10 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static List<Conversation> readAllConversations(String userID) {
+	public static Set<Conversation> readAllConversations(String userID) {
 		Transmission request = build(CONVERSATION, READ, userID, null);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getConversations();
 	}
 
 	/**
@@ -52,14 +53,15 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean deleteConversation(String conversationID) {
-		client.get(build(CONVERSATION, DELETE, conversationID, null));
-		return true;
-	}
-	
-	public static boolean updateConversaionUsers(String conversationID, Set<User> users){
-		Transmission request = build(CONVERSATION, UPDATE, conversationID, users);
+		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getStatus();
+	}
+
+	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
 
 	/**
@@ -72,7 +74,7 @@ public class Connection {
 	public static List<Message> readNewMessages(String conversationID, Message newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getMessages();
 	}
 
 	/**
@@ -83,8 +85,9 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean addMessage(String conversationID, Message message) {
-		client.get(build(MESSAGE, CREATE, conversationID, message));
-		return true;
+		Transmission request = build(MESSAGE, CREATE, conversationID, message);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
 
 
@@ -98,7 +101,7 @@ public class Connection {
 	public static boolean createUser(String userID, User userData) {
 		Transmission request = build(USER, CREATE, userID, userData);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getStatus();
 	}
 
 	/**
@@ -111,7 +114,7 @@ public class Connection {
 	public static User readUser(String userID) {
 		Transmission request = build(USER, READ, userID, null);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getUser();
 	}
 
 	/**
@@ -119,10 +122,10 @@ public class Connection {
 	 *
 	 * @return all users known to the server
 	 */
-	public static List<User> readUsers() {
+	public static Set<User> readUsers() {
 		Transmission request = build(USER, READ, null, null);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getUsers();
 	}
 
 	/**
@@ -135,7 +138,7 @@ public class Connection {
 	public static boolean updateUser(String userID, User userData) {
 		Transmission request = build(USER, CREATE, userID, userData);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getStatus();
 	}
 
 	/**
@@ -147,7 +150,7 @@ public class Connection {
 	public static boolean deleteUser(String userID) {
 		Transmission request = build(USER, DELETE, userID, null);
 		Transmission response = client.get(request);
-		return parse(response);
+		return response.getStatus();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,17 +158,20 @@ public class Connection {
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
-				request.setConversationID(ID);
-				request.setMessage((Message) data);
+				request.setConversationID(ID).setMessage((Message) data);
 				break;
 			case CONVERSATION:
-				request.setConversationID(ID);
 				switch (operation) {
 					case CREATE:
-						request.setUserIDs((List<String>) data);
+						request.setConversationID(ID).setUserIDs((Set<String>) data);
 						break;
 					case READ:
-						request.setUserIDs();
+						request.setUserID(ID);
+						break;
+					case UPDATE:
+						request.setConversationID(ID).setUserIDs((Set<String>) data);
+						break;
+					case DELETE:
 						break;
 				}
 				break;
@@ -175,47 +181,4 @@ public class Connection {
 		}
 		return request;
 	}
-	@SuppressWarnings("unchecked")
-	private static <T> T parse(Transmission request) {
-		switch (request.getRequestType()){
-			case CONVERSATION:
-				switch (request.getCRUD()) {
-					case CREATE:
-						return (T) request.getStatus();
-					case READ:
-					case UPDATE:
-					case DELETE:
-				}
-			case MESSAGE:
-				switch (request.getCRUD()) {
-					case CREATE:
-					case READ:
-						return (T) request.getMessages();
-					case UPDATE:
-					case DELETE:
-				}
-			case CONNECTED:
-			case DISCONNECTED:
-			case NOTIFICATION:
-			case STATUS:
-			case USER:
-				switch (request.getCRUD()){
-					case CREATE:
-						return (T) request.getStatus();
-					case READ:
-						return (T) request.getUsers();
-					case UPDATE:
-					case DELETE:
-				}
-		}
-		return (T) new Object();
-	}
-
-	private static <T> List<T> parse(List<Transmission> responses) {
-		List<T> out = new LinkedList<T>();
-		responses.forEach(response -> out.add(parse(response)));
-		return out;
-	}
-
-
 }

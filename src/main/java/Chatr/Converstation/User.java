@@ -3,6 +3,8 @@ package Chatr.Converstation;
 import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
 
+import java.util.Objects;
+
 /**
  * Class to save and edit user data.
  * @author mk285
@@ -78,5 +80,20 @@ public class User {
 	public User setStatus(Status status) {
 		this.status = status;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return userID;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return Objects.equals(userID, o.toString());
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(userID);
 	}
 }
