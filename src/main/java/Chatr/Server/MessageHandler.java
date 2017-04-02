@@ -1,5 +1,6 @@
 package Chatr.Server;
 
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Database.Database;
@@ -14,6 +15,7 @@ public class MessageHandler {
 	private Database database;
 	private List<Transmission> requests;
 	private List<Transmission> responses = new ArrayList<>();
+	private Notifier notifier;
 
 	/**
 	 * Instantiates the MessageHandler
@@ -23,11 +25,13 @@ public class MessageHandler {
 	protected MessageHandler(List<Transmission> requests) {
 		this.database = Database.getCachedDatabase();
 		this.requests = requests;
+		this.notifier = Notifier.getNotifier();
 	}
 
 	protected List<Transmission> process() {
 		routeRequests();
-		notifyOtherUsers(requests.get(0).getLocalUserID());
+//		notifier.notify();
+//		responses.add(notifier.checkNotifications());
 		return getResponses();
 	}
 
@@ -67,8 +71,8 @@ public class MessageHandler {
 							responses.add(request.reset().setStatus(status));
 							break; }
 						case READ: {
-							List<Message> m = database.readConversation(request.getConversationID());
-							responses.add(request.reset().setMessages(m));
+							Conversation c = database.readConversation(request.getConversationID());
+							responses.add(request.reset().setConversation(c));
 							break; }
 						case UPDATE: {
 							boolean status = database.addUsersConveration(request.getConversationID(),
@@ -84,7 +88,8 @@ public class MessageHandler {
 				case USER:
 					switch (request.getCRUD()) {
 						case CREATE:{
-							database.addUser(request.getUser());
+							boolean status = database.addUser(request.getUser());
+							responses.add(request.reset().setStatus(status));
 							break; }
 						case READ: {
 							List<User> users = database.readUsers();
@@ -113,10 +118,5 @@ public class MessageHandler {
 	 */
 	private List<Transmission> getResponses() {
 		return this.responses;
-	}
-
-	private List<Transmission> notifyOtherUsers(String userID){
-		Notifier note = Notifier.getNotifier();
-		return note.checkNotifications(userID);
 	}
 }

@@ -101,17 +101,18 @@ public class Database {
 	}
 
 	/**
-	 * TODO: assemble conversation
 	 * reads and assembles a conversation from the database
 	 *
 	 * @param conversationID conversationID to read at
 	 * @return the assembled conversation
 	 */
 	public Conversation readConversation(String conversationID) {
-		List<User> members = followLinksUser(conversationID);
-		Conversation.newConversation();
-		conversations.get(conversationID);
-		return null;
+		Set<User> members = followLinksUser(conversationID);
+		Conversation build = Conversation.newConversation();
+		build.setID(conversationID);
+		build.addMembers(members);
+		build.addMessages(readNewerMessages(conversationID, 0L));
+		return build;
 	}
 
 	/**
@@ -125,18 +126,18 @@ public class Database {
 		return conversations.remove(conversationID) != null;
 	}
 
-	/**
-	 * adds a List of messages to a conversation
-	 *
-	 * @param conversationID ID of the conversation to add to
-	 * @param messages       messages to add
-	 * @return if the insertion was successful
-	 */
-	public boolean addMessage(final String conversationID, final List<Message> messages) {
-		boolean result = true;
-		for (Message m : messages) result &= addMessage(conversationID, m);
-		return result;
-	}
+//	/**
+//	 * adds a List of messages to a conversation
+//	 *
+//	 * @param conversationID ID of the conversation to add to
+//	 * @param messages       messages to add
+//	 * @return if the insertion was successful
+//	 */
+//	public boolean addMessage(final String conversationID, final List<Message> messages) {
+//		boolean result = true;
+//		for (Message m : messages) result &= addMessage(conversationID, m);
+//		return result;
+//	}
 
 	/**
 	 * adds a message to a conversation
@@ -147,8 +148,9 @@ public class Database {
 	 */
 	public boolean addMessage(String conversationID, Message message) {
 		try {
-			return conversations.get(conversationID).put(message.getTime(), message) != null;
+			return conversations.get(conversationID).put(message.getTime(), message) == null;
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -165,6 +167,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).get(timestamp);
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			throw new NoSuchElementException();
 		}
 	}
@@ -180,6 +183,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).remove(timestamp) != null;
 		} catch (NullPointerException e) {
+			e.printStackTrace();
 			return false;
 		}
 	}
@@ -214,8 +218,8 @@ public class Database {
 		return status;
 	}
 
-	private List<User> followLinksUser(String conversationID) {
-		List<User> linkedUsers = new LinkedList<>();
+	private Set<User> followLinksUser(String conversationID) {
+		Set<User> linkedUsers = new HashSet<>();
 		for (Map.Entry<String, List<String>> link : links.entrySet()) {
 			for (String conversation : link.getValue()) {
 				if (conversation.equals(conversationID)) {
@@ -226,9 +230,6 @@ public class Database {
 		return linkedUsers;
 	}
 
-	private List<Conversation> followLinksConversation(String userID) {
-		return null;
-	}
 	/**
 	 * breaks all links for that ID
 	 *
@@ -246,8 +247,8 @@ public class Database {
 	 */
 	public List<Conversation> readUserConversations(String userID) {
 		List<Conversation> userConv = new ArrayList<>();
-		for (String conversation : links.get(userID)) {
-			userConv.add(readConversation(conversation));
+		for (String conversationID : links.get(userID)) {
+			userConv.add(readConversation(conversationID));
 		}
 		return userConv;
 	}

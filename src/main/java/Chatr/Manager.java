@@ -6,8 +6,11 @@ import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
+import Chatr.Server.Transmission;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -25,18 +28,18 @@ public class Manager {
 
 	public static void main(String[] args) {
 		startServer();
-//		backgroundUpdates();
 		currentChat = initialize();
+		backgroundUpdates();
 		userInteraction();
 		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
 		while (true) {
-			List<Message> messages = currentChat.update();
-			if (!blockOutput) {
-				Terminal.display(messages);
-			}
-			try {
-				Thread.sleep(CONFIG.CLIENT_PULL_TIMER);
-			} catch (InterruptedException e) {
+			for (Conversation c : userChats) {
+				List<Message> messages = currentChat.update();
+				if (!blockOutput) Terminal.display(messages);
+				try {
+					Thread.sleep(CONFIG.CLIENT_PULL_TIMER);
+				} catch (InterruptedException e) {
+				}
 			}
 		}
 	}
@@ -55,7 +58,7 @@ public class Manager {
 				if (userInput.toLowerCase().equals("menu")) {
 					menu();
 				}
-				currentChat.newMessage(userInput);
+				Terminal.display(currentChat.newMessage(userInput));
 			}
 		});
 	}
@@ -90,19 +93,22 @@ public class Manager {
 		System.out.print("Enter your Username: ");
 		String userName = Terminal.getUserInput();
 		localUser = new User(userName);
+		Connection.createUser(localUser.getUserID(), localUser);
 		System.out.print("who do you want to chat with ? : ");
 		String otherUser = Terminal.getUserInput();
 		return Conversation.newConversation(new User(otherUser), localUser);
 	}
 
 	private static void backgroundUpdates() {
+		userChats = Connection.readAllConversations(localUser.getUserID());
 		Executors.newSingleThreadExecutor().execute(() -> {
-			userChats = Connection.readAllConversations(localUser.getUserID());
 			while (true) {
+				userChats = Connection.readAllConversations(localUser.getUserID());
 				users = Connection.readUsers();
 				try {
 					Thread.sleep(CONFIG.CLIENT_PULL_TIMER * 10);
 				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 		});

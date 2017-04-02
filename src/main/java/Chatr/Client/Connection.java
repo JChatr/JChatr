@@ -7,10 +7,7 @@ import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
@@ -32,19 +29,6 @@ public class Connection {
 	public static boolean createConversation(String conversationID, Collection<String> userIDs) {
 		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
 		Transmission response = client.get(request);
-		return true;
-	}
-
-	/**
-	 * read new messages from the specified conversation
-	 *
-	 * @param conversationID ID of the conversation to update
-	 * @param newest         newest message in the local copy of the conversation
-	 * @return new Messages from the server
-	 */
-	public static List<Message> readNewMessages(String conversationID, Message newest) {
-		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		List<Transmission> response = client.getMultiple(request);
 		return parse(response);
 	}
 
@@ -62,18 +46,6 @@ public class Connection {
 	}
 
 	/**
-	 * Add a new message to a conversation
-	 *
-	 * @param conversationID ID of the conversation to get the message to
-	 * @param message        Message to get
-	 * @return if the operation was successful
-	 */
-	public static boolean addMessage(String conversationID, Message message) {
-		client.get(build(MESSAGE, UPDATE, conversationID, message));
-		return true;
-	}
-
-	/**
 	 * Deletes the conversation from the server
 	 *
 	 * @param conversationID ID of the conversation to delete
@@ -83,6 +55,38 @@ public class Connection {
 		client.get(build(CONVERSATION, DELETE, conversationID, null));
 		return true;
 	}
+	
+	public static boolean updateConversaionUsers(String conversationID, Set<User> users){
+		Transmission request = build(CONVERSATION, UPDATE, conversationID, users);
+		Transmission response = client.get(request);
+		return parse(response);
+	}
+
+	/**
+	 * read new messages from the specified conversation
+	 *
+	 * @param conversationID ID of the conversation to update
+	 * @param newest         newest message in the local copy of the conversation
+	 * @return new Messages from the server
+	 */
+	public static List<Message> readNewMessages(String conversationID, Message newest) {
+		Transmission request = build(MESSAGE, READ, conversationID, newest);
+		Transmission response = client.get(request);
+		return parse(response);
+	}
+
+	/**
+	 * Add a new message to a conversation
+	 *
+	 * @param conversationID ID of the conversation to get the message to
+	 * @param message        Message to get
+	 * @return if the operation was successful
+	 */
+	public static boolean addMessage(String conversationID, Message message) {
+		client.get(build(MESSAGE, CREATE, conversationID, message));
+		return true;
+	}
+
 
 	/**
 	 * creates a new user on the server
@@ -92,8 +96,9 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean createUser(String userID, User userData) {
-		client.get(build(USER, CREATE, userID, userData));
-		return true;
+		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission response = client.get(request);
+		return parse(response);
 	}
 
 	/**
@@ -160,9 +165,7 @@ public class Connection {
 						request.setUserIDs((List<String>) data);
 						break;
 					case READ:
-						List<String> list = new ArrayList<>();
-						list.add((String) data);
-						request.setUserIDs(list);
+						request.setUserIDs();
 						break;
 				}
 				break;
@@ -176,12 +179,34 @@ public class Connection {
 	private static <T> T parse(Transmission request) {
 		switch (request.getRequestType()){
 			case CONVERSATION:
+				switch (request.getCRUD()) {
+					case CREATE:
+						return (T) request.getStatus();
+					case READ:
+					case UPDATE:
+					case DELETE:
+				}
 			case MESSAGE:
+				switch (request.getCRUD()) {
+					case CREATE:
+					case READ:
+						return (T) request.getMessages();
+					case UPDATE:
+					case DELETE:
+				}
 			case CONNECTED:
 			case DISCONNECTED:
 			case NOTIFICATION:
 			case STATUS:
 			case USER:
+				switch (request.getCRUD()){
+					case CREATE:
+						return (T) request.getStatus();
+					case READ:
+						return (T) request.getUsers();
+					case UPDATE:
+					case DELETE:
+				}
 		}
 		return (T) new Object();
 	}

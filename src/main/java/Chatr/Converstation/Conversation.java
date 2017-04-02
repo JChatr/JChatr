@@ -19,8 +19,8 @@ public class Conversation {
 		this.members.addAll(members);
 		this.members.add(localUSer);
 		this.localUser = localUser;
-		this.conversationName = conversationName;
 		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
 	}
 
 
@@ -28,8 +28,15 @@ public class Conversation {
 		this.members.add(member);
 		this.members.add(localUser);
 		this.localUser = localUser;
-		this.conversationName = member.getUserName();
 		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
+		Connection.createConversation(conversationID, this.getMemberIDs());
+	}
+
+	private Conversation() {
+		this.localUser = localUser;
+		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
 		Connection.createConversation(conversationID, this.getMemberIDs());
 	}
 
@@ -42,12 +49,14 @@ public class Conversation {
 		return new Conversation();
 	}
 
-	public void newMessage(String content) {
+	public Message newMessage(String content) {
 		if (!content.trim().isEmpty()) {
 			Message message = new Message(localUser.getUserID(), content);
 			messages.add(message);
 			Connection.addMessage(conversationID, message);
+			return message;
 		}
+		return new Message();
 	}
 
 	public List<Message> getMessages() {
@@ -77,6 +86,10 @@ public class Conversation {
 		return this.conversationID;
 	}
 
+	public Conversation setID(String conversationID) {
+		this.conversationID = conversationID;
+		return this;
+	}
 	/**
 	 * @return
 	 */

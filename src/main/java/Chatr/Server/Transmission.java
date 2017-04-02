@@ -1,11 +1,13 @@
 package Chatr.Server;
 
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Manager;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -22,6 +24,7 @@ public class Transmission {
 	private List<String> userIDs;
 	private List<User> users;
 	private Boolean status;
+	private Conversation conversation;
 	private byte[] img;
 	private byte[] voice;
 
@@ -112,12 +115,21 @@ public class Transmission {
 		return this;
 	}
 
-	public boolean getStatus() {
+	public Boolean getStatus() {
 		return status;
 	}
 
-	public Transmission setStatus(boolean status) {
+	public Transmission setStatus(Boolean status) {
 		this.status = status;
+		return this;
+	}
+
+	public Conversation getConversation() {
+		return this.conversation;
+	}
+
+	public Transmission setConversation(Conversation conversation) {
+		this.conversation = conversation;
 		return this;
 	}
 
@@ -125,13 +137,14 @@ public class Transmission {
 //		type = null;
 //		crud = null;
 //		localUserID = null;
-		conversationID = null;
+//		conversationID = null;
 		message = null;
 		messages = null;
 		user = null;
 		userIDs = null;
 		users = null;
 		status = null;
+		conversation = null;
 		img = null;
 		voice = null;
 		return this;
@@ -139,6 +152,15 @@ public class Transmission {
 
 	@Override
 	public String toString() {
-		return String.format("%s -> %s @%s", type, crud, this.hashCode());
+		StringBuilder sb = new StringBuilder();
+		try {
+			for (Field field : this.getClass().getDeclaredFields()) {
+				if (field.get(this) != null) {
+					sb.append(field.getName()).append(": ").append(field.get(this)).append(" | ");
+				}
+			}
+		} catch (IllegalAccessException e) {
+		}
+		return sb.toString();
 	}
 }

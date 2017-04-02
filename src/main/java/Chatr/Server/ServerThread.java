@@ -20,6 +20,7 @@ public class ServerThread extends Thread {
 
 	/**
 	 * Instantiates the ServerThread
+	 *
 	 * @param socket open socket to use for connecting to the client
 	 */
 	protected ServerThread(Socket socket) {
@@ -45,12 +46,12 @@ public class ServerThread extends Thread {
 				inCache.add(data);
 			}
 			socket.shutdownInput();
-//			System.out.println("request" + inCache);
+			System.out.println("request  = " + inCache);
 
 			// Processing
 			MessageHandler handler = new MessageHandler(inCache);
 			List<Transmission> response = handler.process();
-
+			System.out.println("response = " + response);
 			// Sending
 			for (Transmission obj : response) {
 				String outJSON = JSONTransformer.toJSON(obj);

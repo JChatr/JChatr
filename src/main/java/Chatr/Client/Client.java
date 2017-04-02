@@ -1,8 +1,6 @@
 package Chatr.Client;
 
 import Chatr.Helper.CONFIG;
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
 import Chatr.Server.Transmission;
 
@@ -13,18 +11,15 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Connects to the server and sends / receives Requests
  */
 public class Client {
 	private URL url;
-	private List<Transmission> outBuffer = new LinkedList<>();
-	private List<Transmission> inBuffer = new LinkedList<>();
+	private List<Transmission> outBuffer = Collections.synchronizedList(new LinkedList<>());
+	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
 
 	protected Client() {
 		try {
