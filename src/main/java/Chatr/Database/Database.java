@@ -109,9 +109,8 @@ public class Database {
 	 */
 	public Conversation readConversation(String conversationID, String userID) {
 		Set<User> members = followLinksUser(conversationID);
-		Conversation build = Conversation.newConversation();
-		build.setID(conversationID).setLocalUserID(userID).setMembers(members);
-		build.addMessages(readNewerMessages(conversationID, 0L));
+		Conversation build = Conversation.preconfigServer(conversationID,userID,
+				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
 		return build;
 	}
 
@@ -249,7 +248,7 @@ public class Database {
 	 */
 	public List<Message> readNewerMessages(String conversationID, Long timestamp) {
 		Map<Long, Message> messages = conversations.get(conversationID);
-		List<Message> out = new ArrayList<>();
+		List<Message> out = new LinkedList<>();
 		messages.forEach((ts, m) -> {
 			if (ts > timestamp) out.add(m);
 		});

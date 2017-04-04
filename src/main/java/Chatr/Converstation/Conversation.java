@@ -15,13 +15,15 @@ public class Conversation {
 	private String localUser;
 	private Message trash = new Message();
 
-	private Conversation(String conversationName, Collection<User> members, User localUser) {
+	/*
+
+		private Conversation(String conversationName, Collection<User> members, User localUser) {
 		this.members.addAll(members);
 		this.members.add(localUser);
 		this.localUser = localUser.getUserID();
 		this.conversationID = HashGen.getID(false);
 		this.conversationName = conversationID;
-	}
+	}*/
 
 
 	private Conversation(User member, User localUser) {
@@ -33,16 +35,23 @@ public class Conversation {
 		Connection.createConversation(conversationID, this.getMemberIDs());
 	}
 
-	private Conversation() {
-		this.conversationID = HashGen.getID(false);
-		this.conversationName = conversationID;
+	private Conversation(String conversationID, String localUserID, Set<User> members, LinkedList<Message> messages) {
+		this.conversationID = conversationID;
+		this.conversationName = conversationID; //!!!
+		this.members= members;
+		this.messages= messages;
 	}
+
 
 	static public Conversation newConversation(User member, User localUser){
 		return new Conversation(member,localUser);
 	}
-	static public Conversation newConversation() {
-		return new Conversation();
+
+	public static Conversation preconfigServer(String conversationID, String localUserID,
+											   Set<User> members, LinkedList<Message> messages){
+
+		return new Conversation(conversationID, localUserID,members,messages);
+
 	}
 
 	public Message newMessage(String content) {
@@ -62,9 +71,7 @@ public class Conversation {
 		return s;
 	}
 
-	public void addMessages(List<Message> messages) {
-		this.messages.addAll(messages);
-	}
+
 
 	public void addMember(User member) {
 		members.add(member);
@@ -72,28 +79,18 @@ public class Conversation {
 
 	}
 
-	public Conversation setMembers(Set<User> members) {
-		this.members = members;
-		return this;
-	}
+
 
 	public String getID() {
 		return this.conversationID;
 	}
 
-	public Conversation setID(String conversationID) {
-		this.conversationID = conversationID;
-		return this;
-	}
 
-	public String getLocalUserID() {
+
+/*	public String getLocalUserID() {
 		return localUser;
-	}
+	}*/
 
-	public Conversation setLocalUserID(String userID) {
-		this.localUser = userID;
-		return this;
-	}
 	/**
 	 * @return
 	 */

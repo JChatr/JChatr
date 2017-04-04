@@ -7,7 +7,7 @@ import java.net.ServerSocket;
 import java.net.URL;
 
 /**
- * Multithreaded server, spawns a new Thread for every connection
+ * Multithrea ded server, spawns a new Thread for every connection
  */
 public class Server implements Runnable {
 	URL url;
