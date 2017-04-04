@@ -85,15 +85,4 @@
 
 		</plugins>
 	</build>
-	<!--<distributionManagement>-->
-		<!--<site>-->
-			<!--<id>gitlab-pages-site</id>-->
-			<!--<name>Deployment through GitLab's site deployment plugin</name>-->
-			<!--<url>site/${project.version}</url>-->
-		<!--</site>-->
-		<!--<repository>-->
-			<!--<id>gitlab.public</id>-->
-			<!--<url>site/${project.version}</url>-->
-		<!--</repository>-->
-	<!--</distributionManagement>-->
 </project>
