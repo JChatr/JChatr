@@ -1,116 +1,119 @@
 package Chatr.Converstation;
-import Chatr.Client.Connection;
-import Chatr.Helper.HashGen;
 
-import javax.jws.soap.SOAPBinding;
-import java.lang.reflect.Member;
-import java.util.*;
 
 public class Conversation {
 
-    private String conversationID =new String(); //Hash generieren, dann final
-    private String conversationName=new String();
-    private Set<User> members= new HashSet<>();
-    private List<Message> messages= new ArrayList<>();
-    private User localUser;
+
+	private String conversationID;
+	private String conversationName;
+	private Set<User> members = new HashSet<>();
+	private LinkedList<Message> messages = new LinkedList<>();
+	private String localUser;
+	private Message trash = new Message();
+
+	private Conversation(String conversationName, Collection<User> members, User localUser) {
+		this.members.addAll(members);
+		this.members.add(localUser);
+		this.localUser = localUser.getUserID();
+		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
+	}
 
 
+	private Conversation(User member, User localUser) {
+		this.members.add(member);
+		this.members.add(localUser);
+		this.localUser = localUser.getUserID();
+		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
+		Connection.createConversation(conversationID, this.getMemberIDs());
+	}
 
-    private Conversation(String conversationName,Collection<User> members, User localUSer){
-
-        this.members.addAll(members);
-        this.members.add(localUSer);
-        this.localUser=localUser;
-
-        this.conversationName=conversationName;
-        this.conversationID=HashGen.getID(false);
-
-        this.create();
-    }
-
-    
-    private Conversation(User member, User localUser){
-
-        this.members.add(member);
-        this.members.add(localUser);
-        this.localUser= localUser; 
+	private Conversation() {
+		this.conversationID = HashGen.getID(false);
+		this.conversationName = conversationID;
+	}
 
 
-        this.conversationName=member.getUserName();
-        this.conversationID=HashGen.getID(false);
+	static public Conversation newConversation() {
+		return new Conversation();
+	}
 
-        this.create();
-    }
-
-
-
-    static public Conversation newConversation(User member, User localUser){
-        Conversation pCon= new Conversation(member, localUser);
-
-
-        return pCon;
-    }
-
-
-    static public Conversation  newGroupConversation(String conversationName,Collection<User> members, User localUser){
-
-        Conversation pGCon= new Conversation(conversationName, members, localUser);
-
-        return pGCon;
-    }
+	public Message newMessage(String content) {
+		if (!content.trim().isEmpty()) {
+			Message message = new Message(localUser, content);
+			messages.add(message);
+			Connection.addMessage(conversationID, message);
+			return message;
+		}
+		return new Message();
+	}
 
 
+	public Set<String> getMemberIDs() {
+		Set<String> s = new HashSet<>();
+		members.forEach(m -> s.add(m.getUserID()));
+		return s;
+	}
 
-    private void create(){
+	public void setMessages(List<Message> messages) {
+		this.messages.addAll(messages);
+	}
 
-        List<String> memberIDs= new ArrayList<>();
+	public void addMember(User member) {
+		members.add(member);
+		Connection.updateConversationUsers(conversationID, getMemberIDs());
 
-        for(User member : members){
-            memberIDs.add(member.getUserID());
-        }
+	}
 
-        Connection.createConversation(this.conversationID, memberIDs);
-    }
+	public Conversation setMembers(Set<User> members) {
+		this.members = members;
+		return this;
+	}
 
-    public void delete(){
+	public String getID() {
+		return this.conversationID;
+	}
 
-        Connection.deleteConversation(this.conversationID);
+	public Conversation setID(String conversationID) {
+		this.conversationID = conversationID;
+		return this;
+	}
 
-    }
+	public String getLocalUserID() {
+		return localUser;
+	}
 
-    public void read(){
+	public Conversation setLocalUserID(String userID) {
+		this.localUser = userID;
+		return this;
+	}
+	/**
+	 * @return
+	 */
+	public List<Message> update() {
+		Long latest = messages.isEmpty() ? 0 : messages.getLast(); //Get timestamp
+		List<Message> messages =  Connection.readNewMessages(conversationID, latest);
+		this.messages.addAll(messages);
+		return messages;
+	}
 
-        Connection.readConversation(this.conversationID,null);
+	@Override
+	public boolean equals(Object o) {
+		return Objects.equals(conversationID, o.toString());
+	}
 
-    }
+	@Override
+	public int hashCode() {
+		return Objects.hash(conversationID);
+	}
 
-    public void newMessage(String content) throws Exception {
+	@Override
+	public String toString() {
+		return this.conversationID;
+	}
+}
 
-        if(content.trim().isEmpty()){
-
-        }
-        else{
-        messages.add(new Message(localUser.getUserID(), content));
-
-        Connection.updateConversation(this.conversationID, messages.get(messages.size()-1));
-        }
-    }
-
-    public List<Message> getMessages(){
-        return messages;
-    }
-
-    public Set<User> getMembers(){
-        return members;
-    }
-
-    public void setMessages(List<Message> messages){
-        this.messages.addAll(messages);
-    }
-
-    public void setMembers(Set<User> members){
-        this.members.addAll(members);
-    }
 
 
 
