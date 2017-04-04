@@ -1,7 +1,6 @@
 package Chatr.Helper;
 
 import com.google.gson.Gson;
-import com.sun.istack.internal.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public class JSONTransformer {
 	 * @param <T>  target return type of the Object
 	 * @return Object representation of the JSON String
 	 */
-	public static <T> T fromJSON(String json, @NotNull Class<? extends Object> type) {
+	public static <T> T fromJSON(String json, Class<? extends Object> type) {
 		return (T) parser.fromJson(json, type);
 	}
 
@@ -56,7 +55,7 @@ public class JSONTransformer {
 	 * @param <T>   target return type of the Objects
 	 * @return Object representation of the JSON Strings
 	 */
-	public static <T> List<T> fromJSON(List<String> jsons, @NotNull Class<? extends Object> type) {
+	public static <T> List<T> fromJSON(List<String> jsons, Class<? extends Object> type) {
 		List<T> out = new ArrayList<>();
 		for (String json : jsons) {
 			out.add(fromJSON(json, type));
