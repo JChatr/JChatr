@@ -28,12 +28,12 @@ public class Conversation {
         this.create();
     }
 
-
+    
     private Conversation(User member, User localUser){
 
         this.members.add(member);
         this.members.add(localUser);
-        this.localUser= localUser;
+        this.localUser= localUser; 
 
 
         this.conversationName=member.getUserName();
