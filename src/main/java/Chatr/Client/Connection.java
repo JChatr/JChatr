@@ -1,38 +1,36 @@
 package Chatr.Client;
 
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
-import Chatr.Converstation.PrivateConversation;
 import Chatr.Converstation.User;
-import Chatr.Helper.CRUD;
-import Chatr.Helper.TransmissionProtocol;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
+import Chatr.Server.Transmission;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+
+import static Chatr.Helper.Enums.Crud.*;
+import static Chatr.Helper.Enums.Request.*;
 
 public class Connection {
 
+	private static Client client = new Client();
+
+	private Connection() {
+
+	}
+
 	/**
 	 * creates a new conversation on the server and adds the specified users
-	 * TODO: clean tmp Data up!!!
+	 *
 	 * @param conversationID ID of the new conversation
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, List<String> userIDs) {
-		new Client().post(TransmissionProtocol.build(CRUD.UPDATE, conversationID, new Message()));
-		return true;
-	}
-
-	/**
-	 * read new messages from the specified conversation
-	 *
-	 * @param conversationID ID of the conversation to update
-	 * @param newest         newest message in the local copy of the conversation
-	 * @return new Messages from the server
-	 */
-	public static List<Message> readConversation(String conversationID, Message newest) {
-		List<String> received = new Client().get(TransmissionProtocol.build(CRUD.READ, conversationID, newest));
-		return TransmissionProtocol.parse(CRUD.READ, received);
+	public static boolean createConversation(String conversationID, Set<String> userIDs) {
+		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
 
 	/**
@@ -42,20 +40,10 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static List<PrivateConversation> readConversations(String userID) {
-		return new ArrayList<>();
-	}
-
-	/**
-	 * Add a new message to a conversation
-	 *
-	 * @param conversationID ID of the conversation to post the message to
-	 * @param message        Message to post
-	 * @return if the operation was successful
-	 */
-	public static boolean updateConversation(String conversationID, Message message) {
-		new Client().post(TransmissionProtocol.build(CRUD.CREATE, conversationID, message));
-		return true;
+	public static Set<Conversation> readAllConversations(String userID) {
+		Transmission request = build(CONVERSATION, READ, userID, null);
+		Transmission response = client.get(request);
+		return response.getConversations();
 	}
 
 	/**
@@ -65,9 +53,43 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean deleteConversation(String conversationID) {
-		new Client().post(TransmissionProtocol.build(CRUD.DELETE, conversationID, null));
-		return true;
+		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
+
+	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
+		Transmission response = client.get(request);
+		return response.getStatus();
+	}
+
+	/**
+	 * read new messages from the specified conversation
+	 *
+	 * @param conversationID ID of the conversation to update
+	 * @param newest         newest message in the local copy of the conversation
+	 * @return new Messages from the server
+	 */
+	public static List<Message> readNewMessages(String conversationID, Message newest) {
+		Transmission request = build(MESSAGE, READ, conversationID, newest);
+		Transmission response = client.get(request);
+		return response.getMessages();
+	}
+
+	/**
+	 * Add a new message to a conversation
+	 *
+	 * @param conversationID ID of the conversation to get the message to
+	 * @param message        Message to get
+	 * @return if the operation was successful
+	 */
+	public static boolean addMessage(String conversationID, Message message) {
+		Transmission request = build(MESSAGE, CREATE, conversationID, message);
+		Transmission response = client.get(request);
+		return response.getStatus();
+	}
+
 
 	/**
 	 * creates a new user on the server
@@ -77,7 +99,9 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean createUser(String userID, User userData) {
-		return true;
+		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
 
 	/**
@@ -88,7 +112,9 @@ public class Connection {
 	 * @return User Object from the server
 	 */
 	public static User readUser(String userID) {
-		return new User();
+		Transmission request = build(USER, READ, userID, null);
+		Transmission response = client.get(request);
+		return response.getUser();
 	}
 
 	/**
@@ -96,8 +122,10 @@ public class Connection {
 	 *
 	 * @return all users known to the server
 	 */
-	public static List<User> readUsers() {
-		return new ArrayList<>();
+	public static Set<User> readUsers() {
+		Transmission request = build(USER, READ, null, null);
+		Transmission response = client.get(request);
+		return response.getUsers();
 	}
 
 	/**
@@ -108,7 +136,9 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean updateUser(String userID, User userData) {
-		return true;
+		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission response = client.get(request);
+		return response.getStatus();
 	}
 
 	/**
@@ -118,6 +148,37 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean deleteUser(String userID) {
-		return true;
+		Transmission request = build(USER, DELETE, userID, null);
+		Transmission response = client.get(request);
+		return response.getStatus();
+	}
+
+	@SuppressWarnings("unchecked")
+	private static Transmission build(Request type, Crud operation, String ID, Object data) {
+		Transmission request = new Transmission(type, operation);
+		switch (type) {
+			case MESSAGE:
+				request.setConversationID(ID).setMessage((Message) data);
+				break;
+			case CONVERSATION:
+				switch (operation) {
+					case CREATE:
+						request.setConversationID(ID).setUserIDs((Set<String>) data);
+						break;
+					case READ:
+						request.setUserID(ID);
+						break;
+					case UPDATE:
+						request.setConversationID(ID).setUserIDs((Set<String>) data);
+						break;
+					case DELETE:
+						break;
+				}
+				break;
+			case USER:
+				request.setUser((User) data);
+				break;
+		}
+		return request;
 	}
 }

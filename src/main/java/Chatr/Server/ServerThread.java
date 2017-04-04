@@ -1,5 +1,9 @@
 package Chatr.Server;
 
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
+import Chatr.Helper.JSONTransformer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -7,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.CRC32;
 
 /**
  * Thread of the server handling the connection
@@ -14,10 +19,11 @@ import java.util.List;
 public class ServerThread extends Thread {
 	private Socket socket;
 	private String remote;
-	private List<String> inCache;
+	private List<Transmission> inCache;
 
 	/**
 	 * Instantiates the ServerThread
+	 *
 	 * @param socket open socket to use for connecting to the client
 	 */
 	protected ServerThread(Socket socket) {
@@ -37,20 +43,22 @@ public class ServerThread extends Thread {
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
 			// Receiving
-			String fromClient;
-			while ((fromClient = in.readLine()) != null) {
-				inCache.add(fromClient);
+			String JSON;
+			while ((JSON = in.readLine()) != null) {
+				Transmission data = JSONTransformer.fromJSON(JSON, Transmission.class);
+				inCache.add(data);
 			}
 			socket.shutdownInput();
+				System.out.println("request  = " + inCache);
+
 			// Processing
-			// Figure out what messages to send to send to the client
 			MessageHandler handler = new MessageHandler(inCache);
-			handler.processRequests();
-			List<String> response = handler.getResponse();
+			List<Transmission> response = handler.process();
+			System.out.println("response = " + response);
 			// Sending
-			// only send the required messages
-			for (String obj : response) {
-				out.println(obj);
+			for (Transmission obj : response) {
+				String outJSON = JSONTransformer.toJSON(obj);
+				out.println(outJSON);
 			}
 			socket.shutdownOutput();
 			socket.close();

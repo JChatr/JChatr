@@ -21,7 +21,7 @@ public class Terminal {
 		scan.close();
 	}
 
-	public static void display(String...lines) {
+	public static void display(String... lines) {
 		for (String line : lines) {
 			display(line);
 		}
@@ -41,7 +41,21 @@ public class Terminal {
 
 	public static void display(Message message) {
 		if (!message.isEmpty()) {
-			System.out.printf("%5s : %s\n" , message.getSender(), message.getContent());
+			System.out.printf("Name: %5.5s : %s\n",
+					message.getSender(), message.getContent());
+		}
+	}
+
+	public static void display(List<Message> messages, String conversationID) {
+		for (Message message : messages) {
+			display(message, conversationID);
+		}
+	}
+
+	public static void display(Message message, String conversationID) {
+		if (!message.isEmpty()) {
+			System.out.printf("Chat: %5.5s Name: %5.5s : %s\n",
+					conversationID, message.getSender(), message.getContent());
 		}
 	}
 }
