@@ -1,5 +1,4 @@
 package Chatr.Converstation;
-<<<<<<< HEAD
 
 import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
@@ -39,6 +38,9 @@ public class Conversation {
 		this.conversationName = conversationID;
 	}
 
+	static public Conversation newConversation(User a, User b) {
+		return new Conversation(a,b);
+	}
 
 	static public Conversation newConversation() {
 		return new Conversation();
@@ -97,7 +99,7 @@ public class Conversation {
 	 * @return
 	 */
 	public List<Message> update() {
-		Long latest = messages.isEmpty() ? 0 : messages.getLast(); //Get timestamp
+		Message latest = messages.isEmpty() ? trash : messages.getLast(); //Get timestamp
 		List<Message> messages =  Connection.readNewMessages(conversationID, latest);
 		this.messages.addAll(messages);
 		return messages;
