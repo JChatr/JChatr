@@ -34,7 +34,7 @@ public class Transmission {
 	public Transmission(Request type, Crud crud) {
 		this.type = type;
 		this.crud = crud;
-		this.localUserID = Manager.localUser.getUserID();
+		this.localUserID = Manager.localUser == null ? null :Manager.localUser.getUserID();
 	}
 
 	public Request getRequestType() {
