@@ -13,8 +13,7 @@ import java.util.Objects;
 public class User {
 
 	private String userName = "";
-	private String userID = "";
-	//private String userID = HashGen.getID(false);
+	private String userID = HashGen.getID(false);
 	public String userPicture = "";
 	private String email = "";
 	private String emailMD5 = "";
@@ -26,7 +25,6 @@ public class User {
 	 */
 	public User(String userName){
 		this.userName = userName;
-		this.userID = userName;
 	}
 
 	/**

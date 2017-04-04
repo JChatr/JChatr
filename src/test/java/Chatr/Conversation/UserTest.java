@@ -18,8 +18,7 @@ public class UserTest {
 	@Test
 	public void userID(){
 		User u = new User("Simon");
-		assertTrue(u.getUserName() != null);
-		assertTrue(u.getUserID() != null);
+		assertFalse(u.getUserID().matches("\\d+"));
 	}
 	
 	
