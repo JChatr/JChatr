@@ -1,6 +1,8 @@
 package Chatr.Client;
 
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.JSONTransformer;
+import Chatr.Server.Transmission;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,16 +11,15 @@ import java.io.PrintWriter;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Connects to the server and sends / receives Requests
  */
 public class Client {
 	private URL url;
-	private List<String> inBuffer = new ArrayList<>();
-	private List<String> unifiedBuffer = new ArrayList<>();
+	private List<Transmission> outBuffer = Collections.synchronizedList(new LinkedList<>());
+	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
 
 	protected Client() {
 		try {
@@ -29,23 +30,23 @@ public class Client {
 	}
 
 	/**
-	 * POSTs the request to the Server
-	 *
-	 * @param request request for the server respond to
-	 */
-	protected void post(String request) {
-//		primeBuffers();
-		unifiedBuffer.add(request);
-		connect();
-	}
-
-	/**
 	 * POST request to the Server return response
 	 *
 	 * @return separated lines of the Server's response
 	 */
-	protected List<String> get(String request) {
-		post(request);
+	protected Transmission get(Transmission request) {
+		outBuffer.add(request);
+		connect();
+		return filterResponse(request);
+	}
+
+	protected List<Transmission> getMultiple(Transmission request) {
+		outBuffer.add(request);
+		connect();
+		return filterResponses(request);
+	}
+
+	protected List<Transmission> getNotifications() {
 		return inBuffer;
 	}
 
@@ -58,23 +59,24 @@ public class Client {
 	 * 3. close connection
 	 */
 	private void connect() {
-		String remote = "";
 		try (
 				Socket socket = new Socket(url.getHost(), url.getPort());
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
-			// after writing to the in- / output the connection has to get shutdown
 			// Sending
-			for (String data : unifiedBuffer) {
-				out.println(data);
+			for (Transmission data : outBuffer) {
+				String json = JSONTransformer.toJSON(data);
+				out.println(json);
 			}
+			outBuffer.clear();
 			socket.shutdownOutput();
 
 			// Receiving
-			String fromServer;
-			while ((fromServer = in.readLine()) != null) {
-				inBuffer.add(fromServer);
+			String json;
+			while ((json = in.readLine()) != null) {
+				Transmission data = JSONTransformer.fromJSON(json, Transmission.class);
+				inBuffer.add(data);
 			}
 			socket.shutdownInput();
 		} catch (IOException e) {
@@ -82,15 +84,31 @@ public class Client {
 		}
 	}
 
-	/**
-	 * clear inBuffer, always keep the last element from unifiedBuffer
-	 * there always has to be the last sent message in the unifiedBuffer
-	 */
-//	private void primeBuffers() {
-//
-//		inBuffer.clear();
-//		if (!unifiedBuffer.isEmpty()) {
-//			unifiedBuffer.subList(0, unifiedBuffer.size() - 1).clear();
-//		}
-//	}
+	private Transmission filterResponse(Transmission request) {
+		Iterator<Transmission> it = inBuffer.iterator();
+		Transmission tran = null;
+		while (it.hasNext()) {
+			tran = it.next();
+			if (tran.getRequestType() == request.getRequestType() &&
+					tran.getCRUD() == request.getCRUD()) {
+				it.remove();
+				break;
+			}
+		}
+		return tran;
+	}
+
+	private List<Transmission> filterResponses(Transmission request) {
+		List<Transmission> filter = new ArrayList<>();
+		Iterator<Transmission> it = inBuffer.iterator();
+		while (it.hasNext()) {
+			Transmission tran = it.next();
+			if (tran.getRequestType() == request.getRequestType() &&
+					tran.getCRUD() == request.getCRUD()) {
+				filter.add(tran);
+				it.remove();
+			}
+		}
+		return filter;
+	}
 }

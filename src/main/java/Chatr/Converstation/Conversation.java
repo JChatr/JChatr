@@ -1,8 +1,12 @@
 package Chatr.Converstation;
 
+import Chatr.Client.Connection;
+import Chatr.Helper.HashGen;
+
+import java.util.*;
+
 
 public class Conversation {
-
 
 	private String conversationID;
 	private String conversationName;
@@ -34,7 +38,9 @@ public class Conversation {
 		this.conversationName = conversationID;
 	}
 
-
+	static public Conversation newConversation(User member, User localUser){
+		return new Conversation(member,localUser);
+	}
 	static public Conversation newConversation() {
 		return new Conversation();
 	}
@@ -56,7 +62,7 @@ public class Conversation {
 		return s;
 	}
 
-	public void setMessages(List<Message> messages) {
+	public void addMessages(List<Message> messages) {
 		this.messages.addAll(messages);
 	}
 
@@ -92,7 +98,7 @@ public class Conversation {
 	 * @return
 	 */
 	public List<Message> update() {
-		Long latest = messages.isEmpty() ? 0 : messages.getLast(); //Get timestamp
+		Long latest = messages.isEmpty() ? 0 : messages.getLast().getTime(); //Get timestamp
 		List<Message> messages =  Connection.readNewMessages(conversationID, latest);
 		this.messages.addAll(messages);
 		return messages;
@@ -114,7 +120,3 @@ public class Conversation {
 	}
 }
 
-
-
-
-}
