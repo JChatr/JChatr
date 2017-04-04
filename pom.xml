@@ -86,14 +86,14 @@
 		</plugins>
 	</build>
 	<!--<distributionManagement>-->
-		<!--<repository>-->
-			<!--<id>com.cahtr</id>-->
-			<!--<name>SD2_Chatr</name>-->
-			<!--<url>https://gitlab.mi.hdm-stuttgart.de/dank-memes/SD2_Chatr</url>-->
-		<!--</repository>-->
 		<!--<site>-->
-			<!--<id>Cahtr</id>-->
-			<!--<url>scp:/www.chatr.com/www/docs/Chatr/</url>-->
+			<!--<id>gitlab-pages-site</id>-->
+			<!--<name>Deployment through GitLab's site deployment plugin</name>-->
+			<!--<url>site/${project.version}</url>-->
 		<!--</site>-->
+		<!--<repository>-->
+			<!--<id>gitlab.public</id>-->
+			<!--<url>site/${project.version}</url>-->
+		<!--</repository>-->
 	<!--</distributionManagement>-->
 </project>
