@@ -85,15 +85,15 @@
 
 		</plugins>
 	</build>
-	<distributionManagement>
-		<repository>
-			<id>com.cahtr</id>
-			<name>SD2_Chatr</name>
-			<url>https://gitlab.mi.hdm-stuttgart.de/dank-memes/SD2_Chatr</url>
-		</repository>
-		<site>
-			<id>Cahtr</id>
-			<url>scp:/www.chatr.com/www/docs/Chatr/</url>
-		</site>
-	</distributionManagement>
+	<!--<distributionManagement>-->
+		<!--<repository>-->
+			<!--<id>com.cahtr</id>-->
+			<!--<name>SD2_Chatr</name>-->
+			<!--<url>https://gitlab.mi.hdm-stuttgart.de/dank-memes/SD2_Chatr</url>-->
+		<!--</repository>-->
+		<!--<site>-->
+			<!--<id>Cahtr</id>-->
+			<!--<url>scp:/www.chatr.com/www/docs/Chatr/</url>-->
+		<!--</site>-->
+	<!--</distributionManagement>-->
 </project>
