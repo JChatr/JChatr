@@ -92,7 +92,7 @@ public class MessageHandler {
 							responses.add(request.reset().setStatus(status));
 							break; }
 						case READ: {
-							Set<User> users = database.readUsers();
+							User users = database.readUser();
 							responses.add(request.reset().setUsers(users));
 							break; }
 						case UPDATE: {
@@ -105,6 +105,10 @@ public class MessageHandler {
 							break; }
 					}
 					break;
+				case USERS:{
+					Set<User> users = database.readUsers();
+					responses.add(request.reset().setUsers(users));
+					break;}
 				case STATUS:
 					break;
 			}

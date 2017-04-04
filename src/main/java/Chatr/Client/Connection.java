@@ -123,7 +123,7 @@ public class Connection {
 	 * @return all users known to the server
 	 */
 	public static Set<User> readUsers() {
-		Transmission request = build(USER, READ, null, null);
+		Transmission request = build(USERS, READ, null, null);
 		Transmission response = client.get(request);
 		return response.getUsers();
 	}
@@ -176,7 +176,7 @@ public class Connection {
 				}
 				break;
 			case USER:
-				request.setUser((User) data);
+				request.setUserID(ID).setUser((User) data);
 				break;
 		}
 		return request;

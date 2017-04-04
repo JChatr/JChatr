@@ -19,7 +19,6 @@ public class LoginTest {
 		try {
 			Thread.sleep(500);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -36,10 +35,11 @@ public class LoginTest {
 	
 	@Test
 	public void readUser(){
-		String userID = "" + System.nanoTime();
-		User user = new User(userID);
-		Connection.createUser(userID, user);
-		assertEquals(Connection.readUser(userID), Login.loginUser(userID));
+		String userName = "bob";
+		User user = new User(userName);
+		Connection.createUser(userName, user);
+		System.out.println(Connection.readUser(userName));
+		assertEquals(Connection.readUser(userName), Login.loginUser(userName));
 	}
 	
 }
