@@ -42,6 +42,9 @@ public class Conversation {
 		this.messages= messages;
 	}
 
+	static public Conversation newConversation(User a, User b) {
+		return new Conversation(a,b);
+	}
 
 	static public Conversation newConversation(User member, User localUser){
 		return new Conversation(member,localUser);
@@ -116,4 +119,3 @@ public class Conversation {
 		return this.conversationID;
 	}
 }
-
