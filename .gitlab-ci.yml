@@ -35,6 +35,7 @@ cache:
   stage: build
   script:
     - 'mvn $MAVEN_CLI_OPTS test-compile'
+    - 'cat target/site/jacoco/index.html'
 
 # For merge requests do not `deploy` but only run `verify`.
 # See https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html
@@ -42,7 +43,8 @@ cache:
   stage: test
   script:
     # 'mvn $MAVEN_CLI_OPTS verify site site:stage'
-    'mvn $MAVEN_CLI_OPTS verify'
+    - 'mvn $MAVEN_CLI_OPTS verify'
+    - 'cat target/site/jacoco/index.html'
   # except:
     # - master
 
