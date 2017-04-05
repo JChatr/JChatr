@@ -35,7 +35,8 @@ public class Transmission {
 	public Transmission(Request type, Crud crud) {
 		this.type = type;
 		this.crud = crud;
-		this.localUserID = Manager.localUser.getUserID();
+		this.localUserID = (Manager.localUser == null) ? "042b9135b65cc71d9c94df01add70cbf" :
+				Manager.localUser.getUserID();
 	}
 
 	public Request getRequestType() {
@@ -137,7 +138,7 @@ public class Transmission {
 		return this;
 	}
 
-	public String getUserID(){
+	public String getUserID() {
 		return this.userID;
 	}
 
@@ -146,7 +147,7 @@ public class Transmission {
 		return this;
 	}
 
-	public Set<Conversation> getConversations(){
+	public Set<Conversation> getConversations() {
 		return this.conversations;
 	}
 
@@ -155,11 +156,11 @@ public class Transmission {
 		return this;
 	}
 
-	public Long getTimestamp(){
+	public Long getTimestamp() {
 		return timestamp;
 	}
 
-	public Transmission setTimestamp(Long timestamp){
+	public Transmission setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 		return this;
 	}

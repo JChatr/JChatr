@@ -123,7 +123,7 @@ public class Connection {
 	 * @return all users known to the server
 	 */
 	public static Set<User> readUsers() {
-		Transmission request = build(USER, READ, null, null);
+		Transmission request = build(USERS, READ, null, null);
 		Transmission response = client.get(request);
 		return response.getUsers();
 	}
@@ -136,7 +136,7 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean updateUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission request = build(USER, UPDATE, userID, userData);
 		Transmission response = client.get(request);
 		return response.getStatus();
 	}
@@ -180,11 +180,16 @@ public class Connection {
 						request.setConversationID(ID).setUserIDs((Set<String>) data);
 						break;
 					case DELETE:
+						request.setConversationID(ID);
 						break;
 				}
 				break;
 			case USER:
+				request.setUserID(ID);
 				request.setUser((User) data);
+				break;
+			case USERS:
+				request.setUserID(ID);
 				break;
 		}
 		return request;
