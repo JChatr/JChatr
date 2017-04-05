@@ -28,6 +28,7 @@ public class Transmission {
 	private Boolean status;
 	private Conversation conversation;
 	private Set<Conversation> conversations;
+	private Long timestamp;
 	private byte[] img;
 	private byte[] voice;
 
@@ -154,6 +155,15 @@ public class Transmission {
 		return this;
 	}
 
+	public Long getTimestamp(){
+		return timestamp;
+	}
+
+	public Transmission setTimestamp(Long timestamp){
+		this.timestamp = timestamp;
+		return this;
+	}
+
 	public Transmission reset() {
 //		type = null;
 //		crud = null;
@@ -166,6 +176,7 @@ public class Transmission {
 		userID = null;
 		users = null;
 		status = null;
+		timestamp = null;
 		conversation = null;
 		conversations = null;
 		img = null;

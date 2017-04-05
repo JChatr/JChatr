@@ -71,7 +71,7 @@ public class Connection {
 	 * @param newest         newest message in the local copy of the conversation
 	 * @return new Messages from the server
 	 */
-	public static List<Message> readNewMessages(String conversationID, Message newest) {
+	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
 		Transmission response = client.get(request);
 		return response.getMessages();
@@ -158,7 +158,15 @@ public class Connection {
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
-				request.setConversationID(ID).setMessage((Message) data);
+
+				switch(operation){
+					case CREATE:
+						request.setConversationID(ID).setMessage((Message) data);
+						break;
+					case READ:
+						request.setConversationID(ID).setTimestamp((Long) data);
+						break;
+				}
 				break;
 			case CONVERSATION:
 				switch (operation) {

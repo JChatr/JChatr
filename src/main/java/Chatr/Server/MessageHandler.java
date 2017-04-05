@@ -50,7 +50,7 @@ public class MessageHandler {
 							break;}
 						case READ: {
 							List<Message> m = database.readNewerMessages(request.getConversationID(),
-									request.getMessage().getTime());
+									request.getTimestamp());
 							responses.add(request.reset().setMessages(m));
 							break; }
 						case UPDATE: {
