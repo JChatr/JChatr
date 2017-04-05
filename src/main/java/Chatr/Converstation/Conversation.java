@@ -42,16 +42,12 @@ public class Conversation {
 		this.messages= messages;
 	}
 
-	static public Conversation newConversation(User a, User b) {
-		return new Conversation(a,b);
-	}
-
 	static public Conversation newConversation(User member, User localUser){
 		return new Conversation(member,localUser);
 	}
 
-	public static Conversation preconfigServer(String conversationID, String localUserID,
-											   Set<User> members, LinkedList<Message> messages){
+	public static Conversation preConfigServer(String conversationID, String localUserID,
+	                                           Set<User> members, LinkedList<Message> messages){
 
 		return new Conversation(conversationID, localUserID,members,messages);
 

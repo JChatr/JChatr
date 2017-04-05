@@ -47,21 +47,25 @@ public class MessageHandler {
 						case CREATE: {
 							boolean status = database.addMessage(request.getConversationID(), request.getMessage());
 							responses.add(request.reset().setStatus(status));
-							break;}
+							break;
+						}
 						case READ: {
 							List<Message> m = database.readNewerMessages(request.getConversationID(),
 									request.getTimestamp());
 							responses.add(request.reset().setMessages(m));
-							break; }
+							break;
+						}
 						case UPDATE: {
 							boolean status = database.updateMessage(request.getConversationID(), request.getMessage());
 							responses.add(request.reset().setStatus(status));
-							break; }
-						case DELETE:{
+							break;
+						}
+						case DELETE: {
 							boolean status = database.deleteMessage(request.getConversationID(),
 									request.getMessage().getTime());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 					}
 					break;
 				case CONVERSATION:
@@ -70,40 +74,55 @@ public class MessageHandler {
 							boolean status = database.addConversation(request.getConversationID(),
 									request.getUserIDs());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 						case READ: {
 							Set<Conversation> c = database.readUserConversations(request.getUserID());
 							responses.add(request.reset().setConversations(c));
-							break; }
+							break;
+						}
 						case UPDATE: {
 							boolean status = database.updateConversationUsers(request.getConversationID(), request.getUserIDs());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 						case DELETE: {
 							boolean status = database.deleteConversation(request.getConversationID());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 					}
 					break;
 				case USER:
 					switch (request.getCRUD()) {
-						case CREATE:{
+						case CREATE: {
 							boolean status = database.addUser(request.getUser());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 						case READ: {
-							Set<User> users = database.readUsers();
-							responses.add(request.reset().setUsers(users));
-							break; }
+							User user = database.readUser(request.getUserID());
+							responses.add(request.reset().setUser(user));
+							break;
+						}
 						case UPDATE: {
 							boolean status = database.updateUser(request.getUser());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 						case DELETE: {
-							boolean status = database.deleteUser(request.getUser().getUserID());
+							boolean status = database.deleteUser(request.getUserID());
 							responses.add(request.reset().setStatus(status));
-							break; }
+							break;
+						}
 					}
+					break;
+				case USERS:
+					switch (request.getCRUD()) {
+						case READ:
+							Set<User> users = database.readUsers();
+							responses.add(request.reset().setUsers(users));
+							break; }
 					break;
 				case STATUS:
 					break;
