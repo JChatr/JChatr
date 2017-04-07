@@ -71,7 +71,7 @@ public class Connection {
 	 * @param newest         newest message in the local copy of the conversation
 	 * @return new Messages from the server
 	 */
-	public static List<Message> readNewMessages(String conversationID, Message newest) {
+	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
 		Transmission response = client.get(request);
 		return response.getMessages();
@@ -123,7 +123,7 @@ public class Connection {
 	 * @return all users known to the server
 	 */
 	public static Set<User> readUsers() {
-		Transmission request = build(USER, READ, null, null);
+		Transmission request = build(USERS, READ, null, null);
 		Transmission response = client.get(request);
 		return response.getUsers();
 	}
@@ -136,7 +136,7 @@ public class Connection {
 	 * @return if the operation was successful
 	 */
 	public static boolean updateUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
+		Transmission request = build(USER, UPDATE, userID, userData);
 		Transmission response = client.get(request);
 		return response.getStatus();
 	}
@@ -158,7 +158,15 @@ public class Connection {
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
-				request.setConversationID(ID).setMessage((Message) data);
+
+				switch(operation){
+					case CREATE:
+						request.setConversationID(ID).setMessage((Message) data);
+						break;
+					case READ:
+						request.setConversationID(ID).setTimestamp((Long) data);
+						break;
+				}
 				break;
 			case CONVERSATION:
 				switch (operation) {
@@ -172,11 +180,16 @@ public class Connection {
 						request.setConversationID(ID).setUserIDs((Set<String>) data);
 						break;
 					case DELETE:
+						request.setConversationID(ID);
 						break;
 				}
 				break;
 			case USER:
+				request.setUserID(ID);
 				request.setUser((User) data);
+				break;
+			case USERS:
+				request.setUserID(ID);
 				break;
 		}
 		return request;

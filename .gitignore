@@ -16,3 +16,4 @@ log/
 target/
 
 id_rsa*
+dependency-reduced-pom.xml

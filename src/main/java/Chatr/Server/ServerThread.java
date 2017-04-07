@@ -29,7 +29,6 @@ public class ServerThread extends Thread {
 	protected ServerThread(Socket socket) {
 		super("ServerTread");
 		this.socket = socket;
-		this.remote = socket.getRemoteSocketAddress().toString();
 		this.inCache = new ArrayList<>();
 	}
 

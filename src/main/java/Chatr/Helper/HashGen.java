@@ -29,8 +29,6 @@ public class HashGen {
 	 * @return The MD5 hash as String.
 	 */
 	public static String hash(String toHash) {
-
-		
 		try {
 			MessageDigest md = MessageDigest.getInstance("MD5");
 			byte[] msgToByt = toHash.getBytes("UTF-8");
