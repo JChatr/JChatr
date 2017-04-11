@@ -1,6 +1,8 @@
 package Chatr.Client;
 
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
 import Chatr.Server.Transmission;
 
@@ -9,8 +11,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.Executors;
 
 /**
  * Connects to the server and sends / receives Requests
@@ -24,7 +28,7 @@ public class Client {
 	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
 	private int connectionRetries;
 
-	protected Client() {
+	Client() {
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
 			this.socket = new Socket(url.getHost(), url.getPort());
@@ -32,7 +36,9 @@ public class Client {
 			inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			socket.setKeepAlive(true);
-			socket.setSoTimeout(500);
+//			socket.setSoTimeout(500);
+
+//			sendHeartbeat();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -45,19 +51,16 @@ public class Client {
 	 */
 	protected Transmission get(Transmission request) {
 		outBuffer.add(request);
-		connect();
+		send(request);
 		return filterResponse(request);
 	}
 
 	protected List<Transmission> getMultiple(Transmission request) {
 		outBuffer.add(request);
-		connect();
+		send(request);
 		return filterResponses(request);
 	}
 
-	protected List<Transmission> getNotifications() {
-		return inBuffer;
-	}
 
 	//
 
@@ -67,25 +70,21 @@ public class Client {
 	 * 2. read all lines of the response from the server
 	 * 3. close connection
 	 */
-	private void connect() {
+	private void send(Transmission data) {
 		try {
 			// Sending
-			for (Transmission data : outBuffer) {
-				String json = JSONTransformer.toJSON(data);
-				outStream.println(json);
-			}
-			outBuffer.clear();
-			socket.shutdownOutput();
-
+			outStream.println(JSONTransformer.encode(data));
 			// Receiving
 			String json;
 			while ((json = inStream.readLine()) != null) {
-				Transmission data = JSONTransformer.fromJSON(json, Transmission.class);
-				inBuffer.add(data);
+				inBuffer.add(JSONTransformer.decode(json, Transmission.class));
 			}
-			socket.shutdownInput();
-		} catch (IOException e) {
-			e.printStackTrace();
+//		} catch (SocketTimeoutException ste) {
+//			connectionRetries++;
+//			ste.printStackTrace();
+//			send(data);
+		} catch (IOException ioe) {
+
 		}
 	}
 
@@ -115,5 +114,27 @@ public class Client {
 			}
 		}
 		return filter;
+	}
+
+	private void sendHeartbeat() {
+		Executors.newSingleThreadExecutor().execute(() -> {
+			Transmission heartbeat = new Transmission(Request.STATUS, Crud.UPDATE);
+			boolean shutdown = false;
+			while (!shutdown) {
+				heartbeat.setTimestamp(System.currentTimeMillis());
+				send(heartbeat);
+			}
+		});
+	}
+
+	protected void shutdown() {
+		try {
+			inStream.close();
+			outStream.close();
+			socket.shutdownInput();
+			socket.shutdownOutput();
+			socket.close();
+		} catch (IOException e) {
+		}
 	}
 }

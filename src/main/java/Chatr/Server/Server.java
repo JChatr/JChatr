@@ -5,9 +5,11 @@ import Chatr.Helper.CONFIG;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
- * Multithreaded ded server, spawns a new Thread for every connection
+ * Multithreaded server, spawns a new Thread for every connection
  */
 public class Server implements Runnable {
 	URL url;
@@ -27,10 +29,11 @@ public class Server implements Runnable {
 	 */
 	@Override
 	public void run() {
+		Executor ex = Executors.newFixedThreadPool(6);
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
 			System.out.println("Server started at: " + CONFIG.SERVER_ADDRESS);
 			while (true) {
-				new ServerThread(serverSocket.accept()).start();
+				ex.execute(new ServerThread(serverSocket.accept()));
 			}
 		} catch (Throwable e) {
 			System.out.println("Server already started at: " + CONFIG.SERVER_ADDRESS);

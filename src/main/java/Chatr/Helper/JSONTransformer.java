@@ -17,7 +17,7 @@ public class JSONTransformer {
 	 * @param obj Object to be converted
 	 * @return JSON representation of the Object
 	 */
-	public static String toJSON(Object obj) {
+	public static String encode(Object obj) {
 		return parser.toJson(obj, obj.getClass());
 	}
 
@@ -27,10 +27,10 @@ public class JSONTransformer {
 	 * @param objs List of Objects to be converted
 	 * @return List of JSON representation of the Objects
 	 */
-	public static List<String> toJSON(List<? extends Object> objs) {
+	public static List<String> encode(List<? extends Object> objs) {
 		List<String> list = new ArrayList<>();
 		for (Object obj : objs) {
-			list.add(toJSON(obj));
+			list.add(encode(obj));
 		}
 		return list;
 	}
@@ -43,7 +43,7 @@ public class JSONTransformer {
 	 * @param <T>  target return type of the Object
 	 * @return Object representation of the JSON String
 	 */
-	public static <T> T fromJSON(String json, Class<? extends Object> type) {
+	public static <T> T decode(String json, Class<? extends Object> type) {
 		return (T) parser.fromJson(json, type);
 	}
 
@@ -55,10 +55,10 @@ public class JSONTransformer {
 	 * @param <T>   target return type of the Objects
 	 * @return Object representation of the JSON Strings
 	 */
-	public static <T> List<T> fromJSON(List<String> jsons, Class<? extends Object> type) {
+	public static <T> List<T> decode(List<String> jsons, Class<? extends Object> type) {
 		List<T> out = new ArrayList<>();
 		for (String json : jsons) {
-			out.add(fromJSON(json, type));
+			out.add(decode(json, type));
 		}
 		return out;
 	}

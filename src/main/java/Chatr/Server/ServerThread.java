@@ -1,8 +1,7 @@
 package Chatr.Server;
 
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +10,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CRC32;
 
 /**
  * Thread of the server handling the connection
@@ -29,6 +27,12 @@ public class ServerThread extends Thread {
 	protected ServerThread(Socket socket) {
 		super("ServerTread");
 		this.socket = socket;
+		try {
+			socket.setKeepAlive(true);
+			socket.setSoTimeout(100);
+		} catch (IOException e) {
+		}
+
 		this.inCache = new ArrayList<>();
 	}
 
@@ -44,11 +48,11 @@ public class ServerThread extends Thread {
 			// Receiving
 			String JSON;
 			while ((JSON = in.readLine()) != null) {
-				Transmission data = JSONTransformer.fromJSON(JSON, Transmission.class);
+				Transmission data = JSONTransformer.decode(JSON, Transmission.class);
+				System.out.println(data);
 				inCache.add(data);
 			}
-			socket.shutdownInput();
-				System.out.println("request  = " + inCache);
+			System.out.println("request  = " + inCache);
 
 			// Processing
 			MessageHandler handler = new MessageHandler(inCache);
@@ -56,10 +60,9 @@ public class ServerThread extends Thread {
 			System.out.println("response = " + response);
 			// Sending
 			for (Transmission obj : response) {
-				String outJSON = JSONTransformer.toJSON(obj);
+				String outJSON = JSONTransformer.encode(obj);
 				out.println(outJSON);
 			}
-			socket.shutdownOutput();
 			socket.close();
 		} catch (IOException e) {
 			System.err.println("ERROR");
