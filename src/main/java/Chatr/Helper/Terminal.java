@@ -10,7 +10,7 @@ public class Terminal {
 
 	public static String getUserInput() {
 		try {
-			return scan.nextLine();
+			return scan.nextLine().replaceAll("\\r|\\n", "");
 		} catch (Exception e) {
 //			e.printStackTrace();
 			return getUserInput();
