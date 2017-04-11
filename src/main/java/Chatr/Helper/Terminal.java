@@ -12,7 +12,6 @@ public class Terminal {
 		try {
 			return scan.nextLine();
 		} catch (Exception e) {
-//			e.printStackTrace();
 			return getUserInput();
 		}
 	}

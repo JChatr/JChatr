@@ -29,13 +29,17 @@ public class Database {
 	 * @return a globally unique instance of the Database object
 	 */
 	public static Database getCachedDatabase() {
-		return (instance == null) ? instance = new Database() : instance;
+		if (instance == null) {
+			instance = new Database();
+			DatabaseFixtures.generate(instance);
+		}
+		return instance;
 	}
 
 	/**
 	 * provides concurrency support
 	 */
-	Database() {
+	private Database() {
 		this.users = new ConcurrentHashMap<>();
 		this.links = new ConcurrentHashMap<>();
 		this.conversations = new ConcurrentHashMap<>();
@@ -62,12 +66,23 @@ public class Database {
 		return this.users.get(userID);
 	}
 
-	/**
+	/**x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
 	 */
 	public Set<User> readUsers() {
+		Set<User> users = new HashSet<>();
+		this.users.forEach((uID, user) -> users.add(user));
+		return users;
+	}
+
+	/**
+	 * read the user from the users table
+	 *
+	 * @return the found user object if contained in the table
+	 */
+	public Set<User> readUser() {
 		Set<User> users = new HashSet<>();
 		this.users.forEach((uID, user) -> users.add(user));
 		return users;
@@ -112,7 +127,8 @@ public class Database {
 	}
 
 	public boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
-		if (conversations.get(conversationID) == null) return false;
+		if (conversations.get(conversationID) == null ||
+				findConversationUsers(conversationID).equals(userIDs)) return false;
 		unLinkConversation(conversationID);
 		return linkConversation(conversationID, userIDs);
 	}
@@ -124,7 +140,7 @@ public class Database {
 	 * @return the assembled conversation
 	 */
 	public Conversation readConversation(String conversationID, String userID) {
-		Set<User> members = followLinksUser(conversationID);
+		Set<User> members = findConversationUsers(conversationID);
 		Conversation build = Conversation.preConfigServer(conversationID, userID,
 				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
 		return build;
@@ -235,17 +251,6 @@ public class Database {
 		return status;
 	}
 
-	private Set<User> followLinksUser(String conversationID) {
-		Set<User> linkedUsers = new HashSet<>();
-		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
-			for (String conversation : link.getValue()) {
-				if (conversation.equals(conversationID)) {
-					linkedUsers.add(users.get(link.getKey()));
-				}
-			}
-		}
-		return linkedUsers;
-	}
 
 	/**
 	 * breaks all links for that ID
@@ -259,6 +264,23 @@ public class Database {
 		});
 	}
 
+	/**
+	 * finds all Users for the given conversationID
+	 *
+	 * @param conversationID ID to search for
+	 * @return found users matching that conversationID
+	 */
+	private Set<User> findConversationUsers(String conversationID) {
+		Set<User> linkedUsers = new HashSet<>();
+		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
+			for (String conversation : link.getValue()) {
+				if (conversation.equals(conversationID)) {
+					linkedUsers.add(users.get(link.getKey()));
+				}
+			}
+		}
+		return linkedUsers;
+	}
 	/**
 	 * reads all newer messages than the provided timestamp
 	 *
