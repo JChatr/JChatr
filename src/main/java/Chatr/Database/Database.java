@@ -66,12 +66,23 @@ public class Database {
 		return this.users.get(userID);
 	}
 
-	/**
+	/**x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
 	 */
 	public Set<User> readUsers() {
+		Set<User> users = new HashSet<>();
+		this.users.forEach((uID, user) -> users.add(user));
+		return users;
+	}
+
+	/**
+	 * read the user from the users table
+	 *
+	 * @return the found user object if contained in the table
+	 */
+	public Set<User> readUser() {
 		Set<User> users = new HashSet<>();
 		this.users.forEach((uID, user) -> users.add(user));
 		return users;

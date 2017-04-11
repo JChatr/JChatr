@@ -185,8 +185,7 @@ public class Connection {
 				}
 				break;
 			case USER:
-				request.setUserID(ID);
-				request.setUser((User) data);
+				request.setUserID(ID).setUser((User) data);
 				break;
 			case USERS:
 				request.setUserID(ID);
