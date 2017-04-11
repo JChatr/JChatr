@@ -74,6 +74,17 @@ public class Database {
 	}
 
 	/**
+	 * read the user from the users table
+	 *
+	 * @return the found user object if contained in the table
+	 */
+	public Set<User> readUser() {
+		Set<User> users = new HashSet<>();
+		this.users.forEach((uID, user) -> users.add(user));
+		return users;
+	}
+
+	/**
 	 * updates the data for the user in the table
 	 *
 	 * @param user user data to update

@@ -42,8 +42,12 @@ cache:
   stage: test
   script:
     # 'mvn $MAVEN_CLI_OPTS verify site site:stage'
+<<<<<<< HEAD
     - 'mvn $MAVEN_CLI_OPTS verify'
     - 'cat target/site/jacoco/index.html'
+=======
+    'mvn $MAVEN_CLI_OPTS verify'
+>>>>>>> 53fc841342ac20377095fe8d3ced94c5abf5d754
   # except:
     # - master
 
@@ -92,4 +96,8 @@ verify:jdk8:
     # paths:
     # - public
   # only:
+<<<<<<< HEAD
     # - master
+=======
+    # - master
+>>>>>>> 53fc841342ac20377095fe8d3ced94c5abf5d754

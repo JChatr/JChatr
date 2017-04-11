@@ -7,13 +7,14 @@ import sun.security.x509.X500Name;
 
 /**
  * Class to login into your user account or to create one.
- * @author mk285
  *
+ * @author mk285
  */
 public class Login {
-	
+
 	/**
 	 * Checks if user userID exists. Else creates user userID.
+	 *
 	 * @param userID The user to be checked or created.
 	 * @return The user object.
 	 */

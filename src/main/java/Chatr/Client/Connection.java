@@ -185,8 +185,12 @@ public class Connection {
 				}
 				break;
 			case USER:
+<<<<<<< HEAD
 				request.setUserID(ID);
 				request.setUser((User) data);
+=======
+				request.setUserID(ID).setUser((User) data);
+>>>>>>> 53fc841342ac20377095fe8d3ced94c5abf5d754
 				break;
 			case USERS:
 				request.setUserID(ID);
