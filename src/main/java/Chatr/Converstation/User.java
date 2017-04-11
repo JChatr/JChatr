@@ -24,7 +24,6 @@ public class User {
 	 * Constructor to create user object with the user name.
 	 * @param userName The name of the user.
 	 */
-
 	public User(String userName){
 		this.userName = userName;
 		this.userID = userName;

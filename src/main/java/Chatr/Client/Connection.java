@@ -13,11 +13,9 @@ import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
 public class Connection {
-
 	private static Client client = new Client();
 
 	private Connection() {
-
 	}
 
 	/**
@@ -158,7 +156,6 @@ public class Connection {
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
-
 				switch(operation){
 					case CREATE:
 						request.setConversationID(ID).setMessage((Message) data);
