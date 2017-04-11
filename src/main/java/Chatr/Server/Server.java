@@ -1,6 +1,7 @@
 package Chatr.Server;
 
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.DatabaseFixtures;
 
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
@@ -29,6 +30,7 @@ public class Server implements Runnable {
 	public void run() {
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
 			System.out.println("Server started at: " + CONFIG.SERVER_ADDRESS);
+			DatabaseFixtures.generateFixtures();
 			while (true) {
 				new ServerThread(serverSocket.accept()).start();
 			}

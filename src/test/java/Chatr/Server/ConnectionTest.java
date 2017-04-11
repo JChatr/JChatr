@@ -20,17 +20,6 @@ public class ConnectionTest {
 	@Before
 	public void before() {
 		new Thread(new Server()).start();
-
-		Set<User> users = new HashSet<>();
-		LinkedList<Message> messages = new LinkedList<>();
-		u1 = new User("Alice");
-		u2 = new User("Bob");
-		users.add(u1);
-		users.add(u2);
-		messages.add(new Message(u1.getUserID(), "hi there"));
-		messages.add(new Message(u2.getUserID(), "hi as well"));
-		String conID = "2934239402394";
-		conversation = Conversation.preConfigServer(conID, u1.getUserID(), users, messages);
 	}
 
 	@Test
