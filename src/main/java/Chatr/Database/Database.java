@@ -62,7 +62,7 @@ public class Database {
 		return this.users.get(userID);
 	}
 
-	/**
+	/**x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
