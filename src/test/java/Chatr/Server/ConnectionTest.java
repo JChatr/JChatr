@@ -7,10 +7,7 @@ import Chatr.Converstation.User;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 
@@ -27,8 +24,12 @@ public class ConnectionTest {
 
 	@Test
 	public void createValidConversation() {
-		Conversation c = Conversation.newConversation(new User("createValidConversation"),
-				new User("createValidConversation2"));
+		User u1 = new User("createValidConversation"),
+				u2 = new User("createValidConversation2");
+		Set<User> users = new HashSet<>();
+		users.add(u1);
+		users.add(u2);
+		Conversation c = Conversation.preConfigServer("asihdfakslöf#", u1.getUserID(), users, new LinkedList<>());
 		boolean status = Connection.createConversation(c.getID(),
 				c.getMemberIDs());
 		assertTrue(status);
@@ -154,9 +155,10 @@ public class ConnectionTest {
 	public void updateConversationUsersInvalid() {
 		User u1 = new User("updateConversationUsersInvalid"),
 				u2 = new User("updateConversationUsersInvalid2");
-		Conversation c = Conversation.newConversation(u1, u2);
-
-		boolean updated = Connection.updateConversationUsers(c.getID(), c.getMemberIDs());
+		Set<String> uIDs = new HashSet<>();
+		uIDs.add(u1.getUserID());
+		uIDs.add(u2.getUserID());
+		boolean updated = Connection.updateConversationUsers("this is an nonexistent ID", uIDs);
 		assertFalse(updated);
 	}
 
@@ -207,7 +209,7 @@ public class ConnectionTest {
 
 	@Test
 	public void createUser() {
-		User u3 = new User("93049q345");
+		User u3 = new User("@createUser");
 		boolean created = Connection.createUser(u3.getUserID(), u3);
 		assertTrue(created);
 	}
