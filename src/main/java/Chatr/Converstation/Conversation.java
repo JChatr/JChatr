@@ -25,7 +25,7 @@ public class Conversation {
 		this.conversationName = conversationID;
 	}*/
 
-
+	//local
 	private Conversation(User member, User localUser) {
 		this.members.add(member);
 		this.members.add(localUser);
@@ -35,6 +35,7 @@ public class Conversation {
 		Connection.createConversation(conversationID, this.getMemberIDs());
 	}
 
+	//server
 	private Conversation(String conversationID, String localUserID, Set<User> members, LinkedList<Message> messages) {
 		this.conversationID = conversationID;
 		this.conversationName = conversationID; //!!!
@@ -42,10 +43,12 @@ public class Conversation {
 		this.messages= messages;
 	}
 
+	//local
 	static public Conversation newConversation(User member, User localUser){
 		return new Conversation(member,localUser);
 	}
 
+	//server
 	public static Conversation preConfigServer(String conversationID, String localUserID,
 	                                           Set<User> members, LinkedList<Message> messages){
 
@@ -53,6 +56,8 @@ public class Conversation {
 
 	}
 
+
+	//local
 	public Message newMessage(String content) {
 		if (!content.trim().isEmpty()) {
 			Message message = new Message(localUser, content);
@@ -63,7 +68,7 @@ public class Conversation {
 		return new Message();
 	}
 
-
+	//local
 	public Set<String> getMemberIDs() {
 		Set<String> s = new HashSet<>();
 		members.forEach(m -> s.add(m.getUserID()));
@@ -71,7 +76,7 @@ public class Conversation {
 	}
 
 
-
+	//local
 	public void addMember(User member) {
 		members.add(member);
 		Connection.updateConversationUsers(conversationID, getMemberIDs());
@@ -79,7 +84,7 @@ public class Conversation {
 	}
 
 
-
+	//local
 	public String getID() {
 		return this.conversationID;
 	}
@@ -93,6 +98,8 @@ public class Conversation {
 	/**
 	 * @return
 	 */
+
+	//local
 	public List<Message> update() {
 		Long latest = messages.isEmpty() ? 0 : messages.getLast().getTime(); //Get timestamp
 		List<Message> messages =  Connection.readNewMessages(conversationID, latest);
