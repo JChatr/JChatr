@@ -119,10 +119,12 @@ public class MessageHandler {
 					break;
 				case USERS:
 					switch (request.getCRUD()) {
-						case READ:
+						case READ: {
 							Set<User> users = database.readUsers();
 							responses.add(request.reset().setUsers(users));
-							break; }
+							break;
+						}
+					}
 					break;
 				case STATUS:
 					break;

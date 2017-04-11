@@ -8,7 +8,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
 import java.util.*;
@@ -18,13 +17,23 @@ import java.util.*;
  */
 public class Client {
 	private URL url;
+	private Socket socket;
+	private PrintWriter outStream;
+	private BufferedReader inStream;
 	private List<Transmission> outBuffer = Collections.synchronizedList(new LinkedList<>());
 	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
+	private int connectionRetries;
 
 	protected Client() {
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
-		} catch (MalformedURLException e) {
+			this.socket = new Socket(url.getHost(), url.getPort());
+			outStream = new PrintWriter(socket.getOutputStream(), true);
+			inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+			socket.setKeepAlive(true);
+			socket.setSoTimeout(500);
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -59,22 +68,18 @@ public class Client {
 	 * 3. close connection
 	 */
 	private void connect() {
-		try (
-				Socket socket = new Socket(url.getHost(), url.getPort());
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-		) {
+		try {
 			// Sending
 			for (Transmission data : outBuffer) {
 				String json = JSONTransformer.toJSON(data);
-				out.println(json);
+				outStream.println(json);
 			}
 			outBuffer.clear();
 			socket.shutdownOutput();
 
 			// Receiving
 			String json;
-			while ((json = in.readLine()) != null) {
+			while ((json = inStream.readLine()) != null) {
 				Transmission data = JSONTransformer.fromJSON(json, Transmission.class);
 				inBuffer.add(data);
 			}
