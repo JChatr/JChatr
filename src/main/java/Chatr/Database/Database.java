@@ -35,7 +35,7 @@ public class Database {
 	/**
 	 * provides concurrency support
 	 */
-	private Database() {
+	Database() {
 		this.users = new ConcurrentHashMap<>();
 		this.links = new ConcurrentHashMap<>();
 		this.conversations = new ConcurrentHashMap<>();
@@ -52,8 +52,18 @@ public class Database {
 		return users.putIfAbsent(user.getUserID(), user) == null;
 	}
 
+
 	/**
 	 * read the user from the users table
+	 *
+	 * @return the found user object if contained in the table
+	 */
+	public User readUser(String userID) {
+		return this.users.get(userID);
+	}
+
+	/**
+	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
 	 */
@@ -70,7 +80,12 @@ public class Database {
 	 * @return if the update was successful
 	 */
 	public boolean updateUser(User user) {
-		return users.put(user.getUserID(), user) != null;
+		if (users.get(user.getUserID()) == null) {
+			return false;
+		} else {
+			users.put(user.getUserID(), user);
+			return true;
+		}
 	}
 
 	/**
@@ -81,7 +96,7 @@ public class Database {
 	 */
 	public boolean deleteUser(String userID) {
 		boolean remove = users.remove(userID) != null;
-		remove &= links.remove(userID) != null;
+		links.remove(userID);
 		return remove;
 	}
 
@@ -97,6 +112,7 @@ public class Database {
 	}
 
 	public boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+		if (conversations.get(conversationID) == null) return false;
 		unLinkConversation(conversationID);
 		return linkConversation(conversationID, userIDs);
 	}
@@ -109,9 +125,8 @@ public class Database {
 	 */
 	public Conversation readConversation(String conversationID, String userID) {
 		Set<User> members = followLinksUser(conversationID);
-		Conversation build = Conversation.newConversation();
-		build.setID(conversationID).setLocalUserID(userID).setMembers(members);
-		build.addMessages(readNewerMessages(conversationID, 0L));
+		Conversation build = Conversation.preConfigServer(conversationID, userID,
+				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
 		return build;
 	}
 
@@ -187,6 +202,7 @@ public class Database {
 			return false;
 		}
 	}
+
 	/**
 	 * deletes a message from the table
 	 *
@@ -211,10 +227,10 @@ public class Database {
 	 * @param conversationID ID to links
 	 */
 	private boolean linkConversation(String conversationID, Set<String> userIDs) {
-		boolean status = true;
+		boolean status = false;
 		for (String userID : userIDs) {
-			status &= links.putIfAbsent(userID, new HashSet<>()) == null;
-			status &= links.get(userID).add(conversationID);
+			status |= links.putIfAbsent(userID, new HashSet<>()) == null;
+			status |= links.get(userID).add(conversationID);
 		}
 		return status;
 	}
@@ -237,7 +253,10 @@ public class Database {
 	 * @param conversationID ID to break the links for
 	 */
 	private void unLinkConversation(final String conversationID) {
-		links.values().forEach(c -> c.remove(conversationID));
+		links.values().forEach(c -> {
+			c.remove(conversationID);
+			if (c.isEmpty()) links.values().remove(c);
+		});
 	}
 
 	/**
@@ -249,19 +268,19 @@ public class Database {
 	 */
 	public List<Message> readNewerMessages(String conversationID, Long timestamp) {
 		Map<Long, Message> messages = conversations.get(conversationID);
-		List<Message> out = new ArrayList<>();
+		List<Message> out = new LinkedList<>();
 		messages.forEach((ts, m) -> {
 			if (ts > timestamp) out.add(m);
 		});
 		return out;
 	}
 
-	public void print(){
+	public void print() {
 		System.out.println("USERS:");
 		users.forEach((id, u) -> System.out.println("  - " + u));
 
 		System.out.println("LINKS:");
-		links.forEach((id, l) -> System.out.println("  - " + id + ":"+ l));
+		links.forEach((id, l) -> System.out.println("  - " + id + ":" + l));
 
 		System.out.println("CONVERSATIONS:");
 		for (Map.Entry<String, Map<Long, Message>> c : conversations.entrySet()) {
