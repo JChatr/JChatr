@@ -29,13 +29,17 @@ public class Database {
 	 * @return a globally unique instance of the Database object
 	 */
 	public static Database getCachedDatabase() {
-		return (instance == null) ? instance = new Database() : instance;
+		if (instance == null) {
+			instance = new Database();
+			DatabaseFixtures.generate(instance);
+		}
+		return instance;
 	}
 
 	/**
 	 * provides concurrency support
 	 */
-	Database() {
+	private Database() {
 		this.users = new ConcurrentHashMap<>();
 		this.links = new ConcurrentHashMap<>();
 		this.conversations = new ConcurrentHashMap<>();

@@ -13,7 +13,7 @@ import java.util.Objects;
 public class User {
 
 	private String userName = "";
-	private String userID = HashGen.getID(false);
+	private String userID = "";
 	public String userPicture = "";
 	private String email = "";
 	private String emailMD5 = "";
@@ -21,10 +21,10 @@ public class User {
 	
 	/**
 	 * Constructor to create user object with the user name.
-	 * @param userName The name of the user.
+	 * @param userID The name of the user.
 	 */
-	public User(String userName){
-		this.userName = userName;
+	public User(String userID){
+		this.userID = userID;
 	}
 
 	/**
