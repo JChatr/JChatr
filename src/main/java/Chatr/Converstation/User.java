@@ -74,6 +74,14 @@ public class User {
 		this.email = email.toLowerCase();
 		return this;
 	}
+	
+	public boolean syntaxEmail(String email){
+		if(email.contains(".") && email.contains("@")){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	public Status getStatus() {
 		return status;
