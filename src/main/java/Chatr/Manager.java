@@ -124,9 +124,10 @@ public class Manager {
 	}
 
 	private static void initialize() {
-		System.out.print("Enter your Username: ");
+		System.out.print("Enter your nickname (@Nickname): ");
 		String userName = Terminal.getUserInput();
-		localUser = new User(userName);
+		localUser = Login.loginUser(userName);
+		//localUser = new User(userName);
 		System.out.print("who do you want to chat with ? : ");
 		String otherUser = Terminal.getUserInput();
 		Connection.createUser(localUser.getUserID(), localUser);

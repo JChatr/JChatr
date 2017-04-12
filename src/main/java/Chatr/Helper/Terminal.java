@@ -12,7 +12,6 @@ public class Terminal {
 		try {
 			return scan.nextLine().replaceAll("\\r|\\n", "");
 		} catch (Exception e) {
-//			e.printStackTrace();
 			return getUserInput();
 		}
 	}
