@@ -1,39 +1,44 @@
 package Chatr.Server;
 
 import Chatr.Helper.JSONTransformer;
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.net.SocketTimeoutException;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Thread of the server handling the connection
  */
-public class ServerThread extends Thread {
+public class ServerThread implements Runnable {
 	private Socket socket;
 	private String remote;
-	private List<Transmission> inCache;
+	private BlockingQueue<Transmission> queue;
+	private PrintWriter outStream;
+	private BufferedReader inStream;
+	private boolean shutdown;
 
 	/**
 	 * Instantiates the ServerThread
 	 *
 	 * @param socket open socket to use for connecting to the client
 	 */
-	protected ServerThread(Socket socket) {
-		super("ServerTread");
-		this.socket = socket;
+	ServerThread(Socket socket) {
+		this.queue = new LinkedBlockingDeque<>();
 		try {
+			outStream = new PrintWriter(socket.getOutputStream(), true);
+			inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			socket.setKeepAlive(true);
-			socket.setSoTimeout(100);
+			socket.setSoTimeout(200);
 		} catch (IOException e) {
+			e.printStackTrace();
 		}
-
-		this.inCache = new ArrayList<>();
+		this.socket = socket;
 	}
 
 	/**
@@ -41,32 +46,45 @@ public class ServerThread extends Thread {
 	 */
 	@Override
 	public void run() {
-		try (
-				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
-		) {
-			// Receiving
-			String JSON;
-			while ((JSON = in.readLine()) != null) {
-				Transmission data = JSONTransformer.decode(JSON, Transmission.class);
-				System.out.println(data);
-				inCache.add(data);
-			}
-			System.out.println("request  = " + inCache);
+		while (!shutdown) {
+			try {
+				// Receiving
+				try {
+					String JSON;
+					while ((JSON = inStream.readLine()) != null) {
+						Transmission data = JSONTransformer.decode(JSON, Transmission.class);
+						queue.add(data);
+					}
+				} catch (SocketTimeoutException ste) {
+					System.err.println("server read timeout");
+				}
+				System.out.println("request  = " + queue);
 
-			// Processing
-			MessageHandler handler = new MessageHandler(inCache);
-			List<Transmission> response = handler.process();
-			System.out.println("response = " + response);
-			// Sending
-			for (Transmission obj : response) {
-				String outJSON = JSONTransformer.encode(obj);
-				out.println(outJSON);
+				// Processing
+				MessageHandler handler = new MessageHandler(queue.take());
+				List<Transmission> response = handler.process();
+
+				System.out.println("response = " + queue);
+				// Sending
+				for (Transmission obj : response) {
+					String outJSON = JSONTransformer.encode(obj);
+					outStream.println(outJSON);
+				}
+			} catch (IOException | InterruptedException e) {
+				System.err.println("ERROR");
+				e.printStackTrace();
 			}
+		}
+	}
+
+	private void shutdown() {
+		try {
+			inStream.close();
+			outStream.close();
+			socket.shutdownInput();
+			socket.shutdownOutput();
 			socket.close();
 		} catch (IOException e) {
-			System.err.println("ERROR");
-			e.printStackTrace();
 		}
 	}
 }

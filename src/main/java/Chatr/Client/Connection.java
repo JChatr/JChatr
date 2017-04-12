@@ -7,7 +7,8 @@ import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
@@ -16,8 +17,10 @@ public class Connection {
 
 	private static Client client = new Client();
 
+	/**
+	 * do not use this constructor all methods in this class are supposed to be static
+	 */
 	private Connection() {
-
 	}
 
 	/**

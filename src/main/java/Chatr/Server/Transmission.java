@@ -188,6 +188,7 @@ public class Transmission {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
+		sb.append("{");
 		try {
 			for (Field field : this.getClass().getDeclaredFields()) {
 				if (field.get(this) != null) {
@@ -196,6 +197,7 @@ public class Transmission {
 			}
 		} catch (IllegalAccessException e) {
 		}
+		sb.append("}");
 		return sb.toString();
 	}
 }

@@ -13,22 +13,24 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.*;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * Connects to the server and sends / receives Requests
  */
-public class Client {
+class Client implements Runnable {
 	private URL url;
 	private Socket socket;
 	private PrintWriter outStream;
 	private BufferedReader inStream;
-	private List<Transmission> outBuffer = Collections.synchronizedList(new LinkedList<>());
-	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
+	private BlockingQueue<Transmission> queue;
 	private int connectionRetries;
+	private boolean shutdown;
 
 	Client() {
+		this.queue = new LinkedBlockingQueue<>();
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
 			this.socket = new Socket(url.getHost(), url.getPort());
@@ -36,12 +38,20 @@ public class Client {
 			inStream = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
 			socket.setKeepAlive(true);
-//			socket.setSoTimeout(500);
+			socket.setTcpNoDelay(true);
+			socket.setSoTimeout(500);
 
-//			sendHeartbeat();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		startThread();
+//		sendHeartbeat();
+	}
+
+	private void startThread() {
+//		Executors.newSingleThreadExecutor().execute(this);
+		Thread t = new Thread(this, "Connection Thread " + this.toString());
+		t.start();
 	}
 
 	/**
@@ -50,71 +60,72 @@ public class Client {
 	 * @return separated lines of the Server's response
 	 */
 	protected Transmission get(Transmission request) {
-		outBuffer.add(request);
-		send(request);
-		return filterResponse(request);
-	}
-
-	protected List<Transmission> getMultiple(Transmission request) {
-		outBuffer.add(request);
-		send(request);
-		return filterResponses(request);
-	}
-
-
-	//
-
-	/**
-	 * Protocol:
-	 * 1. Send request
-	 * 2. read all lines of the response from the server
-	 * 3. close connection
-	 */
-	private void send(Transmission data) {
+		long startTime = System.currentTimeMillis();
+		queue.add(request);
+		Transmission response = null;
 		try {
-			// Sending
-			outStream.println(JSONTransformer.encode(data));
-			// Receiving
-			String json;
-			while ((json = inStream.readLine()) != null) {
-				inBuffer.add(JSONTransformer.decode(json, Transmission.class));
+			Thread.sleep(10);
+			response = queue.take();
+			if (response == null) {
+				reconnect();
 			}
-//		} catch (SocketTimeoutException ste) {
-//			connectionRetries++;
-//			ste.printStackTrace();
-//			send(data);
-		} catch (IOException ioe) {
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			get(request);
+		}
+		System.out.println(String.format("time: %d ms", (System.currentTimeMillis() - startTime)));
+		System.out.println("returned response = " + response);
+		return response;
+	}
 
+
+	@Override
+	public void run() {
+		while (!shutdown) {
+			try {
+				// Sending head of queue
+				outStream.println(JSONTransformer.encode(queue.take()));
+				// Receiving response until timeout
+				String json;
+				try {
+					while ((json = inStream.readLine()) != null) {
+						queue.add(JSONTransformer.decode(json, Transmission.class));
+					}
+				} catch (SocketTimeoutException ste) {
+					System.err.println("client read timeout");
+				}
+			} catch (IOException | InterruptedException ioe) {
+			}
 		}
 	}
 
-	private Transmission filterResponse(Transmission request) {
-		Iterator<Transmission> it = inBuffer.iterator();
-		Transmission tran = null;
-		while (it.hasNext()) {
-			tran = it.next();
-			if (tran.getRequestType() == request.getRequestType() &&
-					tran.getCRUD() == request.getCRUD()) {
-				it.remove();
-				break;
-			}
-		}
-		return tran;
-	}
-
-	private List<Transmission> filterResponses(Transmission request) {
-		List<Transmission> filter = new ArrayList<>();
-		Iterator<Transmission> it = inBuffer.iterator();
-		while (it.hasNext()) {
-			Transmission tran = it.next();
-			if (tran.getRequestType() == request.getRequestType() &&
-					tran.getCRUD() == request.getCRUD()) {
-				filter.add(tran);
-				it.remove();
-			}
-		}
-		return filter;
-	}
+//	private Transmission filterResponse(Transmission request) {
+//		Iterator<Transmission> it = queue.iterator();
+//		Transmission tran = null;
+//		while (it.hasNext()) {
+//			tran = it.next();
+//			if (tran.getRequestType() == request.getRequestType() &&
+//					tran.getCRUD() == request.getCRUD()) {
+//				it.remove();
+//				break;
+//			}
+//		}
+//		return tran;
+//	}
+//
+//	private List<Transmission> filterResponses(Transmission request) {
+//		List<Transmission> filter = new ArrayList<>();
+//		Iterator<Transmission> it = queue.iterator();
+//		while (it.hasNext()) {
+//			Transmission tran = it.next();
+//			if (tran.getRequestType() == request.getRequestType() &&
+//					tran.getCRUD() == request.getCRUD()) {
+//				filter.add(tran);
+//				it.remove();
+//			}
+//		}
+//		return filter;
+//	}
 
 	private void sendHeartbeat() {
 		Executors.newSingleThreadExecutor().execute(() -> {
@@ -122,12 +133,17 @@ public class Client {
 			boolean shutdown = false;
 			while (!shutdown) {
 				heartbeat.setTimestamp(System.currentTimeMillis());
-				send(heartbeat);
+				run();
 			}
 		});
 	}
 
+	private void reconnect() {
+		System.err.println("response was null");
+	}
+
 	protected void shutdown() {
+		this.shutdown = true;
 		try {
 			inStream.close();
 			outStream.close();
@@ -137,4 +153,5 @@ public class Client {
 		} catch (IOException e) {
 		}
 	}
+
 }

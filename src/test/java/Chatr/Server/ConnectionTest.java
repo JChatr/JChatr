@@ -179,7 +179,8 @@ public class ConnectionTest {
 	@Test
 	public void createUser() {
 		User u3 = new User("93049q345");
-		assertTrue(Connection.createUser(u3.getUserID(), u3));
+		boolean read = Connection.createUser(u3.getUserID(), u3);
+		assertTrue(read);
 	}
 
 	@Test

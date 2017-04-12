@@ -29,7 +29,7 @@ public class Server implements Runnable {
 	 */
 	@Override
 	public void run() {
-		Executor ex = Executors.newFixedThreadPool(6);
+		Executor ex = Executors.newFixedThreadPool(10);
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
 			System.out.println("Server started at: " + CONFIG.SERVER_ADDRESS);
 			while (true) {

@@ -29,7 +29,7 @@ public class Manager {
 		startServer();
 		initialize();
 		userInteraction();
-		System.out.printf("Connecting to  : %s \n\n", CONFIG.SERVER_ADDRESS);
+		System.out.printf("Connected to  : %s \n\n", CONFIG.SERVER_ADDRESS);
 		int counter = 0;
 		while (true) {
 			// pull Messages
@@ -47,7 +47,6 @@ public class Manager {
 				users = Connection.readUsers();
 				counter = 0;
 			}
-
 		}
 	}
 
@@ -55,7 +54,7 @@ public class Manager {
 	 * this method is for testing purposes ONLY delete when manager gets properly implemented
 	 */
 	private static void startServer() {
-		new Thread(new Server()).start();
+		new Thread(new Server(), "Server dispatch Thread").start();
 	}
 
 	private static void userInteraction() {
