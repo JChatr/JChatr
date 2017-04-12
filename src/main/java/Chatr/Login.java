@@ -3,7 +3,6 @@ package Chatr;
 import Chatr.Client.Connection;
 import Chatr.Converstation.User;
 import Chatr.Helper.Terminal;
-import sun.security.x509.X500Name;
 
 /**
  * Class to login into your user account or to create one.
@@ -11,6 +10,8 @@ import sun.security.x509.X500Name;
  * @author mk285
  */
 public class Login {
+	
+	private static String email;
 
 	/**
 	 * Checks if user userID exists. Else creates user userID.
@@ -36,8 +37,19 @@ public class Login {
 			user = new User(userID);
 			System.out.print("Enter your display name: ");
 			user.setUserName(Terminal.getUserInput());
+			
+			
 			System.out.print("Enter your email: ");
-			user.setEmail(Terminal.getUserInput());
+			email = Terminal.getUserInput();
+			while(user.syntaxEmail(email) == false){
+				System.out.println("Invalid input, please try again: ");
+				email = Terminal.getUserInput();
+			}
+			user.setEmail(email);
+			
+			
+			
+			
 			Connection.createUser(userID, user);
 			return user;
 		}
