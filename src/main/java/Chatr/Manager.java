@@ -80,11 +80,21 @@ public class Manager {
 		);
 		switch (Terminal.getUserInput().toLowerCase()) {
 			case "add":
-				System.out.println("enter the username you want to invite: ");
+				System.out.println("* : back to main menu\n"
+						+ "enter the username you want to invite: ");
+				
+				if(Terminal.getUserInput().equals("*")){
+					menu();
+				}
 				currentChat.addMember(findUser());
 				break;
 			case "change":
-				System.out.println("enter the new chat rooms name: ");
+				System.out.println("* : back to main menu\n"
+						+ "enter the new chat rooms name: ");
+		
+				if(Terminal.getUserInput().equals("*")){
+					menu();
+				}
 				currentChat = changeChat();
 				break;
 		}
@@ -93,12 +103,16 @@ public class Manager {
 	}
 
 	private static User findUser() {
-		Terminal.display("USERS: ");
+		Terminal.display("* : back to main menu\n"
+				+ "USERS: ");
 		users.forEach(u -> {
 			if (!u.equals(localUser))
 				Terminal.display(String.format("  - NAME: %5.5s | ID: %5.5s", u.getUserName(), u.getUserID()));
 		});
 		String userName = Terminal.getUserInput();
+		if(userName.equals("*")){
+			menu();
+		}
 		for (User user : users) {
 			if (user.getUserName().equals(userName)) {
 				Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
