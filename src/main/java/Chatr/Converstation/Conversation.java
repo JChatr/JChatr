@@ -78,6 +78,10 @@ public class Conversation {
 
 	}
 
+	public void setLocalUser(String userID){
+		this.localUser= userID;
+	}
+
 
 
 	public String getID() {
