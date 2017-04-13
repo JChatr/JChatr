@@ -73,36 +73,47 @@ public class Manager {
 
 	private static void menu() {
 		blockOutput = true;
-		System.out.println("MAIN MENU:");
-		System.out.println("add    : Add a User to the current chat room\n" +
-				"change : Change to another chat room\n" +
-				"*      : continue posting in the current chat room"
-		);
-		switch (Terminal.getUserInput().toLowerCase()) {
-			case "add":
-				System.out.println("* : back to main menu\n"
-						+ "enter the username you want to invite: ");
+		boolean exit= false;
+
+		do {
+			System.out.println("MAIN MENU:");
+			System.out.println("add    : Add a User to the current chat room\n" +
+					"change : Change to another chat room\n" +
+					"*      : continue posting in the current chat room"
+			);
+			switch (Terminal.getUserInput().toLowerCase()) {
+				case "add":
+				/*System.out.println("* : back to main menu\n"
+						+ "enter the username you want to invite: ");*/
 				
-				if(Terminal.getUserInput().equals("*")){
+				/*if(Terminal.getUserInput().equals("*")){
 					menu();
-				}
-				currentChat.addMember(findUser());
-				break;
-			case "change":
-				System.out.println("* : back to main menu\n"
-						+ "enter the new chat rooms name: ");
-		
-				if(Terminal.getUserInput().equals("*")){
-					menu();
-				}
-				currentChat = changeChat();
-				break;
-		}
+					break;
+
+				}*/
+
+					exit =addUser();
+					break;
+				case "change":
+					System.out.println("* : back to main menu\n"
+							+ "enter the new chat rooms name: ");
+
+					exit= changeChat();
+					break;
+
+				default:
+					exit=true;
+					break;
+			}
+
+		}while(!exit);
+
 		System.out.println("exiting menu");
 		blockOutput = false;
+
 	}
 
-	private static User findUser() {
+	private static boolean addUser() {
 		Terminal.display("* : back to main menu\n"
 				+ "USERS: ");
 		users.forEach(u -> {
@@ -111,30 +122,43 @@ public class Manager {
 		});
 		String userName = Terminal.getUserInput();
 		if(userName.equals("*")){
-			menu();
+
+			return false;
 		}
-		for (User user : users) {
-			if (user.getUserName().equals(userName)) {
-				Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
-				return user;
+		else{
+			for (User user : users) {
+				if (user.getUserName().equals(userName)) {
+					Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
+					currentChat.addMember(user);
+					return true;
+				}
 			}
+			Terminal.display("could not find that user, please enter another username:  ");
+			addUser();
+			return true;
 		}
-		Terminal.display("could not find that user, please enter another username:  ");
-		return findUser();
+
 	}
 
-	private static Conversation changeChat(){
+	private static boolean changeChat(){
 		Terminal.display("CHATS");
 		userChats.forEach(conversation -> Terminal.display(String.format("  - ID: %5.5s", conversation.getID())));
 		String conversation = Terminal.getUserInput();
-		for (Conversation c: userChats) {
-			if (c.getID().startsWith(conversation.toLowerCase())) {
-				Terminal.display(String.format("switched to Chat: %5.5s", c.getID()));
-				return c;
-			}
+		if(conversation.equals("*")){
+			return false;
 		}
-		Terminal.display("could not find that chat, please try again");
-		return changeChat();
+		else {
+			for (Conversation c : userChats) {
+				if (c.getID().startsWith(conversation.toLowerCase())) {
+					Terminal.display(String.format("switched to Chat: %5.5s", c.getID()));
+					currentChat= c;
+					return true;
+				}
+			}
+			Terminal.display("could not find that chat, please try again");
+			changeChat();
+			return true;
+		}
 	}
 
 	private static void initialize() {

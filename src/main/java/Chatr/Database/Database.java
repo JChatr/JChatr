@@ -155,7 +155,10 @@ public class Database {
 	public Set<Conversation> readUserConversations(String userID) {
 		Set<Conversation> userConv = new HashSet<>();
 		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
-			userConv.add(readConversation(conversationID, userID));
+
+			Conversation c = readConversation(conversationID, userID);
+			c.setLocalUser(userID);
+			userConv.add(c);
 		}
 		return userConv;
 	}
