@@ -127,8 +127,8 @@ public class Manager {
 		}
 		else{
 			for (User user : users) {
-				if (user.getUserName().equals(userName)) {
-					Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
+				if (user.getUserName().startsWith(userName)) {
+						Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
 					currentChat.addMember(user);
 					return true;
 				}
