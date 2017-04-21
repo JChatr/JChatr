@@ -12,8 +12,13 @@
 .DS_Store
 
 # Maven
-log/
 target/
+
+# compiled JAR files
+*.jar
+
+# logfiles
+logs/
 
 id_rsa*
 dependency-reduced-pom.xml

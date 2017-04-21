@@ -4,6 +4,8 @@ import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Database.Database;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.crypto.AEADBadTagException;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ public class MessageHandler {
 	private List<Transmission> requests;
 	private List<Transmission> responses;
 	private Notifier notifier;
+	private Logger log = LogManager.getLogger(MessageHandler.class);
+
 
 	/**
 	 * Instantiates the MessageHandler
@@ -32,7 +36,9 @@ public class MessageHandler {
 	}
 
 	protected List<Transmission> process() {
+		log.trace("requests: " + requests);
 		routeRequests();
+		log.trace("response: " + responses);
 		return getResponses();
 	}
 
@@ -122,7 +128,8 @@ public class MessageHandler {
 						case READ:
 							Set<User> users = database.readUsers();
 							responses.add(request.reset().setUsers(users));
-							break; }
+							break;
+					}
 					break;
 				case STATUS:
 					break;
