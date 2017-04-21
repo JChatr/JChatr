@@ -1,8 +1,8 @@
 package Chatr.Server;
 
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,7 +11,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.CRC32;
 
 /**
  * Thread of the server handling the connection
@@ -20,6 +19,7 @@ public class ServerThread extends Thread {
 	private Socket socket;
 	private String remote;
 	private List<Transmission> inCache;
+	private Logger log = LogManager.getLogger(ServerThread.class);
 
 	/**
 	 * Instantiates the ServerThread
@@ -48,12 +48,13 @@ public class ServerThread extends Thread {
 				inCache.add(data);
 			}
 			socket.shutdownInput();
-				System.out.println("request  = " + inCache);
+			log.debug(inCache);
 
 			// Processing
 			MessageHandler handler = new MessageHandler(inCache);
 			List<Transmission> response = handler.process();
-			System.out.println("response = " + response);
+			log.debug(response);
+
 			// Sending
 			for (Transmission obj : response) {
 				String outJSON = JSONTransformer.toJSON(obj);
@@ -62,8 +63,7 @@ public class ServerThread extends Thread {
 			socket.shutdownOutput();
 			socket.close();
 		} catch (IOException e) {
-			System.err.println("ERROR");
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 }
