@@ -3,6 +3,8 @@ package Chatr;
 import Chatr.Client.Connection;
 import Chatr.Converstation.User;
 import Chatr.Helper.Terminal;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 /**
  * Class to login into your user account or to create one.
@@ -12,7 +14,7 @@ import Chatr.Helper.Terminal;
 public class Login {
 
 	private static String email;
-
+	private static Logger log = LogManager.getLogger(Login.class);
 	/**
 	 * Checks if user userID exists. Else creates user userID.
 	 *
@@ -24,21 +26,23 @@ public class Login {
 		while (!userID.startsWith("@") || userID.length() < 4) {
 			nickcounter++;
 			if (nickcounter == 5) {
+				log.error(String.format("Nickname retry limit of %d reached", 5));
 				throw new IllegalStateException();
 			}
-			System.out.println("Nicknames must start with a '@' and have at least three chars! Try again!");
+			Terminal.display("Nicknames must start with a '@' and have at least three chars! Try again!");
 			userID = Terminal.getUserInput();
 		}
 
 		User user = null;
 		if ((user = Connection.readUser(userID)) != null) {
+			log.info(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
 			return user;
 		} else {
 			user = new User(userID);
-			System.out.print("Enter your display name: ");
+			Terminal.display("Enter your display name: ");
 			user.setUserName(Terminal.getUserInput());
 
-			System.out.print("Enter your email: ");
+			Terminal.display("Enter your email: ");
 			email = Terminal.getUserInput();
 			while (!user.syntaxEmail(email)) {
 				System.out.println("Invalid input, please try again: ");
@@ -46,6 +50,7 @@ public class Login {
 			}
 			user.setEmail(email);
 			Connection.createUser(userID, user);
+			log.info(String.format("created User %s|%s", user.getUserID(), user.getUserName()));
 			return user;
 		}
 	}

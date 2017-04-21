@@ -2,13 +2,13 @@
 <Configuration>
     <Properties>
         <Property name="log-path">logs</Property>
+        <Property name="archive">${log-path}/archive</Property>
+    </Properties>
 
-                <pattern>   <Property name="archive">${log-path}/archive</Property>
-                </Properties>
-
-                <Appenders>
-                <Console name="Console-Appender" target="SYSTEM_OUT">
-                <PatternLayout>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
                     [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
                 </pattern>
             </PatternLayout>
@@ -31,15 +31,16 @@
             <DefaultRolloverStrategy max="30"/>
         </RollingFile>
     </Appenders>
-
+    <!-- the Logger is currently not getting used. There's some issue with the Group ID / ArtifactID in the name -->
     <Loggers>
-        <Logger name="SD2_Chatr.Chatr" level="all" additivity="false">
+        <Logger name="SD2_Chatr.Chatr" level="debug" additivity="false">
             <AppenderRef ref="File-Appender" level="error"/>
+            <AppenderRef ref="RollingFile-Appender" level="debug"/>
             <AppenderRef ref="Console-Appender" level="info"/>
         </Logger>
         <Root level="debug">
             <AppenderRef ref="RollingFile-Appender" level="debug"/>
-            <!--<AppenderRef ref="Console-Appender"/>-->
+            <AppenderRef ref="Console-Appender"/>
         </Root>
     </Loggers>
 </Configuration>

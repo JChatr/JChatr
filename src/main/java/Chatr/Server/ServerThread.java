@@ -17,7 +17,6 @@ import java.util.List;
  */
 public class ServerThread extends Thread {
 	private Socket socket;
-	private String remote;
 	private List<Transmission> inCache;
 	private Logger log = LogManager.getLogger(ServerThread.class);
 
@@ -41,6 +40,7 @@ public class ServerThread extends Thread {
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
+			log.debug("Opened Connection with: " + socket.getRemoteSocketAddress());
 			// Receiving
 			String JSON;
 			while ((JSON = in.readLine()) != null) {
@@ -48,12 +48,9 @@ public class ServerThread extends Thread {
 				inCache.add(data);
 			}
 			socket.shutdownInput();
-			log.debug(inCache);
-
 			// Processing
 			MessageHandler handler = new MessageHandler(inCache);
 			List<Transmission> response = handler.process();
-			log.debug(response);
 
 			// Sending
 			for (Transmission obj : response) {
@@ -61,9 +58,10 @@ public class ServerThread extends Thread {
 				out.println(outJSON);
 			}
 			socket.shutdownOutput();
+			log.debug("Closed Connection with: " + socket.getRemoteSocketAddress());
 			socket.close();
 		} catch (IOException e) {
-			log.error(e);
+			log.error("IOException", e);
 		}
 	}
 }

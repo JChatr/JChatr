@@ -3,6 +3,8 @@ package Chatr.Database;
 import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +22,7 @@ public class Database {
 	// CONV_ID | MESSAGE_TS | MESSAGE
 	// ConcurrentHashMap -> LinkedHashMap
 	private Map<String, Map<Long, Message>> conversations;
+	private Logger log = LogManager.getLogger(Database.class);
 
 	private static Database instance;
 
@@ -66,7 +69,8 @@ public class Database {
 		return this.users.get(userID);
 	}
 
-	/**x
+	/**
+	 * x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
@@ -155,7 +159,6 @@ public class Database {
 	public Set<Conversation> readUserConversations(String userID) {
 		Set<Conversation> userConv = new HashSet<>();
 		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
-
 			Conversation c = readConversation(conversationID, userID);
 			c.setLocalUser(userID);
 			userConv.add(c);
@@ -185,7 +188,8 @@ public class Database {
 		try {
 			return conversations.get(conversationID).put(message.getTime(), message) == null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to add Message %s to conversation %s", message, conversationID));
+			log.info(e);
 			return false;
 		}
 	}
@@ -202,7 +206,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).get(timestamp);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to find Message with %s in conversation %s", timestamp, conversationID), e);
 			throw new NoSuchElementException();
 		}
 	}
@@ -218,6 +222,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).put(message.getTime(), message) != null;
 		} catch (NullPointerException e) {
+			log.info(String.format("unable to update Message with %s in conversation %s", message, conversationID), e);
 			return false;
 		}
 	}
@@ -233,7 +238,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).remove(timestamp) != null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to delete Message %s in conversation %s", timestamp, conversationID), e);
 			return false;
 		}
 	}
@@ -284,6 +289,7 @@ public class Database {
 		}
 		return linkedUsers;
 	}
+
 	/**
 	 * reads all newer messages than the provided timestamp
 	 *

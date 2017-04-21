@@ -8,6 +8,8 @@ import Chatr.Converstation.User;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +26,7 @@ public class Manager {
 	private static Set<Conversation> userChats;
 	private static boolean blockOutput = false;
 	private static Set<User> users;
+	private static Logger log = LogManager.getLogger(Manager.class);
 
 	public static void main(String[] args) {
 		startServer();
@@ -47,7 +50,6 @@ public class Manager {
 				users = Connection.readUsers();
 				counter = 0;
 			}
-
 		}
 	}
 
@@ -55,7 +57,7 @@ public class Manager {
 	 * this method is for testing purposes ONLY delete when manager gets properly implemented
 	 */
 	private static void startServer() {
-		new Thread(new Server()).start();
+		Executors.newSingleThreadExecutor().execute(new Server());
 	}
 
 	private static void userInteraction() {
@@ -73,8 +75,7 @@ public class Manager {
 
 	private static void menu() {
 		blockOutput = true;
-		boolean exit= false;
-
+		boolean exit = false;
 		do {
 			System.out.println("MAIN MENU:");
 			System.out.println("add    : Add a User to the current chat room\n" +
@@ -83,30 +84,18 @@ public class Manager {
 			);
 			switch (Terminal.getUserInput().toLowerCase()) {
 				case "add":
-				/*System.out.println("* : back to main menu\n"
-						+ "enter the username you want to invite: ");*/
-				
-				/*if(Terminal.getUserInput().equals("*")){
-					menu();
-					break;
-
-				}*/
-
-					exit =addUser();
+					exit = addUser();
 					break;
 				case "change":
 					System.out.println("* : back to main menu\n"
 							+ "enter the new chat rooms name: ");
-
-					exit= changeChat();
+					exit = changeChat();
 					break;
-
 				default:
-					exit=true;
+					exit = true;
 					break;
 			}
-
-		}while(!exit);
+		} while (!exit);
 
 		System.out.println("exiting menu");
 		blockOutput = false;
@@ -121,15 +110,13 @@ public class Manager {
 				Terminal.display(String.format("  - NAME: %5.5s | ID: %5.5s", u.getUserName(), u.getUserID()));
 		});
 		String userName = Terminal.getUserInput();
-		if(userName.equals("*")){
-
+		if (userName.equals("*")) {
 			return false;
-		}
-		else{
+		} else {
 			for (User user : users) {
 				if (user.getUserName().startsWith(userName)) {
-						Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
 					currentChat.addMember(user);
+					Terminal.display(String.format("added %5.5s to %5.5s", user.getUserName(), currentChat.getID()));
 					return true;
 				}
 			}
@@ -140,18 +127,17 @@ public class Manager {
 
 	}
 
-	private static boolean changeChat(){
+	private static boolean changeChat() {
 		Terminal.display("CHATS");
 		userChats.forEach(conversation -> Terminal.display(String.format("  - ID: %5.5s", conversation.getID())));
 		String conversation = Terminal.getUserInput();
-		if(conversation.equals("*")){
+		if (conversation.equals("*")) {
 			return false;
-		}
-		else {
+		} else {
 			for (Conversation c : userChats) {
 				if (c.getID().startsWith(conversation.toLowerCase())) {
 					Terminal.display(String.format("switched to Chat: %5.5s", c.getID()));
-					currentChat= c;
+					currentChat = c;
 					return true;
 				}
 			}

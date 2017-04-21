@@ -1,22 +1,27 @@
 package Chatr.Server;
 
 import Chatr.Helper.CONFIG;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
+import java.io.IOException;
+import java.net.BindException;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
 
 /**
- * Multithrea ded server, spawns a new Thread for every connection
+ * Multithreaded server, spawns a new Thread for every connection
  */
 public class Server implements Runnable {
 	URL url;
+	private Logger log = LogManager.getLogger(Server.class);
 
 	public Server() {
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 
@@ -28,12 +33,14 @@ public class Server implements Runnable {
 	@Override
 	public void run() {
 		try (ServerSocket serverSocket = new ServerSocket(url.getPort())) {
-			System.out.println("Server started at: " + CONFIG.SERVER_ADDRESS);
+			log.info("Server started at: " + url);
 			while (true) {
 				new ServerThread(serverSocket.accept()).start();
 			}
-		} catch (Throwable e) {
-			System.out.println("Server already started at: " + CONFIG.SERVER_ADDRESS);
+		} catch (BindException e) {
+			log.info("Server already started at: " + url);
+		} catch (IOException e) {
+			log.error(e);
 		}
 	}
 }
