@@ -2,8 +2,7 @@ package Chatr.GUI;
 
 import java.util.HashSet;
 
-import javax.swing.text.Element;
-import javax.swing.text.html.ListView;
+
 
 import javafx.application.Application;
 import javafx.stage.Stage;
