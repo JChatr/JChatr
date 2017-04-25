@@ -3,11 +3,14 @@ package Chatr.Client;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.JSONTransformer;
 import Chatr.Server.Transmission;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.MalformedURLException;
 import java.net.Socket;
 import java.net.URL;
@@ -20,12 +23,13 @@ public class Client {
 	private URL url;
 	private List<Transmission> outBuffer = Collections.synchronizedList(new LinkedList<>());
 	private List<Transmission> inBuffer = Collections.synchronizedList(new LinkedList<>());
+	private Logger log = LogManager.getLogger(Client.class);
 
 	protected Client() {
 		try {
 			this.url = new URL(CONFIG.SERVER_ADDRESS);
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			log.error("malformed URL", e);
 		}
 	}
 
@@ -79,8 +83,10 @@ public class Client {
 				inBuffer.add(data);
 			}
 			socket.shutdownInput();
+		} catch (ConnectException e) {
+			log.error(String.format("unable to connect to %s", url), e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 

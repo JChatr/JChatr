@@ -111,14 +111,14 @@ public class Transmission {
 		return this;
 	}
 
-	public String getLocalUserID() {
-		return localUserID;
-	}
+//	public String getLocalUserID() {
+//		return localUserID;
+//	}
 
-	public Transmission setLocalUserID(String userID) {
-		this.localUserID = userID;
-		return this;
-	}
+//	public Transmission setLocalUserID(String userID) {
+//		this.localUserID = userID;
+//		return this;
+//	}
 
 	public Boolean getStatus() {
 		return status;

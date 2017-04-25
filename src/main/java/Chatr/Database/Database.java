@@ -3,6 +3,8 @@ package Chatr.Database;
 import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +22,7 @@ public class Database {
 	// CONV_ID | MESSAGE_TS | MESSAGE
 	// ConcurrentHashMap -> LinkedHashMap
 	private Map<String, Map<Long, Message>> conversations;
+	private Logger log = LogManager.getLogger(Database.class);
 
 	private static Database instance;
 
@@ -29,13 +32,17 @@ public class Database {
 	 * @return a globally unique instance of the Database object
 	 */
 	public static Database getCachedDatabase() {
-		return (instance == null) ? instance = new Database() : instance;
+		if (instance == null) {
+			instance = new Database();
+			DatabaseFixtures.generate(instance);
+		}
+		return instance;
 	}
 
 	/**
 	 * provides concurrency support
 	 */
-	Database() {
+	private Database() {
 		this.users = new ConcurrentHashMap<>();
 		this.links = new ConcurrentHashMap<>();
 		this.conversations = new ConcurrentHashMap<>();
@@ -63,11 +70,23 @@ public class Database {
 	}
 
 	/**
+	 * x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
 	 */
 	public Set<User> readUsers() {
+		Set<User> users = new HashSet<>();
+		this.users.forEach((uID, user) -> users.add(user));
+		return users;
+	}
+
+	/**
+	 * read the user from the users table
+	 *
+	 * @return the found user object if contained in the table
+	 */
+	public Set<User> readUser() {
 		Set<User> users = new HashSet<>();
 		this.users.forEach((uID, user) -> users.add(user));
 		return users;
@@ -112,7 +131,8 @@ public class Database {
 	}
 
 	public boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
-		if (conversations.get(conversationID) == null) return false;
+		if (conversations.get(conversationID) == null ||
+				findConversationUsers(conversationID).equals(userIDs)) return false;
 		unLinkConversation(conversationID);
 		return linkConversation(conversationID, userIDs);
 	}
@@ -124,7 +144,7 @@ public class Database {
 	 * @return the assembled conversation
 	 */
 	public Conversation readConversation(String conversationID, String userID) {
-		Set<User> members = followLinksUser(conversationID);
+		Set<User> members = findConversationUsers(conversationID);
 		Conversation build = Conversation.preConfigServer(conversationID, userID,
 				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
 		return build;
@@ -139,7 +159,9 @@ public class Database {
 	public Set<Conversation> readUserConversations(String userID) {
 		Set<Conversation> userConv = new HashSet<>();
 		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
-			userConv.add(readConversation(conversationID, userID));
+			Conversation c = readConversation(conversationID, userID);
+			c.setLocalUser(userID);
+			userConv.add(c);
 		}
 		return userConv;
 	}
@@ -166,7 +188,8 @@ public class Database {
 		try {
 			return conversations.get(conversationID).put(message.getTime(), message) == null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to add Message %s to conversation %s", message, conversationID));
+			log.info(e);
 			return false;
 		}
 	}
@@ -183,7 +206,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).get(timestamp);
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to find Message with %s in conversation %s", timestamp, conversationID), e);
 			throw new NoSuchElementException();
 		}
 	}
@@ -199,6 +222,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).put(message.getTime(), message) != null;
 		} catch (NullPointerException e) {
+			log.info(String.format("unable to update Message with %s in conversation %s", message, conversationID), e);
 			return false;
 		}
 	}
@@ -214,7 +238,7 @@ public class Database {
 		try {
 			return conversations.get(conversationID).remove(timestamp) != null;
 		} catch (NullPointerException e) {
-			e.printStackTrace();
+			log.info(String.format("unable to delete Message %s in conversation %s", timestamp, conversationID), e);
 			return false;
 		}
 	}
@@ -235,17 +259,6 @@ public class Database {
 		return status;
 	}
 
-	private Set<User> followLinksUser(String conversationID) {
-		Set<User> linkedUsers = new HashSet<>();
-		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
-			for (String conversation : link.getValue()) {
-				if (conversation.equals(conversationID)) {
-					linkedUsers.add(users.get(link.getKey()));
-				}
-			}
-		}
-		return linkedUsers;
-	}
 
 	/**
 	 * breaks all links for that ID
@@ -257,6 +270,24 @@ public class Database {
 			c.remove(conversationID);
 			if (c.isEmpty()) links.values().remove(c);
 		});
+	}
+
+	/**
+	 * finds all Users for the given conversationID
+	 *
+	 * @param conversationID ID to search for
+	 * @return found users matching that conversationID
+	 */
+	private Set<User> findConversationUsers(String conversationID) {
+		Set<User> linkedUsers = new HashSet<>();
+		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
+			for (String conversation : link.getValue()) {
+				if (conversation.equals(conversationID)) {
+					linkedUsers.add(users.get(link.getKey()));
+				}
+			}
+		}
+		return linkedUsers;
 	}
 
 	/**

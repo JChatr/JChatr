@@ -12,79 +12,104 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 public class ConnectionTest {
-	private User u1;
-	private User u2;
-	private Conversation conversation;
 
 
+	/**
+	 * guarantees that the server is started when a test is run
+	 */
 	@Before
 	public void before() {
 		new Thread(new Server()).start();
-
-		Set<User> users = new HashSet<>();
-		LinkedList<Message> messages = new LinkedList<>();
-		u1 = new User("Alice");
-		u2 = new User("Bob");
-		users.add(u1);
-		users.add(u2);
-		messages.add(new Message(u1.getUserID(), "hi there"));
-		messages.add(new Message(u2.getUserID(), "hi as well"));
-		String conID = "2934239402394";
-		conversation = Conversation.preConfigServer(conID, u1.getUserID(), users, messages);
 	}
 
 	@Test
 	public void createValidConversation() {
-		boolean status = Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
+		User u1 = new User("createValidConversation"),
+				u2 = new User("createValidConversation2");
+		Set<User> users = new HashSet<>();
+		users.add(u1);
+		users.add(u2);
+		Conversation c = Conversation.preConfigServer("asihdfakslöf#", u1.getUserID(), users, new LinkedList<>());
+		boolean status = Connection.createConversation(c.getID(),
+				c.getMemberIDs());
 		assertTrue(status);
 	}
 
 	@Test
 	public void createIdenticalConversations() {
-		boolean status = Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		status &= Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		status &= Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		status &= Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		status &= Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		status &= Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
+		User u1 = new User("createIdenticalConversations");
+		Conversation c = Conversation.newConversation(u1, new User("createIdenticalConversations2"));
+		Set<Conversation> localC = new HashSet<>();
+		boolean status = Connection.createConversation(c.getID(), c.getMemberIDs());
+
+		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		localC.add(c);
+
 		assertFalse(status);
-		Set<Conversation> localc = new HashSet<>();
-		localc.add(conversation);
-		assertEquals(localc, Connection.readAllConversations(u1.getUserID()));
+		assertEquals(localC, Connection.readAllConversations(u1.getUserID()));
 	}
 
 	@Test
 	public void readAllConversationsSingle() {
-		Connection.createConversation(conversation.getID(),
-				conversation.getMemberIDs());
-		Set<Conversation> c = Connection.readAllConversations(u1.getUserID());
+		User u1 = new User("readAllConversationsSingle");
 		Set<Conversation> localc = new HashSet<>();
-		localc.add(conversation);
-		assertEquals(localc, c);
+		Set<Conversation> conversations = null;
+		try {
+			Conversation c1 = Conversation.newConversation(u1, new User("b"));
+			Thread.sleep(2);
+			Conversation c2 = Conversation.newConversation(u1, new User("b"));
+			Thread.sleep(2);
+			Conversation c3 = Conversation.newConversation(u1, new User("b"));
+			Connection.createConversation(c1.getID(), c1.getMemberIDs());
+			Connection.createConversation(c2.getID(), c2.getMemberIDs());
+			Connection.createConversation(c3.getID(), c3.getMemberIDs());
+			conversations = Connection.readAllConversations(u1.getUserID());
+			localc.add(c1);
+			localc.add(c2);
+			localc.add(c3);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		assertEquals(localc, conversations);
 	}
 
 	@Test
 	public void readAllConversationsMultiple() {
+		User u1 = new User("readAllConversationsMultiple"),
+				u2 = new User("readAllConversationsMultiple2");
 		Set<Conversation> localc = new HashSet<>();
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u1, u2));
-		localc.add(Conversation.newConversation(u2, u1));
-		localc.add(Conversation.newConversation(u2, u1));
-		localc.add(Conversation.newConversation(u2, u1));
-		localc.add(Conversation.newConversation(u2, u1));
-		localc.add(Conversation.newConversation(u2, u1));
+
+		try {
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u1, u2));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u2, u1));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u2, u1));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u2, u1));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u2, u1));
+			Thread.sleep(2);
+			localc.add(Conversation.newConversation(u2, u1));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		localc.forEach(c -> Connection.createConversation(c.getID(), c.getMemberIDs()));
 
 		assertEquals(localc, Connection.readAllConversations(u1.getUserID()));
@@ -92,99 +117,106 @@ public class ConnectionTest {
 
 	@Test
 	public void deleteConversationValid() {
-		Connection.createConversation(conversation.getID(), conversation.getMemberIDs());
-		boolean status = Connection.deleteConversation(conversation.getID());
-		assertTrue(status);
-		assertEquals(new HashSet<>(), Connection.readAllConversations(u1.getUserID()));
+		User u1 = new User("deleteConversationValid"),
+				u2 = new User("deleteConversationValid2");
+		Conversation c = Conversation.newConversation(u1, u2);
+
+		Connection.createConversation(c.getID(), c.getMemberIDs());
+		boolean deleted = Connection.deleteConversation(c.getID());
+
+		assertTrue(deleted);
+		assertTrue(Connection.readAllConversations(u1.getUserID()).isEmpty());
 	}
 
 	@Test
 	public void deleteConversationInvalid() {
-		boolean status = Connection.deleteConversation("042b9135b65cc71d9c94df01add70cbf");
-		assertFalse(status);
+		boolean deleted = Connection.deleteConversation("042b9135b65cc71d9c94df01add70cbf");
+		assertFalse(deleted);
 	}
 
 	@Test
 	public void updateConversationUsersValid() {
-		Set<Conversation> localc = new HashSet<>();
-		localc.add(conversation);
-		User u3 = new User("Charlie");
-		User u4 = new User("David");
+		User u1 = new User("updateConversationUsersValid"),
+				u2 = new User("updateConversationUsersValid2"),
+				u3 = new User("updateConversationUsersValid3"),
+				u4 = new User("updateConversationUsersValid4");
+		Conversation c = Conversation.newConversation(u1, u2);
+		Connection.createConversation(c.getID(), c.getMemberIDs());
+		c.addMember(u3);
+		c.addMember(u4);
+		boolean updated = Connection.updateConversationUsers(c.getID(), c.getMemberIDs());
 
-		Connection.createConversation(conversation.getID(), conversation.getMemberIDs());
-		conversation.addMember(u3);
-		conversation.addMember(u4);
-		boolean status = Connection.updateConversationUsers(conversation.getID(), conversation.getMemberIDs());
-		Connection.updateConversationUsers(conversation.getID(), conversation.getMemberIDs());
-		Connection.updateConversationUsers(conversation.getID(), conversation.getMemberIDs());
-		assertTrue(status);
-		assertEquals(localc, Connection.readAllConversations(u1.getUserID()));
-		assertEquals(localc, Connection.readAllConversations(u2.getUserID()));
-		assertEquals(localc, Connection.readAllConversations(u3.getUserID()));
-		assertEquals(localc, Connection.readAllConversations(u4.getUserID()));
+		assertTrue(updated);
+		assertFalse(Connection.readAllConversations(u3.getUserID()).isEmpty());
+		assertFalse(Connection.readAllConversations(u4.getUserID()).isEmpty());
 	}
 
 	@Test
 	public void updateConversationUsersInvalid() {
-		Set<Conversation> localc = new HashSet<>();
-		localc.add(conversation);
-		User u3 = new User("Charlie");
-		User u4 = new User("David");
-		conversation.addMember(u3);
-		conversation.addMember(u4);
-		boolean status = Connection.updateConversationUsers(conversation.getID(), conversation.getMemberIDs());
-		assertFalse(status);
+		User u1 = new User("updateConversationUsersInvalid"),
+				u2 = new User("updateConversationUsersInvalid2");
+		Set<String> uIDs = new HashSet<>();
+		uIDs.add(u1.getUserID());
+		uIDs.add(u2.getUserID());
+		boolean updated = Connection.updateConversationUsers("this is an nonexistent ID", uIDs);
+		assertFalse(updated);
 	}
 
 	@Test
 	public void readNewMessagesValid() {
+		User u1 = Connection.readUser("@aMerkel"),
+				u2 = Connection.readUser("@dTrump");
+		Conversation c = Conversation.newConversation(u1, new User("readNewMessagesValid"));
 		List<Message> messages = new ArrayList<>();
 		Message m1 = null, m2 = null, m3 = null, m4 = null, m5 = null;
 		try {
 			m1 = new Message(u1.getUserID(), "test1");
-			Thread.sleep(10);
+			Thread.sleep(2);
 			m2 = new Message(u1.getUserID(), "test1.5");
-			Thread.sleep(10);
+			Thread.sleep(2);
 			m3 = new Message(u1.getUserID(), "test2");
-			Thread.sleep(10);
+			Thread.sleep(2);
 			m4 = new Message(u2.getUserID(), "test3");
-			Thread.sleep(10);
+			Thread.sleep(2);
 			m5 = new Message(u2.getUserID(), "test4");
 		} catch (InterruptedException e) {
 		}
-		Connection.createConversation(conversation.getID(), conversation.getMemberIDs());
-		Connection.addMessage(conversation.getID(), m1);
-		Connection.addMessage(conversation.getID(), m2);
-		Connection.addMessage(conversation.getID(), m3);
-		Connection.addMessage(conversation.getID(), m4);
-		Connection.addMessage(conversation.getID(), m5);
 		messages.add(m3);
 		messages.add(m4);
 		messages.add(m5);
-		List<Message> response = Connection.readNewMessages(conversation.getID(), m2.getTime());
+		Connection.createConversation(c.getID(), c.getMemberIDs());
+		Connection.addMessage(c.getID(), m2);
+		Connection.addMessage(c.getID(), m3);
+		Connection.addMessage(c.getID(), m4);
+		Connection.addMessage(c.getID(), m5);
+		List<Message> response = Connection.readNewMessages(c.getID(), m2.getTime());
 		assertTrue(messages.size() == response.size());
-		for (int i = 0; i < response.size(); i++) {
-			assertEquals(messages.get(i), response.get(i));
-		}
+		assertEquals(messages, response);
 	}
 
 	@Test
 	public void addMessage() {
+		User u1 = new User("addMessage"),
+				u2 = new User("addMessage2");
+		Conversation c = Conversation.newConversation(u1, u2);
 		Message m1 = new Message(u1.getUserID(), "testtesttesttesttesttesttesttesttesttest");
-		Connection.createConversation(conversation.getID(), conversation.getMemberIDs());
-		assertTrue(Connection.addMessage(conversation.getID(), m1));
+
+		Connection.createConversation(c.getID(), c.getMemberIDs());
+		boolean posted = Connection.addMessage(c.getID(), m1);
+		assertTrue(posted);
 	}
 
 
 	@Test
 	public void createUser() {
-		User u3 = new User("93049q345");
-		assertTrue(Connection.createUser(u3.getUserID(), u3));
+		User u3 = new User("@createUser");
+		boolean created = Connection.createUser(u3.getUserID(), u3);
+		assertTrue(created);
 	}
 
 	@Test
 	public void readUser() {
-		User u3 = new User("93049q345");
+		User u3 = new User("93049q34522332");
 		Connection.createUser(u3.getUserID(), u3);
 		assertEquals(u3, Connection.readUser(u3.getUserID()));
 	}
@@ -208,7 +240,6 @@ public class ConnectionTest {
 		Connection.createUser(u8.getUserID(), u8);
 		Connection.createUser(u9.getUserID(), u9);
 
-		assertEquals(u3, Connection.readUser(u3.getUserID()));
 		assertTrue(Connection.readUsers().contains(u3));
 		assertTrue(Connection.readUsers().contains(u4));
 		assertTrue(Connection.readUsers().contains(u5));
@@ -223,27 +254,31 @@ public class ConnectionTest {
 		User u3 = new User("sekfjselöfs");
 		Connection.createUser(u3.getUserID(), u3);
 		u3.setUserName("Donald Trump");
-		assertTrue(Connection.updateUser(u3.getUserID(), u3));
+		boolean updated = Connection.updateUser(u3.getUserID(), u3);
+		assertTrue(updated);
 	}
 
 	@Test
 	public void updateUserInvalid() {
 		User u3 = new User("sekfjselöfs");
 		u3.setUserName("Donald Trump");
-		assertFalse(Connection.updateUser(u3.getUserID(), u3));
+		boolean updated = Connection.updateUser(u3.getUserID(), u3);
+		assertFalse(updated);
 	}
 
 	@Test
 	public void deleteUserValid() {
 		User u3 = new User("sekfjselöfs");
-		Connection.createUser(u3.getUserID(), u3);
-		assertTrue(Connection.deleteUser(u3.getUserID()));
+		boolean created = Connection.createUser(u3.getUserID(), u3);
+		boolean deleted = Connection.deleteUser(u3.getUserID());
+		assertTrue(created && deleted);
 	}
 
 	@Test
 	public void deleteUserInvalid() {
 		User u3 = new User("Vladimir Putin");
-		assertFalse(Connection.deleteUser(u3.getUserID()));
+		boolean deleted = Connection.deleteUser(u3.getUserID());
+		assertFalse(deleted);
 	}
 
 }

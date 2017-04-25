@@ -10,9 +10,8 @@ public class Terminal {
 
 	public static String getUserInput() {
 		try {
-			return scan.nextLine();
+			return scan.nextLine().replaceAll("\\r|\\n", "");
 		} catch (Exception e) {
-//			e.printStackTrace();
 			return getUserInput();
 		}
 	}
@@ -54,7 +53,7 @@ public class Terminal {
 
 	public static void display(Message message, String conversationID) {
 		if (!message.isEmpty()) {
-			System.out.printf("Chat: %5.5s Name: %5.5s : %s\n",
+			System.out.printf("Chat: %5.5s Name: %s : %s\n",
 					conversationID, message.getSender(), message.getContent());
 		}
 	}

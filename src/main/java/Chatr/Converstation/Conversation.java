@@ -38,18 +38,17 @@ public class Conversation {
 	private Conversation(String conversationID, String localUserID, Set<User> members, LinkedList<Message> messages) {
 		this.conversationID = conversationID;
 		this.conversationName = conversationID; //!!!
-		this.members= members;
-		this.messages= messages;
+		this.members = members;
+		this.messages = messages;
 	}
 
-	static public Conversation newConversation(User member, User localUser){
-		return new Conversation(member,localUser);
+	static public Conversation newConversation(User member, User localUser) {
+		return new Conversation(member, localUser);
 	}
 
 	public static Conversation preConfigServer(String conversationID, String localUserID,
-	                                           Set<User> members, LinkedList<Message> messages){
-
-		return new Conversation(conversationID, localUserID,members,messages);
+	                                           Set<User> members, LinkedList<Message> messages) {
+		return new Conversation(conversationID, localUserID, members, messages);
 
 	}
 
@@ -71,13 +70,15 @@ public class Conversation {
 	}
 
 
-
 	public void addMember(User member) {
 		members.add(member);
 		Connection.updateConversationUsers(conversationID, getMemberIDs());
 
 	}
 
+	public void setLocalUser(String userID) {
+		this.localUser = userID;
+	}
 
 
 	public String getID() {
@@ -95,7 +96,7 @@ public class Conversation {
 	 */
 	public List<Message> update() {
 		Long latest = messages.isEmpty() ? 0 : messages.getLast().getTime(); //Get timestamp
-		List<Message> messages =  Connection.readNewMessages(conversationID, latest);
+		List<Message> messages = Connection.readNewMessages(conversationID, latest);
 		this.messages.addAll(messages);
 		return messages;
 	}

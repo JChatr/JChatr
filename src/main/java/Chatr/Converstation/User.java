@@ -13,7 +13,8 @@ import java.util.Objects;
 public class User {
 
 	private String userName = "";
-	private String userID = HashGen.getID(false);
+	//private String userID = HashGen.getID(false);
+	private String userID = "";
 	public String userPicture = "";
 	private String email = "";
 	private String emailMD5 = "";
@@ -25,6 +26,7 @@ public class User {
 	 */
 	public User(String userName){
 		this.userName = userName;
+		this.userID = userName;
 	}
 
 	/**
@@ -72,6 +74,14 @@ public class User {
 		this.email = email.toLowerCase();
 		return this;
 	}
+	
+	public boolean syntaxEmail(String email){
+		if(email.contains(".") && email.contains("@")){
+			return true;
+		}else{
+			return false;
+		}
+	}
 
 	public Status getStatus() {
 		return status;
@@ -81,6 +91,7 @@ public class User {
 		this.status = status;
 		return this;
 	}
+
 
 	@Override
 	public String toString() {
