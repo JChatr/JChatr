@@ -5,7 +5,7 @@ import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
-import Chatr.Manager;
+import Chatr.Controller.Manager;
 
 import java.lang.reflect.Field;
 import java.util.List;
