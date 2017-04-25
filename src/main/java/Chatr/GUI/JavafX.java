@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.scene.Parent;
 
 public class JavafX extends Application {
 
@@ -18,7 +19,7 @@ public class JavafX extends Application {
 	public static final HashSet<String> data = GUI.getListOfConversatins();
 			
 	public static void main(String[] args) {
-		launch(args);
+		launch(JavafX.class, args);
 
 	}
 
@@ -36,7 +37,7 @@ public class JavafX extends Application {
 			// ListView listView = new ListView((Element) data);
 			
 			
-			Pane root = (Pane) FXMLLoader.load(getClass().getResource("GUI.fxml"));
+			Parent root = FXMLLoader.load(getClass().getResource("/fxml/GUI.fxml"));
 			Scene scene = new Scene(root);
 			
 			
