@@ -9,19 +9,22 @@ import javafx.scene.control.TextField;
 public class Controler {
 	
 	@FXML
+	Button send;
+	
+	@FXML
 	TextArea textArea;
 	
 	@FXML
-	TextField textField;
+	TextField userMessageInput;
 	
 	@FXML
 	Label label;
 	
 	@FXML
 	protected void buttonPressed(){
-		String text = textField.getText();
+		String text = userMessageInput.getText();
 		label.setText(text);
-		textField.clear();
+		userMessageInput.clear();
 	}
 
 }

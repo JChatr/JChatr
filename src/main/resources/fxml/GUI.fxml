@@ -20,8 +20,8 @@
                   <TextArea layoutX="212.0" layoutY="6.0" prefHeight="343.0" prefWidth="382.0" />
                   <HBox layoutX="222.0" layoutY="359.0">
                      <children>
-                        <TextField layoutX="110.0" layoutY="249.0" prefHeight="27.0" prefWidth="319.0" />
-                        <Button layoutX="300.0" layoutY="249.0" mnemonicParsing="false" text="Send" />
+                        <TextField id="userMessageInput" fx:id="userMessageInput" layoutX="110.0" layoutY="249.0" prefHeight="27.0" prefWidth="319.0" />
+                        <Button fx:id="send" layoutX="300.0" layoutY="249.0" mnemonicParsing="false" text="Send" />
                      </children>
                   </HBox>
                </children>
