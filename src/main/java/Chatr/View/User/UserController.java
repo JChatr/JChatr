@@ -1,4 +1,4 @@
-package Chatr.View;
+package Chatr.View.User;
 
 public class UserController {
 }

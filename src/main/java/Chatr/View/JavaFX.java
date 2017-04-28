@@ -12,6 +12,7 @@ import java.io.IOException;
 
 public class JavaFX extends Application {
 	private Stage primaryStage;
+	private AnchorPane rootLayout;
 	private AnchorPane currentChat;
 	private Logger log = LogManager.getLogger();
 
@@ -24,23 +25,35 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeRootLayout();
-		showCurrentChat();
+//		showCurrentChat();
 	}
 
+	/**
+	 * load list fxml and initialize the scene
+	 * loads the Bootstrap 3 stylesheets as well
+	 */
 	private void initializeRootLayout() {
+		try {
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(getClass().getResource("/Chatr/View/ChatList/ChatList.fxml"));
+			rootLayout = loader.load();
+		} catch (IOException e) {
+			log.error("failed to load /fxml/ChatList.fxml", e);
+		}
+		Scene scene = new Scene(rootLayout);
+		scene.getStylesheets().add(JavaFX.class.getResource("/jbootx/bootstrap3.css").toExternalForm());
+		primaryStage.setScene(scene);
+		primaryStage.show();
 
 	}
 
 	private void showCurrentChat() {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/fxml/CurrentChat.fxml"));
+			loader.setLocation(getClass().getResource("/Chatr/View/CurrentChat/CurrentChat.fxml"));
 			currentChat = loader.load();
-			Scene scene = new Scene(currentChat);
-			primaryStage.setScene(scene);
-			primaryStage.show();
 		} catch (IOException e) {
-			log.error("Java FX failed to initialize", e);
+			log.error("failed to load /fxml/CurrentChat.fxml", e);
 		}
 	}
 }
