@@ -18,7 +18,7 @@ class DatabaseFixtures {
 		try {
 			userSet1(db);
 			userSet2(db);
-//			multiUserChat(db);
+			multiUserChat(db);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

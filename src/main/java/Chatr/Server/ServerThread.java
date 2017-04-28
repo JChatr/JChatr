@@ -40,7 +40,7 @@ public class ServerThread extends Thread {
 				PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
 				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()))
 		) {
-			log.debug("Opened Connection with: " + socket.getRemoteSocketAddress());
+			log.trace("Opened Connection with: " + socket.getRemoteSocketAddress());
 			// Receiving
 			String JSON;
 			while ((JSON = in.readLine()) != null) {
@@ -58,7 +58,7 @@ public class ServerThread extends Thread {
 				out.println(outJSON);
 			}
 			socket.shutdownOutput();
-			log.debug("Closed Connection with: " + socket.getRemoteSocketAddress());
+			log.trace("Closed Connection with: " + socket.getRemoteSocketAddress());
 			socket.close();
 		} catch (IOException e) {
 			log.error("IOException", e);

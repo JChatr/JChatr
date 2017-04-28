@@ -2,14 +2,21 @@ package Chatr.View;
 
 import Chatr.Controller.Manager;
 import Chatr.Converstation.Message;
+import Chatr.Helper.CONFIG;
+import javafx.beans.property.ListProperty;
+import javafx.beans.property.SimpleListProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.ScheduledService;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
-
-import java.util.Collection;
+import javafx.util.Duration;
 
 public class CurrentChatController {
 	@FXML
@@ -23,16 +30,17 @@ public class CurrentChatController {
 
 	@FXML
 	private void initialize() {
-		currentChatName.setText("with @aMerkel");
-		currentChatUsers.setText("@dTrump, @aMerkel");
-
 		textInput.setOnKeyPressed(event -> {
 			if (event.getCode().equals(KeyCode.ENTER)) {
 				onSendButtonClick();
 			}
 		});
-		setChatMembers(Manager.getChatMembers());
-		setCurrentChatName(Manager.getChatName());
+		UpdateService u = new UpdateService();
+		currentChat.itemsProperty().bindBidirectional(u.getMessageProperty());
+		currentChatName.textProperty().bind(u.getChatNameProperty());
+		currentChatUsers.textProperty().bind(u.getUsersProperty());
+		u.setPeriod(Duration.millis(CONFIG.CLIENT_PULL_TIMER));
+		u.start();
 	}
 
 	@FXML
@@ -46,23 +54,55 @@ public class CurrentChatController {
 	}
 
 	private void displayMessage(Message message) {
-			ObservableList<String> list = currentChat.getItems();
+		ObservableList<String> list = currentChat.getItems();
 		list.add(message.toString());
 		currentChat.setItems(list);
 	}
 
-	private void setChatMembers(Collection<String> memberNames) {
-		StringBuilder sb = new StringBuilder();
-		memberNames.forEach(member -> {
-			if (sb.length() < 50) {
-				sb.append(member);
-				sb.append(", ");
-			}
-		});
-		currentChatUsers.setText(sb.toString());
-	}
+	private class UpdateService extends ScheduledService<Void> {
+		private ListProperty<String> property;
+		private StringProperty chat = new SimpleStringProperty();
+		private StringProperty users = new SimpleStringProperty();
 
-	private void setCurrentChatName(String chatName) {
-		currentChatName.setText(chatName);
+
+		private UpdateService() {
+			property = new SimpleListProperty<>();
+			property.setValue(FXCollections.observableArrayList());
+		}
+
+		public ListProperty<String> getMessageProperty() {
+			return property;
+		}
+
+		public StringProperty getChatNameProperty() {
+			return chat;
+		}
+
+		public StringProperty getUsersProperty() {
+			return users;
+		}
+
+		@Override
+		protected Task<Void> createTask() {
+			return new Task<Void>() {
+				@Override
+				protected Void call() throws Exception {
+					chat.setValue(Manager.getChatName());
+
+					StringBuilder sb = new StringBuilder();
+					Manager.getChatMembers().forEach(member -> {
+						if (sb.length() < 50) {
+							sb.append(member);
+							sb.append(", ");
+						}
+					});
+					users.setValue(sb.toString());
+
+					Manager.getChatUpdates().forEach(message ->
+							property.add(message.toString()));
+					return null;
+				}
+			};
+		}
 	}
 }
