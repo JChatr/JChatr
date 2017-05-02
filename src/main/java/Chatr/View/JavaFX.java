@@ -1,5 +1,7 @@
 package Chatr.View;
 
+import Chatr.View.ChatList.ChatListView;
+import Chatr.View.CurrentChat.CurrentChatView;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -24,8 +26,9 @@ public class JavaFX extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
-		initializeRootLayout();
-//		showCurrentChat();
+//		initializeRootLayout();
+		showCurrentChat();
+		primaryStage.show();
 	}
 
 	/**
@@ -33,27 +36,18 @@ public class JavaFX extends Application {
 	 * loads the Bootstrap 3 stylesheets as well
 	 */
 	private void initializeRootLayout() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/Chatr/View/ChatList/ChatList.fxml"));
-			rootLayout = loader.load();
-		} catch (IOException e) {
-			log.error("failed to load /fxml/ChatList.fxml", e);
-		}
-		Scene scene = new Scene(rootLayout);
-		scene.getStylesheets().add(JavaFX.class.getResource("/jbootx/bootstrap3.css").toExternalForm());
+		ChatListView chatList = new ChatListView();
+		Scene scene = new Scene(chatList.getView());
+		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
+		scene.getStylesheets().add(cssUri);
 		primaryStage.setScene(scene);
-		primaryStage.show();
-
 	}
 
 	private void showCurrentChat() {
-		try {
-			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(getClass().getResource("/Chatr/View/CurrentChat/CurrentChat.fxml"));
-			currentChat = loader.load();
-		} catch (IOException e) {
-			log.error("failed to load /fxml/CurrentChat.fxml", e);
-		}
+		CurrentChatView chatList = new CurrentChatView();
+		Scene scene = new Scene(chatList.getView());
+		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
+		scene.getStylesheets().add(cssUri);
+		primaryStage.setScene(scene);
 	}
 }

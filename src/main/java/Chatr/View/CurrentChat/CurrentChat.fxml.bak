@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane stylesheets="@CurrentChat.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.CurrentChat.CurrentChatPresenter">
+    <children>
+          <VBox prefHeight="600.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <children>
+                  <AnchorPane>
+                      <children>
+                          <VBox spacing="5.0" AnchorPane.leftAnchor="0.0">
+                              <children>
+                                  <Label fx:id="currentChatName" text="Current Chat">
+                                      <font>
+                                          <Font size="16.0" />
+                                      </font>
+                                  </Label>
+                                  <Label fx:id="currentChatUsers" text="user1, user2, user3...">
+                                      <font>
+                                          <Font size="11.0" />
+                                      </font>
+                                  </Label>
+                              </children>
+                          </VBox>
+                          <Button mnemonicParsing="false" styleClass="btn" text="Chat Info" AnchorPane.rightAnchor="0.0" />
+                      </children>
+                      <VBox.margin>
+                          <Insets />
+                      </VBox.margin>
+                  </AnchorPane>
+                  <ListView fx:id="currentChat" VBox.vgrow="ALWAYS">
+                      <VBox.margin>
+                          <Insets />
+                      </VBox.margin>
+                  </ListView>
+                  <HBox minWidth="400.0">
+                      <children>
+                          <Button minWidth="75.0" mnemonicParsing="false" styleClass="btn" text="Emoticons">
+                              <HBox.margin>
+                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              </HBox.margin>
+                              <font>
+                                  <Font size="11.0" />
+                              </font>
+                          </Button>
+                          <TextArea fx:id="textInput" focusTraversable="false" maxHeight="150.0" minWidth="20.0" prefHeight="50.0" promptText="Write a Message..." style="-fx-focus-color: -fx-control-inner-background; -fx-faint-focus-color: -fx-control-inner-background;" wrapText="true" HBox.hgrow="ALWAYS">
+                              <HBox.margin>
+                                  <Insets bottom="5.0" left="10.0" right="10.0" top="5.0" />
+                              </HBox.margin>
+                              <font>
+                                  <Font size="11.0" />
+                              </font>
+                          </TextArea>
+                          <Button fx:id="sendButton" minWidth="75.0" mnemonicParsing="false" onAction="#onSendButtonClick" styleClass="primary" text="Send">
+                              <HBox.margin>
+                                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                              </HBox.margin>
+                              <font>
+                                  <Font size="11.0" />
+                              </font>
+                          </Button>
+                      </children>
+                  </HBox>
+              </children>
+          </VBox>
+    </children>
+</AnchorPane>

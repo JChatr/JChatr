@@ -55,6 +55,11 @@ public class Manager {
 		return currentChat.update();
 	}
 
+	public static Set<Conversation> getUserChats() {
+		userChats.addAll(Connection.readAllConversations(localUser.getUserID()));
+		return userChats;
+	}
+
 	/**
 	 * this method is for testing purposes ONLY delete when manager gets properly implemented
 	 */

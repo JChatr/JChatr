@@ -85,12 +85,6 @@ public class Conversation {
 		return this.conversationID;
 	}
 
-
-
-/*	public String getLocalUserID() {
-		return localUser;
-	}*/
-
 	/**
 	 * @return
 	 */
@@ -103,6 +97,7 @@ public class Conversation {
 
 	@Override
 	public boolean equals(Object o) {
+		if (o == null) return false;
 		return Objects.equals(conversationID, o.toString());
 	}
 
