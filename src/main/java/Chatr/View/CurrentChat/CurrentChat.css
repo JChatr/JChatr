@@ -4,3 +4,23 @@
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
 }
+
+/*.list-cell:filled:selected:focused, .list-cell:filled:selected {*/
+    /*-fx-background-color: transparent;*/
+/*}*/
+
+
+/*.list-cell:empty {*/
+    /*visibility: hidden;*/
+/*}*/
+
+/*.list-view {*/
+    /*fx-background-color: transparent !important;*/
+/*}*/
+
+/*#currentChat {*/
+/*-fx-background-image: url("/icons/background.jpeg");*/
+/*-fx-background-size: cover;*/
+/*-fx-background-repeat: no-repeat;*/
+/*-fx-background-position: center;*/
+/*}*/

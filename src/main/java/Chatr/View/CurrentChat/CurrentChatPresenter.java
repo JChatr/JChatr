@@ -4,6 +4,7 @@ import Chatr.Controller.Manager;
 import Chatr.Converstation.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.UpdateService;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -32,30 +33,28 @@ public class CurrentChatPresenter {
 	 */
 	@FXML
 	private void initialize() {
-		textInput.setOnKeyPressed(event -> {
-			if (event.getCode().equals(KeyCode.ENTER)) {
+		textInput.textProperty().addListener((obs, oldText, newText) -> {
+			if (newText.contains("\n"))
 				onSendButtonClick();
-			}
 		});
 		currentChat.setCellFactory(messageListView -> new MessageCell());
 
 		// Building Update links from UI properties to Manager methods
 		// all links are guaranteed to get updated at a specified interval
-		UpdateService.linkHighPriority(currentChat.itemsProperty(), FXCollections.observableArrayList(),
-				list -> Manager.getChatUpdates().forEach(message ->
-						list.add(message.toString()))
+		UpdateService.linkHighPriority(currentChat.itemsProperty(),
+				() -> Manager.getChatUpdates()
 		);
-		UpdateService.linkLowPriority(currentChatName.textProperty(), new SimpleStringProperty(),
-				string -> string.setValue(Manager.getChatName())
+		UpdateService.linkLowPriority(currentChatName.textProperty(),
+				() -> Manager.getChatName()
 		);
-		UpdateService.linkLowPriority(currentChatUsers.textProperty(), new SimpleStringProperty(),
-				string -> {
+		UpdateService.linkLowPriority(currentChatUsers.textProperty(),
+				() -> {
 					StringBuilder sb = new StringBuilder();
 					Manager.getChatMembers().forEach(memberID -> {
 						sb.append(memberID);
 						sb.append(", ");
 					});
-					string.setValue(sb.toString());
+					return sb.toString();
 				}
 		);
 	}
@@ -69,12 +68,14 @@ public class CurrentChatPresenter {
 		if (!userInput.trim().isEmpty()) {
 			Message m = Manager.addMessage(userInput);
 			displayMessage(m);
-			textInput.clear();
+			Platform.runLater(() ->
+					textInput.clear());
 		}
 	}
 
 	/**
 	 * displays a Message in the List View
+	 *
 	 * @param message Message to be displayed
 	 */
 	private void displayMessage(Message message) {

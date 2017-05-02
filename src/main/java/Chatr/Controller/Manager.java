@@ -80,7 +80,6 @@ public class Manager {
 	private static Conversation selectLatestConversation(User user) {
 		Set<Conversation> conversations = Connection.readAllConversations(localUser.getUserID());
 		Conversation latest = null;
-		conversations.forEach(c -> System.out.println(c.getMemberIDs()));
 		for (Conversation c : conversations) {
 			latest = c;
 			break;

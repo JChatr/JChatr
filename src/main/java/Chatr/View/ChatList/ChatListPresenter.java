@@ -26,14 +26,14 @@ public class ChatListPresenter {
 
 	@FXML
 	private void initialize() {
-		UpdateService.linkLowPriority(userName.textProperty(), new SimpleStringProperty(),
-				stringProperty -> stringProperty.setValue(Manager.getUserName())
+		UpdateService.linkLowPriority(userName.textProperty(),
+				() -> Manager.getUserName()
 		);
-		UpdateService.linkHighPriority(chatsList.itemsProperty(), FXCollections.observableArrayList(),
-				observableList -> observableList.setAll(Manager.getUserChats())
-		);
-//		CurrentChatView chatView = new CurrentChatView();
-//		Parent view = chatView.getView();
-//		currentChat.getChildren().add(view);
+//		UpdateService.linkHighPriority(chatsList.itemsProperty(),
+//				() -> Manager.getUserChats()
+//		);
+		CurrentChatView chatView = new CurrentChatView();
+		Parent view = chatView.getView();
+		currentChat.getChildren().add(view);
 	}
 }

@@ -3,14 +3,11 @@ package Chatr.View;
 import Chatr.View.ChatList.ChatListView;
 import Chatr.View.CurrentChat.CurrentChatView;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.io.IOException;
 
 public class JavaFX extends Application {
 	private Stage primaryStage;
@@ -26,8 +23,8 @@ public class JavaFX extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
-//		initializeRootLayout();
-		showCurrentChat();
+		initializeRootLayout();
+//		showCurrentChat();
 		primaryStage.show();
 	}
 

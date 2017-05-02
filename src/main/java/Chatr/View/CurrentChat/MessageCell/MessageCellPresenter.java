@@ -32,7 +32,7 @@ public class MessageCellPresenter {
 		}
 	}
 
-	public void setInfo(Message message) {
+	void setInfo(Message message) {
 		userName.setText(message.getSender());
 		content.setText(message.getContent());
 		timestamp.setText(Long.toString(message.getTime()));
@@ -41,5 +41,4 @@ public class MessageCellPresenter {
 	AnchorPane getView() {
 		return parent;
 	}
-
 }
