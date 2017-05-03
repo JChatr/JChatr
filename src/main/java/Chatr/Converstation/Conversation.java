@@ -13,7 +13,7 @@ public class Conversation {
 	private Set<User> members = new HashSet<>();
 	private LinkedList<Message> messages = new LinkedList<>();
 	private String localUser;
-	private Message trash = new Message();
+	private Long newestMessageTime = 0L;
 
 	/*
 
@@ -49,7 +49,6 @@ public class Conversation {
 	public static Conversation preConfigServer(String conversationID, String localUserID,
 	                                           Set<User> members, LinkedList<Message> messages) {
 		return new Conversation(conversationID, localUserID, members, messages);
-
 	}
 
 	public Message newMessage(String content) {
@@ -85,20 +84,24 @@ public class Conversation {
 		return this.conversationID;
 	}
 
+	public void resetSentMessages() {
+		this.newestMessageTime = -1L;
+	}
+
 	/**
 	 * @return
 	 */
 	public List<Message> update() {
-		Long latest = messages.isEmpty() ? 0 : messages.getLast().getTime(); //Get timestamp
-		List<Message> messages = Connection.readNewMessages(conversationID, latest);
+		newestMessageTime = messages.isEmpty() || newestMessageTime == -1
+				? 0 : messages.getLast().getTime(); //Get timestamp
+		List<Message> messages = Connection.readNewMessages(conversationID, newestMessageTime);
 		this.messages.addAll(messages);
 		return messages;
 	}
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) return false;
-		return Objects.equals(conversationID, o.toString());
+		return o != null && Objects.equals(conversationID, o.toString());
 	}
 
 	@Override

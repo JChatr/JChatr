@@ -30,14 +30,23 @@ public class CurrentChatPresenter {
 	 */
 	@FXML
 	private void initialize() {
+		addListeners();
+		linkUpdateProperties();
+		currentChat.setCellFactory(messageListView -> new MessageCell());
+	}
+
+	private void addListeners(){
 		textInput.textProperty().addListener((obs, oldText, newText) -> {
 			if (newText.contains("\n"))
 				onSendButtonClick();
 		});
-		currentChat.setCellFactory(messageListView -> new MessageCell());
+	}
 
-		// Building Update links from UI properties to Manager methods
-		// all links are guaranteed to get updated at a specified interval
+	/**
+	 * Building Update links from UI properties to Manager methods
+	 * all links are guaranteed to get updated at a specified interval
+	 */
+	private void linkUpdateProperties() {
 		UpdateService.linkHighPriority(currentChat.itemsProperty(),
 				Manager::getChatUpdates
 		);

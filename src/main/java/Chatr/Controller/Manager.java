@@ -64,6 +64,11 @@ public class Manager {
 		return newChats;
 	}
 
+	public static void setCurrentChat(Conversation current) {
+		currentChat = current;
+		currentChat.resetSentMessages();
+	}
+
 	/**
 	 * this method is for testing purposes ONLY delete when manager gets properly implemented
 	 */
