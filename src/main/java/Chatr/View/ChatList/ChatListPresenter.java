@@ -12,6 +12,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.AnchorPane;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChatListPresenter {
 	@FXML
 	private Button newChatButton;
@@ -20,7 +23,7 @@ public class ChatListPresenter {
 	@FXML
 	private Label userName;
 	@FXML
-	private ListView chatsList;
+	private ListView<String> chatsList;
 	@FXML
 	private AnchorPane currentChat;
 
@@ -29,11 +32,18 @@ public class ChatListPresenter {
 		UpdateService.linkLowPriority(userName.textProperty(),
 				() -> Manager.getUserName()
 		);
-//		UpdateService.linkHighPriority(chatsList.itemsProperty(),
-//				() -> Manager.getUserChats()
-//		);
+		UpdateService.linkHighPriority(chatsList.itemsProperty(),
+				() -> {
+					List<String> conversations = new ArrayList<>();
+					Manager.getUserChats().forEach(conversation ->
+							conversations.add(conversation.toString())
+					);
+					return conversations;
+				});
 		CurrentChatView chatView = new CurrentChatView();
 		Parent view = chatView.getView();
 		currentChat.getChildren().add(view);
 	}
+
+	
 }

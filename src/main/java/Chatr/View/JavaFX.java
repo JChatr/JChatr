@@ -24,7 +24,6 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeRootLayout();
-//		showCurrentChat();
 		primaryStage.show();
 	}
 
@@ -34,14 +33,6 @@ public class JavaFX extends Application {
 	 */
 	private void initializeRootLayout() {
 		ChatListView chatList = new ChatListView();
-		Scene scene = new Scene(chatList.getView());
-		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
-		scene.getStylesheets().add(cssUri);
-		primaryStage.setScene(scene);
-	}
-
-	private void showCurrentChat() {
-		CurrentChatView chatList = new CurrentChatView();
 		Scene scene = new Scene(chatList.getView());
 		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
 		scene.getStylesheets().add(cssUri);

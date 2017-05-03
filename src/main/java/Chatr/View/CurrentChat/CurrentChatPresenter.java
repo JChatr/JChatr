@@ -5,14 +5,11 @@ import Chatr.Converstation.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.UpdateService;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.input.KeyCode;
 
 public class CurrentChatPresenter {
 	@FXML
@@ -42,10 +39,10 @@ public class CurrentChatPresenter {
 		// Building Update links from UI properties to Manager methods
 		// all links are guaranteed to get updated at a specified interval
 		UpdateService.linkHighPriority(currentChat.itemsProperty(),
-				() -> Manager.getChatUpdates()
+				Manager::getChatUpdates
 		);
 		UpdateService.linkLowPriority(currentChatName.textProperty(),
-				() -> Manager.getChatName()
+				Manager::getChatName
 		);
 		UpdateService.linkLowPriority(currentChatUsers.textProperty(),
 				() -> {

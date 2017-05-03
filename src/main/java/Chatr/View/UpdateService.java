@@ -8,6 +8,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 import javafx.util.Duration;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,8 +20,11 @@ import java.util.function.Supplier;
  * Links two Properties together and guarantees that the given update Function is executed in a set interval
  */
 public class UpdateService extends ScheduledService<Void> {
-	private static Map<ListProperty, Supplier<Collection>> highPriorityList = new HashMap<>();
-	private static Map<StringProperty, Supplier<String>> lowPriority = new HashMap<>();
+	// order of the K, V of the maps is inverted because otherwise the uniqueness of the keys is violated when adding a
+	// new high priority link
+	private static Map<Supplier<Collection>, ListProperty> highPriorityList = new HashMap<>();
+	private static Map<Supplier<String>, StringProperty> lowPriority = new HashMap<>();
+	private static Logger log = LogManager.getLogger(UpdateService.class);
 	private static UpdateService instance;
 
 	private UpdateService() {
@@ -34,8 +39,9 @@ public class UpdateService extends ScheduledService<Void> {
 	public static void linkLowPriority(StringProperty source, Supplier<String> updateTask) {
 		StringProperty target = new SimpleStringProperty();
 		source.bind(target);
-		lowPriority.put(target, updateTask);
+		lowPriority.put(updateTask, target);
 		startService();
+		log.debug("created low priority link", source, target);
 	}
 
 	/**
@@ -48,8 +54,9 @@ public class UpdateService extends ScheduledService<Void> {
 		ObservableList<T> list = FXCollections.observableArrayList();
 		ListProperty<T> property = new SimpleListProperty<>(list);
 		source.bind(property);
-		highPriorityList.put(property, updateTask);
+		highPriorityList.put(updateTask, property);
 		startService();
+		log.debug("created high priority link", source, property);
 	}
 
 	/**
@@ -76,16 +83,20 @@ public class UpdateService extends ScheduledService<Void> {
 		return new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
-				for (final Map.Entry<ListProperty, Supplier<Collection>> job : highPriorityList.entrySet()) {
-					final Collection result = job.getValue().get();
+				long start = System.currentTimeMillis();
+				for (final Map.Entry<Supplier<Collection>, ListProperty> job : highPriorityList.entrySet()) {
+					final Collection result = job.getKey().get();
 					Platform.runLater(() -> result.forEach(
-							value -> job.getKey().add(value)
+							value -> job.getValue().add(value)
 					));
 				}
-				for (final Map.Entry<StringProperty, Supplier<String>> job : lowPriority.entrySet()) {
-					final String result = job.getValue().get();
-					Platform.runLater(() -> job.getKey().setValue(result));
+				log.trace("Updated high priority in " + (System.currentTimeMillis() - start) + "ms");
+				start = System.currentTimeMillis();
+				for (final Map.Entry<Supplier<String>, StringProperty> job : lowPriority.entrySet()) {
+					final String result = job.getKey().get();
+					Platform.runLater(() -> job.getValue().setValue(result));
 				}
+				log.trace("Updated low priority in " + (System.currentTimeMillis() - start) + "ms");
 				return null;
 			}
 		};

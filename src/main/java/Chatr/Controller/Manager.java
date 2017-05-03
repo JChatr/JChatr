@@ -56,8 +56,12 @@ public class Manager {
 	}
 
 	public static Set<Conversation> getUserChats() {
-		userChats.addAll(Connection.readAllConversations(localUser.getUserID()));
-		return userChats;
+		Set<Conversation> newChats = new HashSet<>();
+		Connection.readAllConversations(localUser.getUserID()).forEach(chat -> {
+			if (!userChats.contains(chat)) newChats.add(chat);
+		});
+		userChats.addAll(newChats);
+		return newChats;
 	}
 
 	/**
@@ -73,7 +77,6 @@ public class Manager {
 		localUser = Login.loginUser(userName);
 		currentChat = selectLatestConversation(localUser);
 		userChats = new HashSet<>();
-		userChats.add(currentChat);
 		users = Connection.readUsers();
 	}
 
