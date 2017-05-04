@@ -16,7 +16,7 @@
     <children>
       <HBox prefHeight="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-                <VBox maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefWidth="300.0">
+                <VBox maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefWidth="300.0" HBox.hgrow="SOMETIMES">
                     <children>
                         <AnchorPane>
                             <children>
@@ -67,7 +67,7 @@
                         <ListView fx:id="chatsList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                     </children>
                 </VBox>
-            <AnchorPane fx:id="currentChat" prefHeight="600.0" prefWidth="900.0" />
+            <AnchorPane fx:id="currentChat" prefHeight="600.0" prefWidth="900.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
     </children>

@@ -3,13 +3,12 @@ package Chatr.View.CurrentChat;
 import Chatr.Controller.Manager;
 import Chatr.Converstation.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
+import Chatr.View.CurrentChat.MessageCell.MessageCellPresenter;
 import Chatr.View.UpdateService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.util.Callback;
 
 public class CurrentChatPresenter {
 	@FXML
@@ -32,10 +31,10 @@ public class CurrentChatPresenter {
 	private void initialize() {
 		addListeners();
 		linkUpdateProperties();
-		currentChat.setCellFactory(messageListView -> new MessageCell());
+		currentChat.setCellFactory(param -> new MessageCell());
 	}
 
-	private void addListeners(){
+	private void addListeners() {
 		textInput.textProperty().addListener((obs, oldText, newText) -> {
 			if (newText.contains("\n"))
 				onSendButtonClick();

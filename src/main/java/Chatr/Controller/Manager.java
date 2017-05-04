@@ -80,7 +80,7 @@ public class Manager {
 		System.out.print("Enter your nickname (@Nickname): ");
 		String userName = Terminal.getUserInput();
 		localUser = Login.loginUser(userName);
-		currentChat = selectLatestConversation(localUser);
+		setCurrentChat(selectLatestConversation(localUser));
 		userChats = new HashSet<>();
 		users = Connection.readUsers();
 	}
