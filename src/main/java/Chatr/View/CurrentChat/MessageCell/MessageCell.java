@@ -1,6 +1,5 @@
 package Chatr.View.CurrentChat.MessageCell;
 
-import Chatr.Controller.Manager;
 import Chatr.Converstation.Message;
 import javafx.scene.control.ListCell;
 
@@ -17,7 +16,9 @@ public class MessageCell extends ListCell<Message> {
 			setGraphic(null);
 			return;
 		}
-		if (mp == null) mp = new MessageCellPresenter();
+//		if (mp == null)
+
+			mp = new MessageCellPresenter();
 		mp.setInfo(item);
 		setGraphic(mp.getView());
 	}
