@@ -35,7 +35,11 @@ public class MessageCellPresenter {
 	@FXML
 	private Pane spacer;
 	private static Logger log = LogManager.getLogger(MessageCellPresenter.class);
-
+	private final static int MAX_WIDTH = 600;
+	private final static int MIN_WIDTH = 50;
+	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
+	private final static int MIN_HEIGHT = 40;
+	private final static int WIDTH_PADDING = 20;
 
 	MessageCellPresenter() {
 		FXMLLoader load = new FXMLLoader(getClass().getResource("MessageCell.fxml"));
@@ -49,91 +53,72 @@ public class MessageCellPresenter {
 	}
 
 	void setInfo(Message message) {
+		resetData();
 		userName.setText(message.getSender());
 		text.setText(message.getContent());
 		timestamp.setText(Long.toString(message.getTime()));
 		boolean align = false;
 		if (!Manager.getUserName().contentEquals(message.getSender())) {
-			localUserDisplay();
+			alignRight();
 			align = true;
 		}
-		log.trace("aligned: " + true + " render Message: " + message.toString());
+		log.trace("aligned: " + align + " rendered Message: " + message.toString());
 	}
 
 	Parent getView() {
 		return parent;
 	}
 
-	private void localUserDisplay() {
+	/**
+	 * resets all internal data to allow for object reuse
+	 */
+	private void resetData() {
+		userName.setText("");
+		text.setText("");
+		timestamp.setText("");
+		alignLeft();
+		textBox.setPrefWidth(MIN_WIDTH);
+		textBox.setMaxWidth(MAX_WIDTH);
+		parent.setPrefHeight(MIN_HEIGHT);
+		parent.setMaxHeight(MAX_HEIGHT);
+	}
+
+	private void alignRight() {
 		spacer.toFront();
 		userName.toBack();
 	}
 
+	private void alignLeft() {
+		spacer.toBack();
+		userName.toFront();
+	}
+
 	private void addListeners() {
+		// adjusts cell size to match the text in the label
+		// gets called when the text is updated
 		text.textProperty().addListener((observable, oldValue, newValue) -> {
-			double maxWidth = 600;
-			double minWidth = 100;
-			double height = 0;
-			double width = TextUtils.computeTextWidth(text.getFont(), text.getText(), 0.0D) + 30;
-			textBox.setPrefWidth(Math.min(width, maxWidth));
-			if (width > maxWidth) {
-				width = maxWidth;
-				height = TextUtils.computeTextHeight(text.getFont(), text.getText(), width) + 70;
-				parent.setPrefHeight(height);
-				parent.setMinHeight(height);
-			}
-			System.out.println("width: " + width + " height: " + height);
+			Text text = new Text(newValue);
+			text.applyCss();
+			double width = text.getLayoutBounds().getWidth();
+			width += WIDTH_PADDING;
+			width = clamp(width, MIN_WIDTH, MAX_WIDTH);
+			text.setWrappingWidth(width);
+			double height = text.getLayoutBounds().getHeight();
+			height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
+			textBox.setPrefWidth(width);
+			textBox.setMaxWidth(width);
+			parent.setPrefHeight(height);
 		});
 	}
 
-	private void resetToDefault() {
-
-	}
-
-	private static class TextUtils {
-		static final Text helper;
-		static final double DEFAULT_WRAPPING_WIDTH;
-		static final double DEFAULT_LINE_SPACING;
-		static final String DEFAULT_TEXT;
-		static final TextBoundsType DEFAULT_BOUNDS_TYPE;
-
-		static {
-			helper = new Text();
-			DEFAULT_WRAPPING_WIDTH = helper.getWrappingWidth();
-			DEFAULT_LINE_SPACING = helper.getLineSpacing();
-			DEFAULT_TEXT = helper.getText();
-			DEFAULT_BOUNDS_TYPE = helper.getBoundsType();
-		}
-
-		static double computeTextWidth(Font font, String text, double help0) {
-			preProcess(font, text);
-			double width = Math.min(helper.prefWidth(-1.0D), help0);
-			helper.setWrappingWidth((int) Math.ceil(width));
-			width = Math.ceil(helper.getLayoutBounds().getWidth());
-			postProcess();
-			return width;
-		}
-
-		static double computeTextHeight(Font font, String text, double help0) {
-			preProcess(font, text);
-			helper.setWrappingWidth((int) Math.ceil(help0));
-			double height = Math.ceil(helper.getLayoutBounds().getHeight());
-			postProcess();
-			return height;
-		}
-
-		private static void preProcess(Font font, String text) {
-			helper.setText(text);
-			helper.setFont(font);
-			helper.setWrappingWidth(0.0D);
-			helper.setLineSpacing(0.0D);
-		}
-
-		private static void postProcess() {
-			helper.setWrappingWidth(DEFAULT_WRAPPING_WIDTH);
-			helper.setLineSpacing(DEFAULT_LINE_SPACING);
-			helper.setText(DEFAULT_TEXT);
-		}
-
+	/**
+	 * clamps a value to within the specified range
+	 * @param value value to clamp
+	 * @param min min output value
+	 * @param max max output value
+	 * @return value clamped to the range
+	 */
+	private double clamp(double value, double min, double max) {
+		return Math.min(Math.max(value, min), max);
 	}
 }

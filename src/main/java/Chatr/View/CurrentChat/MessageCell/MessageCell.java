@@ -7,7 +7,8 @@ import javafx.scene.control.ListCell;
  * renders the Message items in the current Chat box
  */
 public class MessageCell extends ListCell<Message> {
-	private MessageCellPresenter mp;
+	private  MessageCellPresenter mp = new MessageCellPresenter();
+
 	@Override
 	protected void updateItem(Message item, boolean empty) {
 		super.updateItem(item, empty);
@@ -16,9 +17,6 @@ public class MessageCell extends ListCell<Message> {
 			setGraphic(null);
 			return;
 		}
-//		if (mp == null)
-
-			mp = new MessageCellPresenter();
 		mp.setInfo(item);
 		setGraphic(mp.getView());
 	}
