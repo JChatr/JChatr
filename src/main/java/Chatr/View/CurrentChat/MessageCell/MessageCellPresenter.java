@@ -9,14 +9,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextBoundsType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 /**
  * renders the Message items in the current Chat box
@@ -34,6 +35,8 @@ public class MessageCellPresenter {
 	private Label timestamp;
 	@FXML
 	private Pane spacer;
+	@FXML
+	private Pane background;
 	private static Logger log = LogManager.getLogger(MessageCellPresenter.class);
 	private final static int MAX_WIDTH = 600;
 	private final static int MIN_WIDTH = 50;
@@ -49,6 +52,8 @@ public class MessageCellPresenter {
 		} catch (IOException e) {
 			log.error("unable to load MessageCell.fxml", e);
 		}
+		final String css = getClass().getResource("MessageCell.css").toExternalForm();
+		parent.getStylesheets().add(css);
 		addListeners();
 	}
 
@@ -56,10 +61,10 @@ public class MessageCellPresenter {
 		resetData();
 		userName.setText(message.getSender());
 		text.setText(message.getContent());
-		timestamp.setText(Long.toString(message.getTime()));
+		timestamp.setText(convertTimestamp(message.getTime()));
 		boolean align = false;
 		if (!Manager.getUserName().contentEquals(message.getSender())) {
-			alignRight();
+			alignLeft();
 			align = true;
 		}
 		log.trace("aligned: " + align + " rendered Message: " + message.toString());
@@ -76,21 +81,30 @@ public class MessageCellPresenter {
 		userName.setText("");
 		text.setText("");
 		timestamp.setText("");
-		alignLeft();
+		alignRight();
 		textBox.setPrefWidth(MIN_WIDTH);
 		textBox.setMaxWidth(MAX_WIDTH);
 		parent.setPrefHeight(MIN_HEIGHT);
 		parent.setMaxHeight(MAX_HEIGHT);
 	}
 
-	private void alignRight() {
+	private void alignLeft() {
 		spacer.toFront();
 		userName.toBack();
+
+
+		background.setId("background-left");
+		text.setId("text-left");
+		timestamp.setId("text-left");
+
 	}
 
-	private void alignLeft() {
+	private void alignRight() {
 		spacer.toBack();
 		userName.toFront();
+		background.setId("background-right");
+		text.setId("text-right");
+		timestamp.setId("text-right");
 	}
 
 	private void addListeners() {
@@ -113,12 +127,20 @@ public class MessageCellPresenter {
 
 	/**
 	 * clamps a value to within the specified range
+	 *
 	 * @param value value to clamp
-	 * @param min min output value
-	 * @param max max output value
+	 * @param min   min output value
+	 * @param max   max output value
 	 * @return value clamped to the range
 	 */
 	private double clamp(double value, double min, double max) {
 		return Math.min(Math.max(value, min), max);
+	}
+
+	private String convertTimestamp(long timestamp) {
+		Instant instant = Instant.ofEpochMilli(timestamp);
+		ZoneId zoneId = ZoneId.systemDefault();
+		ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, zoneId);
+		return String.format("%02d:%02d", zdt.getHour(), zdt.getMinute());
 	}
 }
