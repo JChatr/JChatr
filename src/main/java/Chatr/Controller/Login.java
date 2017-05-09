@@ -1,4 +1,4 @@
-package Chatr;
+package Chatr.Controller;
 
 import Chatr.Client.Connection;
 import Chatr.Converstation.User;

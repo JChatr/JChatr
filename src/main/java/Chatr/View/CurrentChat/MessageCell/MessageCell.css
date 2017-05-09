@@ -1,0 +1,18 @@
+#background-right {
+    -fx-background-color: rgb(0, 132, 255);
+    /*-fx-border-radius: 18px;*/
+    -fx-background-radius: 18px;
+}
+#text-right {
+    -fx-text-fill: #ffffff;
+}
+
+#background-left {
+    -fx-background-color: rgb(241, 240, 240);
+    -fx-background-radius: 18px;
+}
+
+#text-left {
+    -fx-text-fill: #000000;
+}
+

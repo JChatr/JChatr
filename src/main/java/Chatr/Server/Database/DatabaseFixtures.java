@@ -1,4 +1,4 @@
-package Chatr.Database;
+package Chatr.Server.Database;
 
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
@@ -18,7 +18,7 @@ class DatabaseFixtures {
 		try {
 			userSet1(db);
 			userSet2(db);
-//			multiUserChat(db);
+			multiUserChat(db);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

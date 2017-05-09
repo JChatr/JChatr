@@ -1,4 +1,4 @@
-package Chatr.Database;
+package Chatr.Server.Database;
 
 import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;

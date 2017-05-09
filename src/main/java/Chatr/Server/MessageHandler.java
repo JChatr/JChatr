@@ -3,11 +3,10 @@ package Chatr.Server;
 import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.Converstation.User;
-import Chatr.Database.Database;
+import Chatr.Server.Database.Database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.crypto.AEADBadTagException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

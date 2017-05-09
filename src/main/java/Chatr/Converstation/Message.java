@@ -44,6 +44,7 @@ public class Message {
 
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == null) return false;
 		return this.hashCode() == obj.hashCode();
 	}
 
