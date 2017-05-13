@@ -83,6 +83,22 @@ public class User {
 		}
 	}
 
+	//TODO implement Logger --> info
+
+	public boolean syntaxUserId(String userID){
+
+		int maxUserIdLength = 5;
+
+		if(userID.startsWith("@") == false){
+			return false;
+		}else if(userID.length() < maxUserIdLength - 1){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
+
 	public Status getStatus() {
 		return status;
 	}

@@ -30,7 +30,7 @@ public class Manager {
 
 	public static void main(String[] args) {
 		startServer();
-		initialize();
+		//initialize();
 		Executors.newSingleThreadExecutor().execute(() -> JavaFX.initGUI(args));
 		log.info(String.format("Connecting to  : %s", CONFIG.SERVER_ADDRESS));
 	}
@@ -76,13 +76,16 @@ public class Manager {
 		Executors.newSingleThreadExecutor().execute(new Server());
 	}
 
-	private static void initialize() {
-		System.out.print("Enter your nickname (@Nickname): ");
-		String userName = Terminal.getUserInput();
-		localUser = Login.loginUser(userName);
-		setCurrentChat(selectLatestConversation(localUser));
-		userChats = new HashSet<>();
-		users = Connection.readUsers();
+	public static void initialize(String username, String eMailInput, String usernameInput, String passwordInput) {
+
+		localUser = Login.registerUser(username, eMailInput, usernameInput, passwordInput);
+
+		//System.out.print("Enter your nickname (@Nickname): ");
+		//String userName = Terminal.getUserInput();
+		//localUser = Login.registerUser(userName);
+		//setCurrentChat(selectLatestConversation(localUser));
+		//userChats = new HashSet<>();
+		//users = Connection.readUsers();
 	}
 
 	private static Conversation selectLatestConversation(User user) {
