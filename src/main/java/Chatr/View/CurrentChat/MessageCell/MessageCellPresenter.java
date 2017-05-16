@@ -67,7 +67,6 @@ public class MessageCellPresenter {
 			alignLeft();
 			align = true;
 		}
-		log.trace("aligned: " + align + " rendered Message: " + message.toString());
 	}
 
 	Parent getView() {

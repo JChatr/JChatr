@@ -67,7 +67,7 @@
                         <ListView fx:id="chatsList" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" />
                     </children>
                 </VBox>
-            <AnchorPane fx:id="currentChat" prefHeight="600.0" prefWidth="900.0" HBox.hgrow="ALWAYS" />
+            <AnchorPane fx:id="currentChatAnchor" prefHeight="600.0" prefWidth="900.0" HBox.hgrow="ALWAYS" />
          </children>
       </HBox>
     </children>

@@ -2,6 +2,7 @@ package Chatr.View.ChatList;
 
 import Chatr.Controller.Manager;
 import Chatr.Converstation.Conversation;
+import Chatr.View.CurrentChat.CurrentChatPresenter;
 import Chatr.View.CurrentChat.CurrentChatView;
 import Chatr.View.UpdateService;
 import javafx.fxml.FXML;
@@ -23,7 +24,9 @@ public class ChatListPresenter {
 	@FXML
 	private ListView<Conversation> chatsList;
 	@FXML
-	private AnchorPane currentChat;
+	private AnchorPane currentChatAnchor;
+	private CurrentChatPresenter currentChat;
+	private CurrentChatView currentChatView;
 	private static Logger log = LogManager.getLogger(ChatListPresenter.class);
 
 
@@ -33,6 +36,8 @@ public class ChatListPresenter {
 		linkUpdateProperties();
 		CurrentChatView chatView = new CurrentChatView();
 		setChatWindow(chatView.getView());
+		// get Presenter from afterburner.fx
+		currentChat = (CurrentChatPresenter) chatView.getPresenter();
 	}
 
 	/**
@@ -41,8 +46,7 @@ public class ChatListPresenter {
 	 */
 	private void addListeners() {
 		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			Parent newChat = switchChat(newValue);
-			setChatWindow(newChat);
+			switchChat(newValue);
 		});
 	}
 
@@ -57,6 +61,7 @@ public class ChatListPresenter {
 		UpdateService.linkHighPriority(chatsList.itemsProperty(),
 				Manager::getUserChats
 		);
+		UpdateService.forceUpdate();
 	}
 
 	/**
@@ -64,19 +69,18 @@ public class ChatListPresenter {
 	 * @param conversation the conversation to switch to
 	 * @return newly created chat window
 	 */
-	private Parent switchChat(Conversation conversation) {
+	private void switchChat(Conversation conversation) {
 		Manager.setCurrentChat(conversation);
-		CurrentChatView chatView = new CurrentChatView();
+		currentChat.reload();
 		log.debug("switched to Chat: " + conversation);
-		return chatView.getView();
 	}
 
 	/**
-	 * displays the given Parent in the currentChat AnchorPane
+	 * displays the given Parent in the currentChatAnchor AnchorPane
 	 * @param parent window to display
 	 */
 	private void setChatWindow(Parent parent) {
-		currentChat.getChildren().clear();
-		currentChat.getChildren().add(parent);
+		currentChatAnchor.getChildren().clear();
+		currentChatAnchor.getChildren().add(parent);
 	}
 }

@@ -95,8 +95,8 @@ public class Database {
 	/**
 	 * updates the data for the user in the table
 	 *
-	 * @param user user data to update
-	 * @return if the update was successful
+	 * @param user user data to forceUpdate
+	 * @return if the forceUpdate was successful
 	 */
 	public boolean updateUser(User user) {
 		if (users.get(user.getUserID()) == null) {
@@ -214,15 +214,15 @@ public class Database {
 	/**
 	 * updates the data of a message in the table
 	 *
-	 * @param conversationID ID of the conversation to update
-	 * @param message        message to update the data for
-	 * @return if the update was successful
+	 * @param conversationID ID of the conversation to forceUpdate
+	 * @param message        message to forceUpdate the data for
+	 * @return if the forceUpdate was successful
 	 */
 	public boolean updateMessage(String conversationID, Message message) {
 		try {
 			return conversations.get(conversationID).put(message.getTime(), message) != null;
 		} catch (NullPointerException e) {
-			log.info(String.format("unable to update Message with %s in conversation %s", message, conversationID), e);
+			log.info(String.format("unable to forceUpdate Message with %s in conversation %s", message, conversationID), e);
 			return false;
 		}
 	}
