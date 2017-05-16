@@ -29,9 +29,6 @@ public class ChatListController extends Loader {
 	private CurrentChatController currentChat;
 	private static Logger log = LogManager.getLogger(ChatListController.class);
 
-	public ChatListController() {
-//		load(this);
-	}
 
 	@FXML
 	private void initialize() {
@@ -48,9 +45,8 @@ public class ChatListController extends Loader {
 	 * changes in the UI occur
 	 */
 	private void addListeners() {
-		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			switchChat(newValue);
-		});
+		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
+				-> switchChat(newValue));
 	}
 
 	/**

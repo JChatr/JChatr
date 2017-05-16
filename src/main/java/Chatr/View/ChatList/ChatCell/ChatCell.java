@@ -4,7 +4,7 @@ import Chatr.Converstation.Conversation;
 import javafx.scene.control.ListCell;
 
 public class ChatCell extends ListCell<Conversation> {
-	ChatCellController cp = new ChatCellController();
+	private ChatCellController cp = new ChatCellController();
 
 	@Override
 	protected void updateItem(Conversation item, boolean empty) {

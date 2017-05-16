@@ -2,6 +2,7 @@ package Chatr.View.CurrentChat.MessageCell;
 
 import Chatr.Controller.Manager;
 import Chatr.Converstation.Message;
+import Chatr.Helper.DateFormatter;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -13,14 +14,10 @@ import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 /**
  * renders the Message items in the current Chat box
  */
-public class MessageCellController extends Loader {
+class MessageCellController extends Loader {
 	@FXML
 	private HBox parent;
 	@FXML
@@ -51,7 +48,8 @@ public class MessageCellController extends Loader {
 		resetData();
 		userName.setText(message.getSender());
 		text.setText(message.getContent());
-		timestamp.setText(convertTimestamp(message.getTime()));
+		String time = DateFormatter.convertTimestamp(message.getTime());
+		timestamp.setText(time);
 		if (!Manager.getUserName().contentEquals(message.getSender())) {
 			alignLeft();
 		}
@@ -126,18 +124,5 @@ public class MessageCellController extends Loader {
 	 */
 	private double clamp(double value, double min, double max) {
 		return Math.min(Math.max(value, min), max);
-	}
-
-	/**
-	 * converts a timestamp in milliseconds to a formatted time string
-	 *
-	 * @param timestamp time in ms since 01.01.1970
-	 * @return formatted Time string
-	 */
-	private String convertTimestamp(long timestamp) {
-		Instant instant = Instant.ofEpochMilli(timestamp);
-		ZoneId zoneId = ZoneId.systemDefault();
-		ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, zoneId);
-		return String.format("%02d:%02d", zdt.getHour(), zdt.getMinute());
 	}
 }

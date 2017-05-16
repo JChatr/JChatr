@@ -80,27 +80,27 @@ public class Manager {
 		System.out.print("Enter your nickname (@Nickname): ");
 		String userName = Terminal.getUserInput();
 		localUser = Login.loginUser(userName);
-		setCurrentChat(selectLatestConversation(localUser));
+//		setCurrentChat(selectLatestConversation(localUser));
 		userChats = new HashSet<>();
 		users = Connection.readUsers();
 	}
 
-	private static Conversation selectLatestConversation(User user) {
-		Set<Conversation> conversations = Connection.readAllConversations(localUser.getUserID());
-		Conversation latest = null;
-		for (Conversation c : conversations) {
-			latest = c;
-			break;
-		}
-		if (latest == null) latest = createConversation();
-		return latest;
-	}
-
-	private static Conversation createConversation() {
-		System.out.print("who do you want to chat with ? : ");
-		String otherUser = Terminal.getUserInput();
-		Connection.createUser(localUser.getUserID(), localUser);
-		return Conversation.newConversation(new User(otherUser), localUser);
-	}
+//	private static Conversation selectLatestConversation(User user) {
+//		Set<Conversation> conversations = Connection.readAllConversations(localUser.getUserID());
+//		Conversation latest = null;
+//		for (Conversation c : conversations) {
+//			latest = c;
+//			break;
+//		}
+//		if (latest == null) latest = createConversation();
+//		return latest;
+//	}
+//
+//	private static Conversation createConversation() {
+//		System.out.print("who do you want to chat with ? : ");
+//		String otherUser = Terminal.getUserInput();
+//		Connection.createUser(localUser.getUserID(), localUser);
+//		return Conversation.newConversation(new User(otherUser), localUser);
+//	}
 }
 
