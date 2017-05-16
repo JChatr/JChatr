@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Links two Properties together and guarantees that the given update Function is executed in a set interval
+ * Links two Properties together and guarantees that the given startService Function is executed in a set interval
  */
 public class UpdateService extends ScheduledService<Void> {
 	// order of the K, V of the maps is inverted because otherwise the uniqueness of the keys is violated when adding a
@@ -31,10 +31,10 @@ public class UpdateService extends ScheduledService<Void> {
 	}
 
 	/**
-	 * links the two properties unidirectionally at a slow update Interval. Every update the given function gets executed.
+	 * links the two properties unidirectionally at a slow startService Interval. Every startService the given function gets executed.
 	 *
 	 * @param source     source Property to be written to
-	 * @param updateTask task to be executed on update
+	 * @param updateTask task to be executed on startService
 	 */
 	public static void linkLowPriority(StringProperty source, Supplier<String> updateTask) {
 		StringProperty target = new SimpleStringProperty();
@@ -45,10 +45,10 @@ public class UpdateService extends ScheduledService<Void> {
 	}
 
 	/**
-	 * links the two properties unidirectionally at a fast update Interval. Every update the given function gets executed.
+	 * links the two properties unidirectionally at a fast startService Interval. Every startService the given function gets executed.
 	 *
 	 * @param source     source Property to be written to
-	 * @param updateTask task to be executed on update
+	 * @param updateTask task to be executed on startService
 	 */
 	public static <T> void linkHighPriority(ObjectProperty<ObservableList<T>> source, Supplier<Collection> updateTask) {
 		ObservableList<T> list = FXCollections.observableArrayList();
@@ -62,7 +62,7 @@ public class UpdateService extends ScheduledService<Void> {
 	/**
 	 * private Method enforcing the singleton pattern and doing some setup for the Scheduled Service
 	 *
-	 * @return
+	 * @return singleton Instance of the UpdateService
 	 */
 	private static UpdateService startService() {
 		if (instance == null) {
@@ -71,6 +71,13 @@ public class UpdateService extends ScheduledService<Void> {
 			instance.start();
 		}
 		return instance;
+	}
+
+	/**
+	 * forces an Update Cycle to be run at some point in time in the Future
+	 */
+	public static void forceUpdate() {
+		instance.restart();
 	}
 
 	/**
@@ -89,6 +96,7 @@ public class UpdateService extends ScheduledService<Void> {
 					Platform.runLater(() -> result.forEach(
 							value -> job.getValue().add(value)
 					));
+
 				}
 				log.trace("Updated high priority in " + (System.currentTimeMillis() - start) + "ms");
 				start = System.currentTimeMillis();
