@@ -1,6 +1,6 @@
 package Chatr.View.ChatList.ChatCell;
 
-import Chatr.Converstation.Conversation;
+import Chatr.Model.Conversation;
 import javafx.scene.control.ListCell;
 
 public class ChatCell extends ListCell<Conversation> {

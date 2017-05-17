@@ -1,8 +1,7 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import Chatr.View.UpdateService;

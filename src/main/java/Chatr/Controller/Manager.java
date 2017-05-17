@@ -2,9 +2,9 @@ package Chatr.Controller;
 
 
 import Chatr.Client.Connection;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Conversation;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Terminal;
 import Chatr.Server.Server;
@@ -12,7 +12,10 @@ import Chatr.View.JavaFX;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -39,8 +42,32 @@ public class Manager {
 		return currentChat.newMessage(content);
 	}
 
-	public static String getUserName() {
+	public static String getLocalUserName() {
 		return localUser.getUserName();
+	}
+
+	public static String getLocalUserID(){
+		return localUser.getUserID();
+	}
+
+	public static String getUserImagePath(String userID){
+		for(Iterator<User> it = users.iterator(); it.hasNext();) {
+			User u = it.next();
+			if (u.equals(new User(userID))) {
+				return u.getPicturePath();
+			}
+		}
+		return localUser.getPicturePath();
+	}
+
+	public static BufferedImage getUserImage(String userID){
+		for(Iterator<User> it = users.iterator(); it.hasNext();) {
+			User u = it.next();
+			if (u.equals(new User(userID))) {
+				return u.getPicture();
+			}
+		}
+		return localUser.getPicture();
 	}
 
 	public static Set<String> getChatMembers() {

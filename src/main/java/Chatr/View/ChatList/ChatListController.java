@@ -1,7 +1,7 @@
 package Chatr.View.ChatList;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
+import Chatr.Model.Conversation;
 import Chatr.View.ChatList.ChatCell.ChatCell;
 import Chatr.View.CurrentChat.CurrentChatController;
 import Chatr.View.Loader;
@@ -55,7 +55,7 @@ public class ChatListController extends Loader {
 	 */
 	private void linkUpdateProperties() {
 		UpdateService.linkLowPriority(userName.textProperty(),
-				Manager::getUserName
+				Manager::getLocalUserName
 		);
 		UpdateService.linkHighPriority(chatsList.itemsProperty(),
 				Manager::getUserChats

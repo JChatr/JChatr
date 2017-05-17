@@ -12,7 +12,7 @@ public class JavaFX extends Application {
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
 	private AnchorPane currentChat;
-	private Logger log = LogManager.getLogger();
+	private Logger log = LogManager.getLogger(JavaFX.class);
 
 	public static void initGUI(String[] args) {
 		launch(JavaFX.class, args);

@@ -1,7 +1,7 @@
 package Chatr.View.ChatList.ChatCell;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
+import Chatr.Model.Conversation;
+import Chatr.Model.Message;
 import Chatr.Helper.DateFormatter;
 import Chatr.View.Loader;
 import Chatr.View.UpdateService;

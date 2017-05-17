@@ -1,4 +1,4 @@
-package Chatr.Converstation;
+package Chatr.Model;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
@@ -12,24 +12,24 @@ public class Conversation {
 	private String conversationName;
 	private Set<User> members = new HashSet<>();
 	private LinkedList<Message> messages = new LinkedList<>();
-	private String localUser;
+	private String localUserID;
 	private Long newestMessageTime = 0L;
 
 	/*
 
-		private Conversation(String conversationName, Collection<User> members, User localUser) {
+		private Conversation(String conversationName, Collection<User> members, User localUserID) {
 		this.members.addAll(members);
-		this.members.add(localUser);
-		this.localUser = localUser.getUserID();
+		this.members.add(localUserID);
+		this.localUserID = localUserID.getUserID();
 		this.conversationID = HashGen.getID(false);
 		this.conversationName = conversationID;
 	}*/
 
 
-	private Conversation(User member, User localUser) {
+	private Conversation(User member, User localUserID) {
 		this.members.add(member);
-		this.members.add(localUser);
-		this.localUser = localUser.getUserID();
+		this.members.add(localUserID);
+		this.localUserID = localUserID.getUserID();
 		this.conversationID = HashGen.getID(false);
 		this.conversationName = conversationID;
 		Connection.createConversation(conversationID, this.getMemberIDs());
@@ -53,7 +53,7 @@ public class Conversation {
 
 	public Message newMessage(String content) {
 		if (!content.trim().isEmpty()) {
-			Message message = new Message(localUser, content);
+			Message message = new Message(localUserID, content);
 			messages.add(message);
 			Connection.addMessage(conversationID, message);
 			return message;
@@ -75,8 +75,8 @@ public class Conversation {
 
 	}
 
-	public void setLocalUser(String userID) {
-		this.localUser = userID;
+	public void setLocalUserID(String userID) {
+		this.localUserID = userID;
 	}
 
 

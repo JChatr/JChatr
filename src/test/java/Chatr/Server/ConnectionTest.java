@@ -1,9 +1,9 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Conversation;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import org.junit.Before;
 import org.junit.Test;
 

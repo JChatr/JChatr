@@ -1,18 +1,23 @@
 package Chatr.View.CurrentChat.MessageCell;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import Chatr.Helper.DateFormatter;
 import Chatr.View.Loader;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.awt.image.BufferedImage;
 
 /**
  * renders the Message items in the current Chat box
@@ -32,6 +37,8 @@ class MessageCellController extends Loader {
 	private Pane spacer;
 	@FXML
 	private Pane background;
+	@FXML
+	private ImageView userThumbnail;
 	private static Logger log = LogManager.getLogger(MessageCellController.class);
 	private final static int MAX_WIDTH = 600;
 	private final static int MIN_WIDTH = 50;
@@ -50,8 +57,9 @@ class MessageCellController extends Loader {
 		text.setText(message.getContent());
 		String time = DateFormatter.convertTimestamp(message.getTime());
 		timestamp.setText(time);
-		if (!Manager.getUserName().contentEquals(message.getSender())) {
-			alignLeft();
+		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
+			displayUserThumbnail(message.getSender());
+			alignLeft(message);
 		}
 	}
 
@@ -77,13 +85,12 @@ class MessageCellController extends Loader {
 	/**
 	 * aligns the message to the Right and changes the CSS appropriately
 	 */
-	private void alignLeft() {
+	private void alignLeft(Message message) {
 		spacer.toFront();
 		userName.toBack();
 		background.setId("background-left");
 		text.setId("text-left");
 		timestamp.setId("text-left");
-
 	}
 	/**
 	 * aligns the message to the Left and changes the CSS appropriately
@@ -112,6 +119,15 @@ class MessageCellController extends Loader {
 			textBox.setMaxWidth(width);
 			parent.setPrefHeight(height);
 		});
+	}
+
+	private void displayUserThumbnail(String sender){
+		/* Version Bad
+		Image gravatar = new Image(Manager.getUserImagePath(sender));
+		userThumbnail.imageProperty().setValue(gravatar);
+		*/
+
+		userThumbnail.imageProperty().setValue(SwingFXUtils.toFXImage(Manager.getUserImage(sender), null));
 	}
 
 	/**

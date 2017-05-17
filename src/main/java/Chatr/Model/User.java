@@ -1,8 +1,17 @@
-package Chatr.Converstation;
+package Chatr.Model;
 
 import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
-
+import javafx.embed.swing.SwingFXUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -13,13 +22,11 @@ import java.util.Objects;
 public class User {
 
 	private String userName = "";
-	//private String userID = HashGen.getID(false);
 	private String userID = "";
-	public String userPicture = "";
+	public BufferedImage userPicture;
 	private String email = "";
-	private String emailMD5 = "";
 	private Status status;
-	
+	private static Logger log = LogManager.getLogger(User.class);
 	/**
 	 * Constructor to create user object with the user name.
 	 * @param userName The name of the user.
@@ -37,22 +44,8 @@ public class User {
 		return userName;
 	}
 	
-	/**
-	 * This method is used to set the path of the profile path.
-	 */
-	public User setProfileImg(String imgPath){
-		userPicture = imgPath;
-		return this;
-	}
-	
-	/**
-	 * This method is used to get the path of the profile picture.
-	 * @return Path of profile picture.
-	 */
-	public String getProfileImg(){
-		return userPicture;
-	}
-	
+
+
 	/**
 	 * This method is used to set the user name.
 	 * @param newName The new user name.
@@ -90,6 +83,30 @@ public class User {
 	public User setStatus(Status status) {
 		this.status = status;
 		return this;
+	}
+
+
+	public BufferedImage getPicture(){
+		if(userPicture == null) {
+			String hash = HashGen.hash(email);
+			try {
+				URL urlPic = new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404");
+				//hash.equals Checks if empty string was hashed
+				if(urlPic.openConnection().getContentType().contains("text") || hash.equals("d41d8cd98f00b204e9800998ecf8427e")){
+					userPicture = ImageIO.read(getClass().getResource("/icons/default_user.png"));
+				}else{
+					userPicture = ImageIO.read(new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404"));
+				}
+
+			} catch (IOException e) {
+				log.error("Could not pull Gravatar, " + e);
+			}
+		}
+		return userPicture;
+	}
+
+	public String getPicturePath(){
+		return ("https://www.gravatar.com/avatar/" + HashGen.hash(email) + ".jpg");
 	}
 
 
