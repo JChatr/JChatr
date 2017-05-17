@@ -1,6 +1,7 @@
 package Chatr.View;
 
 import Chatr.Controller.Login;
+import Chatr.Converstation.Exceptions.ClientSyntaxException;
 import Chatr.View.ChatList.ChatListView;
 import Chatr.View.CurrentChat.CurrentChatView;
 import Chatr.View.Login.LoginView;
@@ -34,14 +35,14 @@ public class JavaFX extends Application {
 //		}
 	}
 
-
-
 	private void initializeLoginLayout(){
 		LoginView login = new LoginView();
 		Scene scene = new Scene(login.getView());
 		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
 		scene.getStylesheets().add(cssUri);
 		primaryStage.setScene(scene);
+		//initializeRootLayout();
+
 
 	}
 	/**
@@ -55,4 +56,8 @@ public class JavaFX extends Application {
 		scene.getStylesheets().add(cssUri);
 		primaryStage.setScene(scene);
 	}
+
+
+
+
 }

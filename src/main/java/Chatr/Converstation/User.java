@@ -1,7 +1,9 @@
 package Chatr.Converstation;
 
+import Chatr.Client.Client;
 import Chatr.Helper.Enums.Status;
-import Chatr.Helper.HashGen;
+import Chatr.Converstation.Exceptions.ClientSyntaxException;
+
 
 import java.util.Objects;
 
@@ -19,6 +21,19 @@ public class User {
 	private String email = "";
 	private String emailMD5 = "";
 	private Status status;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public User setPassword(String password) {
+		this.password = password;
+		return this;
+	}
+
+	private String password;
+
+
 	
 	/**
 	 * Constructor to create user object with the user name.
@@ -74,30 +89,6 @@ public class User {
 		this.email = email.toLowerCase();
 		return this;
 	}
-	
-	public boolean syntaxEmail(String email){
-		if(email.contains(".") && email.contains("@")){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	//TODO implement Logger --> info
-
-	public boolean syntaxUserId(String userID){
-
-		int maxUserIdLength = 5;
-
-		if(userID.startsWith("@") == false){
-			return false;
-		}else if(userID.length() < maxUserIdLength - 1){
-			return false;
-		}else{
-			return true;
-		}
-	}
-
 
 	public Status getStatus() {
 		return status;
