@@ -20,8 +20,9 @@ public class Login {
 		log.info(String.format("Methodcall loginUser"));
 		try{
 			userIdAvailableCheck(userIdInput);
-		}catch (){
-
+		}catch (Exception e){
+			e.printStackTrace();
+			log.info(e.toString());
 		}
 		User user = null;
 		return user;
