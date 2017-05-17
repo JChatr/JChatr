@@ -1,14 +1,13 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
+import Chatr.Converstation.Conversation;
 import Chatr.Converstation.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
-import Chatr.View.CurrentChat.MessageCell.MessageCellPresenter;
 import Chatr.View.UpdateService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.util.Callback;
 
 public class CurrentChatPresenter {
 	@FXML
@@ -41,6 +40,15 @@ public class CurrentChatPresenter {
 		});
 	}
 
+	public void reload() {
+		reset();
+		UpdateService.forceUpdate();
+	}
+
+	private void reset() {
+		currentChat.itemsProperty().getValue().clear();
+	}
+
 	/**
 	 * Building Update links from UI properties to Manager methods
 	 * all links are guaranteed to get updated at a specified interval
@@ -62,6 +70,7 @@ public class CurrentChatPresenter {
 					return sb.toString();
 				}
 		);
+		UpdateService.forceUpdate();
 	}
 
 	/**
