@@ -65,7 +65,7 @@ public class Connection {
 	/**
 	 * read new messages from the specified conversation
 	 *
-	 * @param conversationID ID of the conversation to update
+	 * @param conversationID ID of the conversation to forceUpdate
 	 * @param newest         newest message in the local copy of the conversation
 	 * @return new Messages from the server
 	 */
@@ -127,9 +127,9 @@ public class Connection {
 	}
 
 	/**
-	 * update the specified users data
+	 * forceUpdate the specified users data
 	 *
-	 * @param userID   ID of the user to update information for
+	 * @param userID   ID of the user to forceUpdate information for
 	 * @param userData new data of the user
 	 * @return if the operation was successful
 	 */
