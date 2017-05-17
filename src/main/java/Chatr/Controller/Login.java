@@ -14,26 +14,41 @@ import org.apache.logging.log4j.Logger;
  */
 public class Login {
 
-	public static boolean successful = false;
-	private static String email;
 	private static Logger log = LogManager.getLogger(Login.class);
 
+	public static User loginUser(String userIdInput, String passwordInput){
+		log.info(String.format("Methodcall loginUser"));
+		try{
+			userIdAvailableCheck(userIdInput);
+		}catch (){
 
+		}
+		User user = null;
+		return user;
 
-	//TODO implement Logging
-
+	}
+	/**
+	 *
+	 * @param userIdInput The user's wished UserID
+	 * @param eMailInput    The user's email
+	 * @param usernameInput The user's username
+	 * @param passwordInput The user's password
+	 * @return Returns a new object of user
+	 */
 	public static User registerUser(String userIdInput, String eMailInput, String usernameInput, String passwordInput) {
 
+		log.info(String.format("Methodcall Regi"));
 		String userIdConfirmed = "";
 		try{
-			System.out.println(userIdInput + eMailInput + usernameInput + passwordInput);
-			userIdAvaiableCheck(userIdInput);
+			userIdAvailableCheck(userIdInput);
 			userIdConfirmed = syntaxUserId(userIdInput);
 			syntaxEmail(eMailInput);
 		}catch(ClientSyntaxException e){
 			e.printStackTrace();
+			log.info(e.toString());
 		}catch(UserIdInUseException e){
 			e.printStackTrace();
+			log.info(e.toString());
 		}
 
 		User user = null;
@@ -41,17 +56,19 @@ public class Login {
 		user = new User(userIdConfirmed);
 		user.setUserName(usernameInput);
 		user.setEmail(eMailInput);
-		user.setPassword(passwordInput);
+		user.setPassword(Chatr.Helper.HashGen.hashMD5(passwordInput));
 
 		Connection.createUser(userIdInput, user);
 		log.info(String.format("created User %s|%s", user.getUserID(), user.getUserName()));
 		return user;
 	}
 
-
-
-	//TODO Logging
-
+	/**
+	 *
+	 * @param userIdUserInput The UserID you want to check
+	 * @return If UserID is permitted, the method returns the ID with an '@' in front of it.
+	 * @throws ClientSyntaxException  Exception is thrown if UserID isn't permitted.
+	 */
 	public static String syntaxUserId (String userIdUserInput)throws ClientSyntaxException{
 
 		String errorMessage = "Invalid User-ID input.";
@@ -65,8 +82,12 @@ public class Login {
 		}
 	}
 
-	//TODO Email Regex
-
+	//TODO implement Email regex
+	/**
+	 *
+	 * @param email Email you want to check
+	 * @throws ClientSyntaxException    Exception is thrown if Email is not permitted.
+	 */
 	public static void syntaxEmail(String email) throws ClientSyntaxException {
 		if(email.contains(".") && email.contains("@")){
 			log.info(String.format("Email %s is permitted.", email));
@@ -76,7 +97,12 @@ public class Login {
 		}
 	}
 
-	public static void userIdAvaiableCheck(String userIdUserInput) throws UserIdInUseException{
+	/**
+	 *
+	 * @param userIdUserInput   UserID you want to check
+	 * @throws UserIdInUseException Exception is thrown if the UserID is already in Use.
+	 */
+	public static void userIdAvailableCheck(String userIdUserInput) throws UserIdInUseException{
 		User user = null;
 		if ((user = Connection.readUser(userIdUserInput)) != null) {
 			log.info(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
@@ -88,7 +114,11 @@ public class Login {
 		}
 	}
 
-	
+	/**
+	 *
+	 * @param input String in which you want to change the first char to lower case
+	 * @return  String with first char to lower case
+	 */
 	public static String firstCharToLowerCase(String input) {
 		if (input == null || input.length() == 0) {
 			return input;
