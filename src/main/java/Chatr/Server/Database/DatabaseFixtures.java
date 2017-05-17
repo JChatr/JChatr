@@ -1,7 +1,7 @@
 package Chatr.Server.Database;
 
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 
 import java.util.HashSet;
 import java.util.LinkedList;

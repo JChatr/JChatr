@@ -51,8 +51,7 @@ public class UpdateService extends ScheduledService<Void> {
 	 * @param updateTask task to be executed on startService
 	 */
 	public static <T> void linkHighPriority(ObjectProperty<ObservableList<T>> source, Supplier<Collection> updateTask) {
-		ObservableList<T> list = FXCollections.observableArrayList();
-		ListProperty<T> property = new SimpleListProperty<>(list);
+		ListProperty<T> property = new SimpleListProperty<>(FXCollections.observableArrayList());
 		source.bind(property);
 		highPriorityList.put(updateTask, property);
 		startService();

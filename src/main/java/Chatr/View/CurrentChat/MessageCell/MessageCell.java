@@ -1,6 +1,6 @@
 package Chatr.View.CurrentChat.MessageCell;
 
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import javafx.scene.control.ListCell;
 
 /**

@@ -1,8 +1,8 @@
 package Chatr.Server.Database;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -143,9 +143,9 @@ public class Database {
 	 * @param conversationID conversationID to read at
 	 * @return the assembled conversation
 	 */
-	public Conversation readConversation(String conversationID, String userID) {
+	public Chat readConversation(String conversationID, String userID) {
 		Set<User> members = findConversationUsers(conversationID);
-		Conversation build = Conversation.preConfigServer(conversationID, userID,
+		Chat build = Chat.preConfigServer(conversationID, userID,
 				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
 		return build;
 	}
@@ -156,10 +156,10 @@ public class Database {
 	 * @param userID ID to read & assemble forl.forEach(c -> System.out.println(c)
 	 * @return List of conversations for that user
 	 */
-	public Set<Conversation> readUserConversations(String userID) {
-		Set<Conversation> userConv = new HashSet<>();
+	public Set<Chat> readUserConversations(String userID) {
+		Set<Chat> userConv = new HashSet<>();
 		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
-			Conversation c = readConversation(conversationID, userID);
+			Chat c = readConversation(conversationID, userID);
 			c.setLocalUser(userID);
 			userConv.add(c);
 		}

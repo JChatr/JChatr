@@ -1,7 +1,7 @@
 package Chatr.View.ChatList.ChatCell;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
 import Chatr.Helper.DateFormatter;
 import Chatr.View.Loader;
 import Chatr.View.UpdateService;
@@ -41,7 +41,6 @@ class ChatCellController extends Loader {
 
 	private void linkUpdateProperties() {
 		ObjectProperty<Message> m = new SimpleObjectProperty<>();
-		UpdateService.forceUpdate();
 	}
 
 	private void setLatestMessage(Message message) {
@@ -62,9 +61,9 @@ class ChatCellController extends Loader {
 		return unreadMessages;
 	}
 
-	public void setInfo(Conversation conversation) {
+	public void setInfo(Chat chat) {
 		resetData();
-		title.textProperty().set(conversation.getID());
+		title.textProperty().bind(chat.getID());
 	}
 
 	private void resetData() {

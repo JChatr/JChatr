@@ -1,7 +1,7 @@
 package Chatr.View.CurrentChat.MessageCell;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import Chatr.Helper.DateFormatter;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
@@ -32,12 +32,14 @@ class MessageCellController extends Loader {
 	private Pane spacer;
 	@FXML
 	private Pane background;
-	private static Logger log = LogManager.getLogger(MessageCellController.class);
+
 	private final static int MAX_WIDTH = 600;
 	private final static int MIN_WIDTH = 50;
 	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
 	private final static int MIN_HEIGHT = 40;
 	private final static int WIDTH_PADDING = 20;
+
+	private static Logger log = LogManager.getLogger(MessageCellController.class);
 
 	MessageCellController() {
 		load(this);
@@ -50,7 +52,7 @@ class MessageCellController extends Loader {
 		text.setText(message.getContent());
 		String time = DateFormatter.convertTimestamp(message.getTime());
 		timestamp.setText(time);
-		if (!Manager.getUserName().contentEquals(message.getSender())) {
+		if (!Manager.getLocalUserName().get().contentEquals(message.getSender())) {
 			alignLeft();
 		}
 	}
@@ -85,6 +87,7 @@ class MessageCellController extends Loader {
 		timestamp.setId("text-left");
 
 	}
+
 	/**
 	 * aligns the message to the Left and changes the CSS appropriately
 	 */

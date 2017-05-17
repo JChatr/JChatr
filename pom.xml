@@ -41,9 +41,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.airhacks</groupId>
-            <artifactId>afterburner.fx</artifactId>
-            <version>1.7.0</version>
+            <groupId>org.hildan.fxgson</groupId>
+            <artifactId>fx-gson</artifactId>
+            <version>3.1.0</version>
         </dependency>
     </dependencies>
     <build>
@@ -118,5 +118,6 @@
                 </includes>
             </resource>
         </resources>
+
     </build>
 </project>

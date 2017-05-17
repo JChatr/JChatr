@@ -1,8 +1,8 @@
 package Chatr.Client;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
@@ -38,10 +38,10 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static Set<Conversation> readAllConversations(String userID) {
+	public static Set<Chat> readAllConversations(String userID) {
 		Transmission request = build(CONVERSATION, READ, userID, null);
 		Transmission response = client.get(request);
-		return response.getConversations();
+		return response.getChats();
 	}
 
 	/**

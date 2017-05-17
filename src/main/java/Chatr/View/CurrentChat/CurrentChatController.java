@@ -1,18 +1,18 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import Chatr.View.UpdateService;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
 public class CurrentChatController extends Loader {
 	@FXML
-	private ListView<Message> currentChat;
+	private ListView<Message> currentMessages;
 	@FXML
 	private Label currentChatName;
 	@FXML
@@ -24,14 +24,15 @@ public class CurrentChatController extends Loader {
 	@FXML
 	private Button sendButton;
 
+	private String chatID;
+
 	/**
 	 * init UI links to Manager class and set up event Methods
 	 */
 	@FXML
 	private void initialize() {
 		addListeners();
-		linkUpdateProperties();
-		currentChat.setCellFactory(param -> new MessageCell());
+		currentMessages.setCellFactory(param -> new MessageCell());
 	}
 
 	private void addListeners() {
@@ -41,14 +42,20 @@ public class CurrentChatController extends Loader {
 		});
 	}
 
-	public void reload() {
+	public void swtich(String chatID) {
 		reset();
-		UpdateService.forceUpdate();
+		this.chatID = chatID;
+		linkUpdateProperties();
 	}
 
 	private void reset() {
-		currentChat.itemsProperty();
-		currentChat.itemsProperty().getValue().clear();
+		currentMessages.itemsProperty().unbind();
+		currentMessages.itemsProperty().getValue().clear();
+		currentChatName.textProperty().unbind();
+		currentChatName.textProperty().set("");
+		currentChatUsers.textProperty().unbind();
+		currentChatUsers.textProperty().set("");
+		chatID = "";
 	}
 
 	/**
@@ -56,23 +63,24 @@ public class CurrentChatController extends Loader {
 	 * all links are guaranteed to get updated at a specified interval
 	 */
 	private void linkUpdateProperties() {
-		UpdateService.linkHighPriority(currentChat.itemsProperty(),
-				Manager::getChatUpdates
+		Bindings.bindContent(
+				currentMessages.itemsProperty().get(), Manager.getChatMessages(chatID)
 		);
-		UpdateService.linkLowPriority(currentChatName.textProperty(),
-				Manager::getChatName
-		);
-		UpdateService.linkLowPriority(currentChatUsers.textProperty(),
-				() -> {
-					StringBuilder sb = new StringBuilder();
-					Manager.getChatMembers().forEach(memberID -> {
-						sb.append(memberID);
-						sb.append(", ");
-					});
-					return sb.toString();
-				}
-		);
-		UpdateService.forceUpdate();
+		currentChatName.textProperty().bind(Manager.getChatName(chatID));
+		currentChatUsers.textProperty().bind(Bindings.concat(
+				Manager.getChatMembers(chatID)
+		));
+
+//		UpdateService.linkLowPriority(currentChatUsers.textProperty(),
+//				() -> {
+//					StringBuilder sb = new StringBuilder();
+//					Manager.getChatMembers().forEach(memberID -> {
+//						sb.append(memberID);
+//						sb.append(", ");
+//					});
+//					return sb.toString();
+//				}
+//		);
 	}
 
 	/**
@@ -82,10 +90,9 @@ public class CurrentChatController extends Loader {
 	private void onSendButtonClick() {
 		String userInput = textInput.getText();
 		if (!userInput.trim().isEmpty()) {
-			Message m = Manager.addMessage(userInput);
+			Message m = Manager.addMessage(userInput, chatID);
 			displayMessage(m);
-			Platform.runLater(() ->
-					textInput.clear());
+			Platform.runLater(() -> textInput.clear());
 		}
 	}
 
@@ -95,6 +102,6 @@ public class CurrentChatController extends Loader {
 	 * @param message Message to be displayed
 	 */
 	private void displayMessage(Message message) {
-		currentChat.getItems().add(message);
+		currentMessages.getItems().add(message);
 	}
 }

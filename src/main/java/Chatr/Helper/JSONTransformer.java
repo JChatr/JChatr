@@ -1,6 +1,7 @@
 package Chatr.Helper;
 
 import com.google.gson.Gson;
+import org.hildan.fxgson.FxGson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,7 @@ import java.util.List;
  * uses GSON Library to serialize / deserialize Objects to from JSON
  */
 public class JSONTransformer {
-	private static Gson parser = new Gson();
+	private static Gson parser = FxGson.create();
 
 	/**
 	 * converts the Object to JSON

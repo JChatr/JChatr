@@ -1,11 +1,11 @@
 package Chatr.View.ChatList;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
+import Chatr.Model.Chat;
 import Chatr.View.ChatList.ChatCell.ChatCell;
 import Chatr.View.CurrentChat.CurrentChatController;
 import Chatr.View.Loader;
-import Chatr.View.UpdateService;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -23,7 +23,7 @@ public class ChatListController extends Loader {
 	@FXML
 	private Label userName;
 	@FXML
-	private ListView<Conversation> chatsList;
+	private ListView<Chat> chatsList;
 	@FXML
 	private AnchorPane currentChatAnchor;
 	private CurrentChatController currentChat;
@@ -54,24 +54,18 @@ public class ChatListController extends Loader {
 	 * all links are guaranteed to get updated at a specified interval
 	 */
 	private void linkUpdateProperties() {
-		UpdateService.linkLowPriority(userName.textProperty(),
-				Manager::getUserName
-		);
-		UpdateService.linkHighPriority(chatsList.itemsProperty(),
-				Manager::getUserChats
-		);
-		UpdateService.forceUpdate();
+		userName.textProperty().bind(Manager.getLocalUserName());
+		Bindings.bindContent(chatsList.getItems(), Manager.getUserChats());
 	}
 
 	/**
-	 * sets new Conversation in Manager and creates corresponding chat Window
+	 * sets new Chat in Manager and creates corresponding chat Window
 	 *
-	 * @param conversation the conversation to switch to
+	 * @param chat the chat to switch to
 	 */
-	private void switchChat(Conversation conversation) {
-		Manager.setCurrentChat(conversation);
-		currentChat.reload();
-		log.debug("switched to Chat: " + conversation);
+	private void switchChat(Chat chat) {
+		currentChat.swtich(chat.getID().get());
+		log.debug("switched to Chat: " + chat);
 	}
 
 	/**

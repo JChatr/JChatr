@@ -1,13 +1,13 @@
 package Chatr.View.ChatList.ChatCell;
 
-import Chatr.Converstation.Conversation;
+import Chatr.Model.Chat;
 import javafx.scene.control.ListCell;
 
-public class ChatCell extends ListCell<Conversation> {
+public class ChatCell extends ListCell<Chat> {
 	private ChatCellController cp = new ChatCellController();
 
 	@Override
-	protected void updateItem(Conversation item, boolean empty) {
+	protected void updateItem(Chat item, boolean empty) {
 		super.updateItem(item, empty);
 		if (empty || item == null) {
 			setText(null);

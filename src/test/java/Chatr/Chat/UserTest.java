@@ -1,10 +1,10 @@
-package Chatr.Conversation;
+package Chatr.Chat;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import Chatr.Converstation.User;
+import Chatr.Model.User;
 
 public class UserTest {
 

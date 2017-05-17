@@ -34,7 +34,7 @@
                 <Insets />
             </VBox.margin>
         </AnchorPane>
-        <ListView id="currentChat" fx:id="currentChat" VBox.vgrow="ALWAYS">
+        <ListView id="currentChat" fx:id="currentMessages" VBox.vgrow="ALWAYS">
             <VBox.margin>
                 <Insets />
             </VBox.margin>

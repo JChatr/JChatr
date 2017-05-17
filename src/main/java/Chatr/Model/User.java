@@ -1,7 +1,6 @@
-package Chatr.Converstation;
+package Chatr.Model;
 
 import Chatr.Helper.Enums.Status;
-import Chatr.Helper.HashGen;
 
 import java.util.Objects;
 

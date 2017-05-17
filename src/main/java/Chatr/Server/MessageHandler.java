@@ -1,8 +1,8 @@
 package Chatr.Server;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import Chatr.Server.Database.Database;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -82,8 +82,8 @@ public class MessageHandler {
 							break;
 						}
 						case READ: {
-							Set<Conversation> c = database.readUserConversations(request.getUserID());
-							responses.add(request.reset().setConversations(c));
+							Set<Chat> c = database.readUserConversations(request.getUserID());
+							responses.add(request.reset().setChats(c));
 							break;
 						}
 						case UPDATE: {
