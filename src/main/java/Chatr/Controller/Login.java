@@ -26,8 +26,8 @@ public class Login {
 		}
 		User user = null;
 		return user;
-
 	}
+
 	/**
 	 *
 	 * @param userIdInput The user's wished UserID
@@ -38,7 +38,7 @@ public class Login {
 	 */
 	public static User registerUser(String userIdInput, String eMailInput, String usernameInput, String passwordInput) {
 
-		log.info(String.format("Methodcall Regi"));
+		log.info(String.format("Methodcall registerUser"));
 		String userIdConfirmed = "";
 		try{
 			userIdAvailableCheck(userIdInput);

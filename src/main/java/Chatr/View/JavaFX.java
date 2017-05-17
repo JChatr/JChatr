@@ -49,7 +49,7 @@ public class JavaFX extends Application {
 	 * load list fxml and initialize the scene
 	 * loads the Bootstrap 3 stylesheets as well
 	 */
-	private void initializeRootLayout() {
+	public void initializeRootLayout() {
 		ChatListView chatList = new ChatListView();
 		Scene scene = new Scene(chatList.getView());
 		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();

@@ -79,13 +79,6 @@ public class Manager {
 	public static void initialize(String username, String eMailInput, String usernameInput, String passwordInput) {
 
 		localUser = Login.registerUser(username, eMailInput, usernameInput, passwordInput);
-
-		//System.out.print("Enter your nickname (@Nickname): ");
-		//String userName = Terminal.getUserInput();
-		//localUser = Login.registerUser(userName);
-		//setCurrentChat(selectLatestConversation(localUser));
-		//userChats = new HashSet<>();
-		//users = Connection.readUsers();
 	}
 
 	private static Conversation selectLatestConversation(User user) {

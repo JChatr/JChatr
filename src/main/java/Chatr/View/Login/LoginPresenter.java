@@ -1,5 +1,6 @@
 package Chatr.View.Login;
 
+import Chatr.View.JavaFX;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -43,10 +44,8 @@ public class LoginPresenter{
 		String usernameInput = username.getText();
 		String passwordInput = password.getText();
 
-
-
 		Chatr.Controller.Manager.initialize(userIdInput, eMailInput, usernameInput, passwordInput);
-	}
+		}
 
 
 
