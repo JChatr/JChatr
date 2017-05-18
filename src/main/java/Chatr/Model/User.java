@@ -88,7 +88,7 @@ public class User {
 
 	public BufferedImage getPicture(){
 		if(userPicture == null) {
-			String hash = HashGen.hash(email);
+			String hash = HashGen.hashMD5(email);
 			try {
 				URL urlPic = new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404");
 				//hash.equals Checks if empty string was hashed
@@ -106,7 +106,7 @@ public class User {
 	}
 
 	public String getPicturePath(){
-		return ("https://www.gravatar.com/avatar/" + HashGen.hash(email) + ".jpg");
+		return ("https://www.gravatar.com/avatar/" + HashGen.hashMD5(email) + ".jpg");
 	}
 
 
