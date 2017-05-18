@@ -1,10 +1,12 @@
 package Chatr.View.Login;
 
+import Chatr.View.ChatList.ChatListController;
 import Chatr.View.JavaFX;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 
 //TODO implement logging
 //import org.apache.logging.log4j.LogManager;
@@ -33,6 +35,8 @@ public class LoginPresenter{
 	private Label passwordLabel;
 	@FXML
 	private TextField password;
+	@FXML
+	private AnchorPane parent;
 
 
 
@@ -45,7 +49,19 @@ public class LoginPresenter{
 		String passwordInput = password.getText();
 
 		Chatr.Controller.Manager.initialize(userIdInput, eMailInput, usernameInput, passwordInput);
+		loginCall();
+
 		}
+
+
+	private void loginCall(){
+		ChatListController clc = new ChatListController();
+		parent.getChildren().clear();
+		parent.getChildren().add(clc.getView());
+
+
+
+	}
 
 
 

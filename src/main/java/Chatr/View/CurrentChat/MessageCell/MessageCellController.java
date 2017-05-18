@@ -76,6 +76,7 @@ class MessageCellController extends Loader {
 		text.setText("");
 		timestamp.setText("");
 		alignRight();
+		userThumbnail.imageProperty().setValue(null);
 		textBox.setPrefWidth(MIN_WIDTH);
 		textBox.setMaxWidth(MAX_WIDTH);
 		parent.setPrefHeight(MIN_HEIGHT);

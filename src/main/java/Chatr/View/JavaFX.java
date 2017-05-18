@@ -1,6 +1,7 @@
 package Chatr.View;
 
 
+import Chatr.Controller.Login;
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Login.LoginView;
 import javafx.application.Application;
@@ -27,9 +28,9 @@ public class JavaFX extends Application {
 		//initializeRootLayout();
 		initializeLoginLayout();
 		primaryStage.show();
-//		if(Login.successful == true){
-//			initializeRootLayout();
-//		}
+		/*if(Login.successful == true){
+			initializeRootLayout();
+		}*/
 	}
 
 	private void initializeLoginLayout(){

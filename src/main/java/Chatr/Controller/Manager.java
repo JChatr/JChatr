@@ -116,6 +116,10 @@ public class Manager {
 
 		localUser = Login.registerUser(username, eMailInput, usernameInput, passwordInput);
 
+		// Testing
+		userChats = new HashSet<>();
+		users = Connection.readUsers();
+
 	}
 
 }

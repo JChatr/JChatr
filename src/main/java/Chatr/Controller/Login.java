@@ -119,7 +119,7 @@ public class Login {
 		if ((user = Connection.readUser(userIdUserInput)) != null) {
 			log.info(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
 			log.info(String.format("UserId %s is already in use.", userIdUserInput));
-			throw new UserIdInUseException("This User-ID is already in use.");
+			//throw new UserIdInUseException("This User-ID is already in use.");
 		}
 		else{
 			log.info(String.format("UserId %s is available.", userIdUserInput));
