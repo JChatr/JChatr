@@ -1,8 +1,8 @@
 package Chatr.Server.Database;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Conversation;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -160,7 +160,7 @@ public class Database {
 		Set<Conversation> userConv = new HashSet<>();
 		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
 			Conversation c = readConversation(conversationID, userID);
-			c.setLocalUser(userID);
+			c.setLocalUserID(userID);
 			userConv.add(c);
 		}
 		return userConv;

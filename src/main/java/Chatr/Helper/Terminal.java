@@ -1,6 +1,6 @@
 package Chatr.Helper;
 
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 
 import java.util.List;
 import java.util.Scanner;

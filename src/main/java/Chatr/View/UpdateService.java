@@ -12,8 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
@@ -22,8 +22,8 @@ import java.util.function.Supplier;
 public class UpdateService extends ScheduledService<Void> {
 	// order of the K, V of the maps is inverted because otherwise the uniqueness of the keys is violated when adding a
 	// new high priority link
-	private static Map<Supplier<Collection>, ListProperty> highPriorityList = new HashMap<>();
-	private static Map<Supplier<String>, StringProperty> lowPriority = new HashMap<>();
+	private static Map<Supplier<Collection>, ListProperty> highPriorityList = new ConcurrentHashMap<>();
+	private static Map<Supplier<String>, StringProperty> lowPriority = new ConcurrentHashMap<>();
 	private static Logger log = LogManager.getLogger(UpdateService.class);
 	private static UpdateService instance;
 
@@ -96,7 +96,6 @@ public class UpdateService extends ScheduledService<Void> {
 					Platform.runLater(() -> result.forEach(
 							value -> job.getValue().add(value)
 					));
-
 				}
 				log.trace("Updated high priority in " + (System.currentTimeMillis() - start) + "ms");
 				start = System.currentTimeMillis();

@@ -1,9 +1,10 @@
 package Chatr.View.ChatList;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
-import Chatr.View.CurrentChat.CurrentChatPresenter;
-import Chatr.View.CurrentChat.CurrentChatView;
+import Chatr.Model.Conversation;
+import Chatr.View.ChatList.ChatCell.ChatCell;
+import Chatr.View.CurrentChat.CurrentChatController;
+import Chatr.View.Loader;
 import Chatr.View.UpdateService;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -14,7 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-public class ChatListPresenter {
+public class ChatListController extends Loader {
 	@FXML
 	private Button newChatButton;
 	@FXML
@@ -25,19 +26,18 @@ public class ChatListPresenter {
 	private ListView<Conversation> chatsList;
 	@FXML
 	private AnchorPane currentChatAnchor;
-	private CurrentChatPresenter currentChat;
-	private CurrentChatView currentChatView;
-	private static Logger log = LogManager.getLogger(ChatListPresenter.class);
+	private CurrentChatController currentChat;
+	private static Logger log = LogManager.getLogger(ChatListController.class);
 
 
 	@FXML
 	private void initialize() {
 		addListeners();
 		linkUpdateProperties();
-		CurrentChatView chatView = new CurrentChatView();
+		CurrentChatController chatView = new CurrentChatController();
 		setChatWindow(chatView.getView());
-		// get Presenter from afterburner.fx
-		currentChat = (CurrentChatPresenter) chatView.getPresenter();
+		currentChat = (CurrentChatController) chatView.getController();
+		chatsList.setCellFactory(param -> new ChatCell());
 	}
 
 	/**
@@ -45,9 +45,8 @@ public class ChatListPresenter {
 	 * changes in the UI occur
 	 */
 	private void addListeners() {
-		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-			switchChat(newValue);
-		});
+		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
+				-> switchChat(newValue));
 	}
 
 	/**
@@ -56,7 +55,7 @@ public class ChatListPresenter {
 	 */
 	private void linkUpdateProperties() {
 		UpdateService.linkLowPriority(userName.textProperty(),
-				Manager::getUserName
+				Manager::getLocalUserName
 		);
 		UpdateService.linkHighPriority(chatsList.itemsProperty(),
 				Manager::getUserChats
@@ -66,8 +65,8 @@ public class ChatListPresenter {
 
 	/**
 	 * sets new Conversation in Manager and creates corresponding chat Window
+	 *
 	 * @param conversation the conversation to switch to
-	 * @return newly created chat window
 	 */
 	private void switchChat(Conversation conversation) {
 		Manager.setCurrentChat(conversation);
@@ -77,6 +76,7 @@ public class ChatListPresenter {
 
 	/**
 	 * displays the given Parent in the currentChatAnchor AnchorPane
+	 *
 	 * @param parent window to display
 	 */
 	private void setChatWindow(Parent parent) {

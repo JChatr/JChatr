@@ -1,15 +1,15 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
+import Chatr.View.Loader;
 import Chatr.View.UpdateService;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
-public class CurrentChatPresenter {
+public class CurrentChatController extends Loader {
 	@FXML
 	private ListView<Message> currentChat;
 	@FXML
@@ -46,6 +46,7 @@ public class CurrentChatPresenter {
 	}
 
 	private void reset() {
+		currentChat.itemsProperty();
 		currentChat.itemsProperty().getValue().clear();
 	}
 

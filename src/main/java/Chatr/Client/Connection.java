@@ -1,8 +1,8 @@
 package Chatr.Client;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Conversation;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;

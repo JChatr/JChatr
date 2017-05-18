@@ -1,7 +1,7 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
-import Chatr.Converstation.User;
+import Chatr.Model.User;
 import Chatr.Helper.Terminal;
 import Chatr.Controller.Login;
 import org.junit.Assert;
