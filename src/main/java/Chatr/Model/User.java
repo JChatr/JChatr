@@ -2,14 +2,10 @@ package Chatr.Model;
 
 import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
-import javafx.embed.swing.SwingFXUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
@@ -27,6 +23,19 @@ public class User {
 	private String email = "";
 	private Status status;
 	private static Logger log = LogManager.getLogger(User.class);
+
+	public String getPassword() {
+		return password;
+	}
+
+	public User setPassword(String password) {
+		this.password = password;
+		return this;
+	}
+
+	private String password;
+
+
 	/**
 	 * Constructor to create user object with the user name.
 	 * @param userName The name of the user.
@@ -66,14 +75,6 @@ public class User {
 	public User setEmail(String email){
 		this.email = email.toLowerCase();
 		return this;
-	}
-	
-	public boolean syntaxEmail(String email){
-		if(email.contains(".") && email.contains("@")){
-			return true;
-		}else{
-			return false;
-		}
 	}
 
 	public Status getStatus() {
