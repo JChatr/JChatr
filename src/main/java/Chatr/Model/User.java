@@ -92,15 +92,18 @@ public class User {
 			String hash = HashGen.hashMD5(email);
 			try {
 				URL urlPic = new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404");
+				String content = urlPic.openConnection().getContentType();
 				//hash.equals Checks if empty string was hashed
-				if(urlPic.openConnection().getContentType().contains("text") || hash.equals("d41d8cd98f00b204e9800998ecf8427e")){
+ 				if(content == null || hash.equals("d41d8cd98f00b204e9800998ecf8427e") || content.contains("text")){
 					userPicture = ImageIO.read(getClass().getResource("/icons/default_user.png"));
-				}else{
+					log.trace("Local user picture was used for user " + userID);
+ 				}else{
 					userPicture = ImageIO.read(new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404"));
-				}
+					log.trace("Gravatar user picture was used for user " + userID);
+ 				}
 
 			} catch (IOException e) {
-				log.error("Could not pull Gravatar, " + e);
+				log.error("Could not pull Gravatar or local picture, " + e);
 			}
 		}
 		return userPicture;

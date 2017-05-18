@@ -57,7 +57,9 @@ class MessageCellController extends Loader {
 		text.setText(message.getContent());
 		String time = DateFormatter.convertTimestamp(message.getTime());
 		timestamp.setText(time);
+		userThumbnail.setManaged(false);
 		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
+			userThumbnail.setManaged(true);
 			displayUserThumbnail(message.getSender());
 			alignLeft(message);
 		}
@@ -89,6 +91,9 @@ class MessageCellController extends Loader {
 	private void alignLeft(Message message) {
 		spacer.toFront();
 		userName.toBack();
+		userName.setVisible(true);
+		userName.setManaged(true);
+		userThumbnail.toBack();
 		background.setId("background-left");
 		text.setId("text-left");
 		timestamp.setId("text-left");
@@ -98,7 +103,9 @@ class MessageCellController extends Loader {
 	 */
 	private void alignRight() {
 		spacer.toBack();
-		userName.toFront();
+		//userName.toFront();
+		userName.setVisible(false);
+		userName.setManaged(false);
 		background.setId("background-right");
 		text.setId("text-right");
 		timestamp.setId("text-right");

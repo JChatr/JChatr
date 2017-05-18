@@ -58,9 +58,6 @@ public class LoginPresenter{
 		ChatListController clc = new ChatListController();
 		parent.getChildren().clear();
 		parent.getChildren().add(clc.getView());
-
-
-
 	}
 
 

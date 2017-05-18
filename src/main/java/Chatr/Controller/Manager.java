@@ -115,8 +115,6 @@ public class Manager {
 	public static void initialize(String username, String eMailInput, String usernameInput, String passwordInput) {
 
 		localUser = Login.registerUser(username, eMailInput, usernameInput, passwordInput);
-
-		// Testing
 		userChats = new HashSet<>();
 		users = Connection.readUsers();
 

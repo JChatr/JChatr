@@ -104,7 +104,7 @@ class DatabaseFixtures {
 	}
 
 	private static User addMaroko(){
-		User maroko96 = new User("@Maroko96");
+		User maroko96 = new User("@maroko96");
 		maroko96.setUserName("Matthias");
 		maroko96.setEmail("maroko96@web.de");
 		return maroko96;

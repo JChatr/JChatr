@@ -1,6 +1,7 @@
 package Chatr.Controller;
 
 import Chatr.Client.Connection;
+import Chatr.Helper.HashGen;
 import Chatr.Model.User;
 import Chatr.Converstation.Exceptions.ClientSyntaxException;
 import Chatr.Converstation.Exceptions.UserIdInUseException;
@@ -40,27 +41,22 @@ public class Login {
 	 * @return Returns a new object of user
 	 */
 	public static User registerUser(String userIdInput, String eMailInput, String usernameInput, String passwordInput) {
-
+		User user;
 		log.info(String.format("Methodcall registerUser"));
 		String userIdConfirmed = "";
 		try{
-			userIdAvailableCheck(userIdInput);
+			user = userIdAvailableCheck(userIdInput);
 			userIdConfirmed = syntaxUserId(userIdInput);
 			syntaxEmail(eMailInput);
-		}catch(ClientSyntaxException e){
-			e.printStackTrace();
-			log.info(e.toString());
-		}catch(UserIdInUseException e){
+		}catch(ClientSyntaxException | UserIdInUseException e){
 			e.printStackTrace();
 			log.info(e.toString());
 		}
 
-		User user = null;
-
 		user = new User(userIdConfirmed);
 		user.setUserName(usernameInput);
 		user.setEmail(eMailInput);
-		user.setPassword(Chatr.Helper.HashGen.hashMD5(passwordInput));
+		user.setPassword(HashGen.hashMD5(passwordInput));
 
 		Connection.createUser(userIdInput, user);
 		log.info(String.format("created User %s|%s", user.getUserID(), user.getUserName()));
@@ -114,16 +110,16 @@ public class Login {
 	 * @param userIdUserInput   UserID you want to check
 	 * @throws UserIdInUseException Exception is thrown if the UserID is already in Use.
 	 */
-	public static void userIdAvailableCheck(String userIdUserInput) throws UserIdInUseException{
-		User user = null;
+	public static User userIdAvailableCheck(String userIdUserInput){
+		User user;
 		if ((user = Connection.readUser(userIdUserInput)) != null) {
 			log.info(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
 			log.info(String.format("UserId %s is already in use.", userIdUserInput));
-			//throw new UserIdInUseException("This User-ID is already in use.");
 		}
 		else{
 			log.info(String.format("UserId %s is available.", userIdUserInput));
 		}
+		return user;
 	}
 
 	/**
