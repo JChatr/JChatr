@@ -44,7 +44,6 @@ public class ServerThread extends Thread {
 			// Receiving
 			String JSON;
 			while ((JSON = in.readLine()) != null) {
-				System.out.println("JSON = " + JSON);
 				Transmission data = JSONTransformer.fromJSON(JSON, Transmission.class);
 				inCache.add(data);
 			}
@@ -56,7 +55,6 @@ public class ServerThread extends Thread {
 			// Sending
 			for (Transmission obj : response) {
 				String outJSON = JSONTransformer.toJSON(obj);
-				System.out.println("outJSON = " + outJSON);
 				out.println(outJSON);
 			}
 			socket.shutdownOutput();

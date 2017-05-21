@@ -2,6 +2,8 @@ package Chatr.Model;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
+import Chatr.Helper.UpdateService;
+import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -21,7 +23,6 @@ public class Chat {
 	private ListProperty<User> members;
 	private ListProperty<Message> messages;
 	private String localUser;
-	private Long newestMessageTime = 0L;
 
 	private static Logger log = LogManager.getLogger(Chat.class);
 
@@ -103,14 +104,16 @@ public class Chat {
 	/**
 	 * @return
 	 */
-	public List<Message> update() {
-		int lastMessageIndex =messages.isEmpty() ? 0 : messages.getSize() - 1;
-		newestMessageTime = messages.isEmpty() || newestMessageTime == -1 ?
-				0 : messages.get(lastMessageIndex).getTime(); //Get timestamp
-		List<Message> messages = Connection.readNewMessages(conversationID.get(), newestMessageTime);
-		this.messages.addAll(messages);
-		return messages;
-	}
+//	public void update() {
+//		UpdateService.schedule(messages, m -> {
+//			int lastMessageIndex = messages.getSize() - 1;
+//			long newestMessageTime = messages.isEmpty() ?
+//					0 : messages.get(lastMessageIndex).getTime(); //Get timestamp
+//			final List<Message> newMessages = Connection.readNewMessages(conversationID.get(), newestMessageTime);
+////			m.addAll(newMessages);
+//			return newMessages;
+//		});
+//	}
 
 	@Override
 	public boolean equals(Object o) {

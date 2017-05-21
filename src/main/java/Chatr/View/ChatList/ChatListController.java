@@ -46,7 +46,11 @@ public class ChatListController extends Loader {
 	 */
 	private void addListeners() {
 		chatsList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue)
-				-> switchChat(newValue));
+				-> {
+			if (newValue != null) {
+				switchChat(newValue);
+			}
+		});
 	}
 
 	/**
@@ -64,7 +68,8 @@ public class ChatListController extends Loader {
 	 * @param chat the chat to switch to
 	 */
 	private void switchChat(Chat chat) {
-		currentChat.swtich(chat.getID().get());
+		Manager.setCurrentChat(chat);
+		currentChat.switchChat(chat.getID().get());
 		log.debug("switched to Chat: " + chat);
 	}
 

@@ -4,9 +4,10 @@ import Chatr.Controller.Manager;
 import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
-import Chatr.View.UpdateService;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 
@@ -42,7 +43,7 @@ public class CurrentChatController extends Loader {
 		});
 	}
 
-	public void swtich(String chatID) {
+	public void switchChat(String chatID) {
 		reset();
 		this.chatID = chatID;
 		linkUpdateProperties();
@@ -55,6 +56,7 @@ public class CurrentChatController extends Loader {
 		currentChatName.textProperty().set("");
 		currentChatUsers.textProperty().unbind();
 		currentChatUsers.textProperty().set("");
+		textInput.clear();
 		chatID = "";
 	}
 
@@ -70,17 +72,6 @@ public class CurrentChatController extends Loader {
 		currentChatUsers.textProperty().bind(Bindings.concat(
 				Manager.getChatMembers(chatID)
 		));
-
-//		UpdateService.linkLowPriority(currentChatUsers.textProperty(),
-//				() -> {
-//					StringBuilder sb = new StringBuilder();
-//					Manager.getChatMembers().forEach(memberID -> {
-//						sb.append(memberID);
-//						sb.append(", ");
-//					});
-//					return sb.toString();
-//				}
-//		);
 	}
 
 	/**
@@ -90,18 +81,8 @@ public class CurrentChatController extends Loader {
 	private void onSendButtonClick() {
 		String userInput = textInput.getText();
 		if (!userInput.trim().isEmpty()) {
-			Message m = Manager.addMessage(userInput, chatID);
-			displayMessage(m);
+			Manager.addMessage(userInput);
 			Platform.runLater(() -> textInput.clear());
 		}
-	}
-
-	/**
-	 * displays a Message in the List View
-	 *
-	 * @param message Message to be displayed
-	 */
-	private void displayMessage(Message message) {
-		currentMessages.getItems().add(message);
 	}
 }

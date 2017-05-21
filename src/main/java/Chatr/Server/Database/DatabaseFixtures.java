@@ -25,7 +25,7 @@ class DatabaseFixtures {
 	}
 
 	/**
-	 * inserts John Doe & Donalt Trump with their own conversation into the database
+	 * inserts John Doe & Donalt Trump with their own conversatio   n into the database
 	 *
 	 * @param db Database to insert the fixtures into
 	 * @throws InterruptedException
@@ -35,7 +35,7 @@ class DatabaseFixtures {
 		LinkedList<Message> messages = new LinkedList<>();
 		User u1 = new User("@jDoe");
 		User u2 = new User("@dTrump");
-		String conID = "2934239402394";
+		String conID = "Financial POWER";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
 		db.addUser(u1);
@@ -85,7 +85,7 @@ class DatabaseFixtures {
 		Set<String> uIDs = new HashSet<>();
 		db.readUsers().forEach(u -> uIDs.add(u.getUserID()));
 		User u1 = db.readUser("@aMerkel");
-		String conID = "293423988894";
+		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "hey there"));
 		Thread.sleep(2);
