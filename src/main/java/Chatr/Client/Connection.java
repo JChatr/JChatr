@@ -1,19 +1,19 @@
 package Chatr.Client;
 
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
 
-import java.util.*;
+import java.util.List;
+import java.util.Set;
 
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
 public class Connection {
-//	private static Client client = new Client();
 
 	private Connection() {
 	}

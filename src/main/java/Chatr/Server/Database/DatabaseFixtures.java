@@ -57,15 +57,24 @@ class DatabaseFixtures {
 		LinkedList<Message> messages = new LinkedList<>();
 		User u1 = new User("@bJohnson");
 		User u2 = new User("@aMerkel");
+		u2.setEmail("angela@merkel.#");
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
+
+		//Profile Picture Test
+		User u3 = addMaroko();
+		uIDs.add(u3.getUserID());
+		db.addUser(u3);
+
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all"));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u2.getUserID(), "another random message"));
+		Thread.sleep(2);
+		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!"));
 	}
 
 	/**
@@ -93,4 +102,13 @@ class DatabaseFixtures {
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel"));
 	}
+
+
+	private static User addMaroko() {
+		User maroko96 = new User("@maroko96");
+		maroko96.setUserName("Matthias");
+		maroko96.setEmail("maroko96@web.de");
+		return maroko96;
+	}
 }
+

@@ -1,7 +1,11 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
+<<<<<<< HEAD
 import Chatr.Model.Chat;
+=======
+import Chatr.Model.Conversation;
+>>>>>>> first-presentation
 import Chatr.Model.Message;
 import Chatr.Model.User;
 import org.junit.Before;

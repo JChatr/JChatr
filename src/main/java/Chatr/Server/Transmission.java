@@ -1,5 +1,6 @@
 package Chatr.Server;
 
+
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -43,19 +44,9 @@ public class Transmission {
 		return type;
 	}
 
-//	public Transmission setRequestType(Request type) {
-//		this.type = type;
-//		return this;
-//	}
-
 	public Crud getCRUD() {
 		return crud;
 	}
-
-//	public Transmission setCRUD(Crud crud) {
-//		this.crud = crud;
-//		return this;
-//	}
 
 	public Message getMessage() {
 		return message;
@@ -111,15 +102,6 @@ public class Transmission {
 		return this;
 	}
 
-//	public String getLocalUserID() {
-//		return localUserID;
-//	}
-
-//	public Transmission setLocalUserID(String userID) {
-//		this.localUserID = userID;
-//		return this;
-//	}
-
 	public Boolean getStatus() {
 		return status;
 	}
@@ -166,10 +148,6 @@ public class Transmission {
 	}
 
 	public Transmission reset() {
-//		type = null;
-//		crud = null;
-//		localUserID = null;
-//		conversationID = null;
 		message = null;
 		messages = null;
 		user = null;

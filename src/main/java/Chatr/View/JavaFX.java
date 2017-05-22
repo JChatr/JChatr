@@ -1,6 +1,8 @@
 package Chatr.View;
 
+
 import Chatr.View.ChatList.ChatListController;
+import Chatr.View.Login.LoginController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
@@ -12,7 +14,7 @@ public class JavaFX extends Application {
 	private Stage primaryStage;
 	private AnchorPane rootLayout;
 	private AnchorPane currentChat;
-	private Logger log = LogManager.getLogger();
+	private Logger log = LogManager.getLogger(JavaFX.class);
 
 	public static void initGUI(String[] args) {
 		launch(JavaFX.class, args);
@@ -22,14 +24,18 @@ public class JavaFX extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
-		initializeRootLayout();
+		initializeLoginLayout();
 		primaryStage.show();
 	}
 
-	/**
-	 * load list fxml and initialize the scene
-	 * loads the Bootstrap 3 stylesheets as well
-	 */
+	private void initializeLoginLayout() {
+		LoginController login = new LoginController();
+		Scene scene = new Scene(login.getView());
+		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
+		scene.getStylesheets().add(cssUri);
+		primaryStage.setScene(scene);
+	}
+
 	private void initializeRootLayout() {
 		ChatListController chatList = new ChatListController();
 		Scene scene = new Scene(chatList.getView());
