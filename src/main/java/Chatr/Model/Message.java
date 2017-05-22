@@ -1,4 +1,4 @@
-package Chatr.Converstation;
+package Chatr.Model;
 
 import java.util.Objects;
 

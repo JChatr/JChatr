@@ -1,9 +1,10 @@
 package Chatr.View.CurrentChat.MessageCell;
 
 import Chatr.Controller.Manager;
-import Chatr.Converstation.Message;
+import Chatr.Model.Message;
+import Chatr.Helper.DateFormatter;
+import Chatr.View.Loader;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
@@ -13,16 +14,10 @@ import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-import java.io.IOException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-
 /**
  * renders the Message items in the current Chat box
  */
-public class MessageCellPresenter {
+class MessageCellController extends Loader {
 	@FXML
 	private HBox parent;
 	@FXML
@@ -37,39 +32,33 @@ public class MessageCellPresenter {
 	private Pane spacer;
 	@FXML
 	private Pane background;
-	private static Logger log = LogManager.getLogger(MessageCellPresenter.class);
+
 	private final static int MAX_WIDTH = 600;
 	private final static int MIN_WIDTH = 50;
 	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
 	private final static int MIN_HEIGHT = 40;
 	private final static int WIDTH_PADDING = 20;
 
-	MessageCellPresenter() {
-		FXMLLoader load = new FXMLLoader(getClass().getResource("MessageCell.fxml"));
-		load.setController(this);
-		try {
-			load.load();
-		} catch (IOException e) {
-			log.error("unable to load MessageCell.fxml", e);
-		}
-		final String css = getClass().getResource("MessageCell.css").toExternalForm();
-		parent.getStylesheets().add(css);
+	private static Logger log = LogManager.getLogger(MessageCellController.class);
+
+	MessageCellController() {
+		load(this);
 		addListeners();
 	}
 
-	void setInfo(Message message) {
+	public void setInfo(Message message) {
 		resetData();
 		userName.setText(message.getSender());
 		text.setText(message.getContent());
-		timestamp.setText(convertTimestamp(message.getTime()));
-		boolean align = false;
-		if (!Manager.getUserName().contentEquals(message.getSender())) {
+		String time = DateFormatter.convertTimestamp(message.getTime());
+		timestamp.setText(time);
+		if (!Manager.getLocalUserName().get().contentEquals(message.getSender())) {
 			alignLeft();
-			align = true;
 		}
 	}
 
-	Parent getView() {
+	@Override
+	public Parent getView() {
 		return parent;
 	}
 
@@ -87,17 +76,21 @@ public class MessageCellPresenter {
 		parent.setMaxHeight(MAX_HEIGHT);
 	}
 
+	/**
+	 * aligns the message to the Right and changes the CSS appropriately
+	 */
 	private void alignLeft() {
 		spacer.toFront();
 		userName.toBack();
-
-
 		background.setId("background-left");
 		text.setId("text-left");
 		timestamp.setId("text-left");
 
 	}
 
+	/**
+	 * aligns the message to the Left and changes the CSS appropriately
+	 */
 	private void alignRight() {
 		spacer.toBack();
 		userName.toFront();
@@ -134,12 +127,5 @@ public class MessageCellPresenter {
 	 */
 	private double clamp(double value, double min, double max) {
 		return Math.min(Math.max(value, min), max);
-	}
-
-	private String convertTimestamp(long timestamp) {
-		Instant instant = Instant.ofEpochMilli(timestamp);
-		ZoneId zoneId = ZoneId.systemDefault();
-		ZonedDateTime zdt = ZonedDateTime.ofInstant(instant, zoneId);
-		return String.format("%02d:%02d", zdt.getHour(), zdt.getMinute());
 	}
 }

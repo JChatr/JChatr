@@ -1,8 +1,8 @@
 package Chatr.Client;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
 import Chatr.Server.Transmission;
@@ -13,7 +13,7 @@ import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
 public class Connection {
-	private static Client client = new Client();
+//	private static Client client = new Client();
 
 	private Connection() {
 	}
@@ -27,7 +27,7 @@ public class Connection {
 	 */
 	public static boolean createConversation(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
@@ -38,10 +38,10 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static Set<Conversation> readAllConversations(String userID) {
+	public static Set<Chat> readAllConversations(String userID) {
 		Transmission request = build(CONVERSATION, READ, userID, null);
-		Transmission response = client.get(request);
-		return response.getConversations();
+		Transmission response = new Client().get(request);
+		return response.getChats();
 	}
 
 	/**
@@ -52,13 +52,13 @@ public class Connection {
 	 */
 	public static boolean deleteConversation(String conversationID) {
 		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
 	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
@@ -71,7 +71,7 @@ public class Connection {
 	 */
 	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getMessages();
 	}
 
@@ -84,7 +84,7 @@ public class Connection {
 	 */
 	public static boolean addMessage(String conversationID, Message message) {
 		Transmission request = build(MESSAGE, CREATE, conversationID, message);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
@@ -98,7 +98,7 @@ public class Connection {
 	 */
 	public static boolean createUser(String userID, User userData) {
 		Transmission request = build(USER, CREATE, userID, userData);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
@@ -111,7 +111,7 @@ public class Connection {
 	 */
 	public static User readUser(String userID) {
 		Transmission request = build(USER, READ, userID, null);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getUser();
 	}
 
@@ -122,7 +122,7 @@ public class Connection {
 	 */
 	public static Set<User> readUsers() {
 		Transmission request = build(USERS, READ, null, null);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getUsers();
 	}
 
@@ -135,7 +135,7 @@ public class Connection {
 	 */
 	public static boolean updateUser(String userID, User userData) {
 		Transmission request = build(USER, UPDATE, userID, userData);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
@@ -147,7 +147,7 @@ public class Connection {
 	 */
 	public static boolean deleteUser(String userID) {
 		Transmission request = build(USER, DELETE, userID, null);
-		Transmission response = client.get(request);
+		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 

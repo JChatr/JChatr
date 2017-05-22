@@ -1,7 +1,7 @@
 package Chatr.Controller;
 
 import Chatr.Client.Connection;
-import Chatr.Converstation.User;
+import Chatr.Model.User;
 import Chatr.Helper.Terminal;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
