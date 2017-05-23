@@ -47,16 +47,16 @@ public class HashGen {
 			return sb.toString();
 		} catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
 		} catch (Exception e) {
-			log.error(String.format("Couldn't hashMD5 the String: %s"), e);
+			log.error("Unable to hashMD5: " + toHash, e);
 		}
 		return "";
 	}
 
-	public static String hashPW(String password){
+	public static String hashPW(String password) {
 		return BCrypt.hashpw(password, BCrypt.gensalt(12));
 	}
 
-	public static boolean checkPW(String pwCandidate, String pwHash){
+	public static boolean checkPW(String pwCandidate, String pwHash) {
 		return BCrypt.checkpw(pwCandidate, pwHash);
 	}
 

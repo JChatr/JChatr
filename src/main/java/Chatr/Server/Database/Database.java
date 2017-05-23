@@ -1,7 +1,6 @@
 package Chatr.Server.Database;
 
 import Chatr.Model.Chat;
-
 import Chatr.Model.Message;
 import Chatr.Model.User;
 import org.apache.logging.log4j.LogManager;

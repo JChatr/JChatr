@@ -1,12 +1,12 @@
 package Chatr.Server;
 
 
+import Chatr.Controller.Manager;
+import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.Request;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
-import Chatr.Controller.Manager;
 
 import java.lang.reflect.Field;
 import java.util.List;

@@ -20,13 +20,17 @@ public class Login {
 	private static Logger log = LogManager.getLogger(Login.class);
 
 	public static User loginUser(String userID, String password) {
-		try {
-			validateUser(userID, password);
-			log.info("logged in user", userID);
-		} catch (Exception e) {
-			log.error("failed to Log in User" + userID, e);
+		validateUser(userID, password);
+		User user = Connection.readUser(userID);
+		if (user == null) {
+			String errorMessage = "UserID or password invalid";
+			log.error(errorMessage);
+			throw new UserIDException(errorMessage);
 		}
-		return Connection.readUser(userID);
+		log.info("logged in user", userID);
+		Manager.setLocalUser(user);
+		Manager.startUpdateLoop();
+		return user;
 	}
 
 	/**
@@ -46,6 +50,8 @@ public class Login {
 		user.setPassword(HashGen.hashPW(password));
 		Connection.createUser(userID, user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
+		Manager.setLocalUser(user);
+		Manager.startUpdateLoop();
 		return user;
 	}
 
@@ -99,7 +105,6 @@ public class Login {
 	}
 
 	/**
-	 *
 	 * @param userName
 	 * @return
 	 * @throws UserNameException
@@ -108,6 +113,7 @@ public class Login {
 		// TODO write implementaion for this method
 		return true;
 	}
+
 	/**
 	 * checks if the userID exists on the server.
 	 *

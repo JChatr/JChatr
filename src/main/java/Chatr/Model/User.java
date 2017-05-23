@@ -7,10 +7,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.util.Objects;
 
 /**
@@ -25,7 +23,6 @@ public class User {
 	private String userID;
 	private BufferedImage userPicture;
 	private String email;
-	private String emailMD5;
 	private Status status;
 	private String password;
 	private static Logger log = LogManager.getLogger(User.class);
@@ -37,6 +34,9 @@ public class User {
 	public User(String userName){
 		this.userName = userName;
 		this.userID = userName;
+		email = "";
+		status = Status.ONLINE;
+		password = "";
 	}
 
 	public String getPassword() {

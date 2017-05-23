@@ -9,10 +9,8 @@ import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Server;
 import Chatr.View.JavaFX;
-import javafx.beans.property.ListProperty;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
+import javafx.beans.property.*;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
@@ -36,6 +34,7 @@ public class Manager {
 
 	public static void main(String[] args) {
 		startServer();
+		initialize();
 		log.info(String.format("Connecting to : %s", CONFIG.SERVER_ADDRESS));
 		JavaFX.initGUI(args);
 	}
@@ -71,6 +70,10 @@ public class Manager {
 		return localUser.get() == null ? null : localUser.get().getUserID();
 	}
 
+	public static void setLocalUser(User user) {
+		localUser.setValue(user);
+	}
+
 	public static ObservableList<User> getChatMembers(String chatID) {
 		return resolveChatID(chatID).getMembers();
 	}
@@ -104,30 +107,18 @@ public class Manager {
 
 	public static void setCurrentChat(Chat chat) {
 		currentChat.setValue(chat);
-		final String chatID = chat.getID().get();
 	}
 
-//
-//	private static void initialize(String userName, String eMailInput, String usernameInput, String passwordInput) {
-//		localUser = new SimpleObjectProperty<>();
-//		localUser.setValue(Login.loginUser(userName));
-//
-//		ObservableList<Chat> chatSet = FXCollections.observableArrayList();
-//		userChats = new SimpleListProperty<>(chatSet);
-//		ObservableList<User> userSet = FXCollections.observableArrayList();
-//		users = new SimpleListProperty<>(userSet);
-//		currentChat = new SimpleObjectProperty<>();
-//		updateLoop();
-//	}
-//
-//	public static void initialize(String username, String eMailInput, String usernameInput, String passwordInput) {
-//
-//		localUser = Login.registerUser(username, eMailInput, usernameInput, passwordInput);
-//		users = Connection.readUsers();
-//	}
+	private static void initialize() {
+		localUser = new SimpleObjectProperty<>();
+		ObservableList<Chat> chatSet = FXCollections.observableArrayList();
+		userChats = new SimpleListProperty<>(chatSet);
+		ObservableList<User> userSet = FXCollections.observableArrayList();
+		users = new SimpleListProperty<>(userSet);
+		currentChat = new SimpleObjectProperty<>();
+	}
 
-
-	private static void updateLoop() {
+	protected static void startUpdateLoop() {
 		userChats.addListener((ListChangeListener<Chat>) c -> {
 			c.next();
 			c.getAddedSubList().forEach(chat ->

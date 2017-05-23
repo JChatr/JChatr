@@ -2,8 +2,6 @@ package Chatr.Model;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
-import Chatr.Helper.UpdateService;
-import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -13,7 +11,10 @@ import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 
 public class Chat {

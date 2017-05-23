@@ -6,10 +6,11 @@ import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
 
 public class CurrentChatController extends Loader {
 	@FXML

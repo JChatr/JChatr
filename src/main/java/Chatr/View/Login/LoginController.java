@@ -1,5 +1,10 @@
 package Chatr.View.Login;
 
+import Chatr.Controller.Login;
+import Chatr.Model.Exceptions.EmailException;
+import Chatr.Model.Exceptions.PasswordException;
+import Chatr.Model.Exceptions.UserIDException;
+import Chatr.Model.Exceptions.UserNameException;
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
@@ -35,14 +40,29 @@ public class LoginController extends Loader {
 	private static Logger log = LogManager.getLogger(LoginController.class);
 
 	@FXML
-	private void onRegisterButtonClick() {
-		String userIdInput = userId.getText();
-		String eMailInput = eMail.getText();
-		String usernameInput = username.getText();
-		String passwordInput = password.getText();
+	private void intitialize() {
 
-		Chatr.Controller.Manager.initialize(userIdInput, eMailInput, usernameInput, passwordInput);
-		changeScene();
+	}
+
+	@FXML
+	private void onRegisterButtonClick() {
+		String userID = this.userId.getText();
+		String email = this.eMail.getText();
+		String userName = this.username.getText();
+		String password = this.password.getText();
+
+		try {
+			Login.loginUser(userID, password);
+			changeScene();
+		} catch (UserIDException e) {
+			log.error(e);
+		} catch (UserNameException e) {
+			log.error(e);
+		} catch (EmailException e) {
+			log.error(e);
+		} catch (PasswordException e) {
+			log.error(e);
+		}
 	}
 
 
