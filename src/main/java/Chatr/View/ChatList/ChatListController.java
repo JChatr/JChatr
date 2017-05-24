@@ -26,6 +26,7 @@ public class ChatListController extends Loader {
 	private ListView<Chat> chatsList;
 	@FXML
 	private AnchorPane currentChatAnchor;
+
 	private CurrentChatController currentChat;
 	private static Logger log = LogManager.getLogger(ChatListController.class);
 

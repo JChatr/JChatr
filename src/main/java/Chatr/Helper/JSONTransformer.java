@@ -1,8 +1,11 @@
 package Chatr.Helper;
 
 import com.google.gson.Gson;
+import com.google.gson.InstanceCreator;
+import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,5 +65,12 @@ public class JSONTransformer {
 			out.add(fromJSON(json, type));
 		}
 		return out;
+	}
+
+	static class ImageCreator implements InstanceCreator<Image> {
+		@Override
+		public Image createInstance(Type type) {
+			return new Image("");
+		}
 	}
 }

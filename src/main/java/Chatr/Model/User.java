@@ -2,6 +2,7 @@ package Chatr.Model;
 
 import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
+import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

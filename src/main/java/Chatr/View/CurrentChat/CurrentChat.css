@@ -5,17 +5,43 @@
     -fx-background-position: center;
 }
 
+.button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-opacity: 0.75;
+}
+
+.button:hover .button:selected {
+    -fx-opacity: 1;
+}
+
+.tab-container {
+
+}
+
+.emoji-button {
+    -fx-background-color: red;
+    -fx-margin: 5px;
+}
+
+.gif-button {
+
+}
+
+.sticker-button {
+
+}
+
 /*.list-cell:filled:selected:focused, .list-cell:filled:selected {*/
-    /*-fx-background-color: transparent;*/
+/*-fx-background-color: transparent;*/
 /*}*/
 
-
 /*.list-cell:empty {*/
-    /*visibility: hidden;*/
+/*visibility: hidden;*/
 /*}*/
 
 /*.list-view {*/
-    /*fx-background-color: transparent !important;*/
+/*fx-background-color: transparent !important;*/
 /*}*/
 
 /*#currentChat {*/

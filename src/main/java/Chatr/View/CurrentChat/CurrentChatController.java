@@ -7,10 +7,9 @@ import Chatr.View.Loader;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
+import javafx.scene.Node;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 
 public class CurrentChatController extends Loader {
 	@FXML
@@ -25,8 +24,14 @@ public class CurrentChatController extends Loader {
 	private Button emoticonButton;
 	@FXML
 	private Button sendButton;
+	@FXML
+	private TabPane sidebar;
+	@FXML
+	private VBox chatBox;
 
 	private String chatID;
+	private boolean sidebarVisible;
+	private Node test;
 
 	/**
 	 * init UI links to Manager class and set up event Methods
@@ -35,13 +40,27 @@ public class CurrentChatController extends Loader {
 	private void initialize() {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
+		sidebar.setVisible(sidebarVisible);
+
 	}
 
 	private void addListeners() {
+		// if \n in the text field send the message
 		textInput.textProperty().addListener((obs, oldText, newText) -> {
 			if (newText.contains("\n"))
 				onSendButtonClick();
 		});
+		// if visible property of sidebar is changed update to managed property to match
+		sidebar.managedProperty().bind(sidebar.visibleProperty());
+		chatBox.widthProperty().addListener((observable, oldValue, newValue) -> {
+			System.out.println("size change" + System.nanoTime());
+			if (sidebarVisible &&
+					chatBox.getPrefWidth() + 10 > newValue.doubleValue()) {
+				sidebar.setVisible(false);
+				sidebarVisible = false;
+			}
+		});
+
 	}
 
 	public void switchChat(String chatID) {
@@ -85,5 +104,11 @@ public class CurrentChatController extends Loader {
 			Manager.addMessage(userInput);
 			Platform.runLater(() -> textInput.clear());
 		}
+	}
+
+	@FXML
+	private void onEmojiButtonClick() {
+		sidebarVisible = !sidebarVisible;
+		sidebar.setVisible(sidebarVisible);
 	}
 }
