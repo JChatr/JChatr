@@ -1,0 +1,39 @@
+.list-cell {
+    -fx-background-color: transparent;
+}
+.list-cell:selected, .list-cell:focused, .list-cell:filled {
+    -fx-text-fill: #333;
+}
+.list-view {
+    -fx-background-color: transparent;
+}
+
+
+.img-button, .img-button:hover {
+    -fx-background-size: 20 20;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-opacity: 0.7;
+}
+.img-button:hover {
+    -fx-opacity: 0.9;
+}
+.img-button:selected, .img-button:focused {
+}
+
+.scroll-bar {
+    -fx-background-color: black;
+    -fx-opacity: 0.25;
+    -fx-background-insets: 0;
+}
+
+.thumb {
+    -fx-opacity: 0.5;
+    -fx-color: black;
+}
+.thumb:hover, .thumb:selected {
+    -fx-background-color: black;
+    -fx-opacity: 1;
+}

@@ -21,7 +21,7 @@ public class CurrentChatController extends Loader {
 	@FXML
 	private TextArea textInput;
 	@FXML
-	private Button emoticonButton;
+	private Button emojiButton;
 	@FXML
 	private Button sendButton;
 	@FXML
@@ -53,9 +53,7 @@ public class CurrentChatController extends Loader {
 		// if visible property of sidebar is changed update to managed property to match
 		sidebar.managedProperty().bind(sidebar.visibleProperty());
 		chatBox.widthProperty().addListener((observable, oldValue, newValue) -> {
-			System.out.println("size change" + System.nanoTime());
-			if (sidebarVisible &&
-					chatBox.getPrefWidth() + 10 > newValue.doubleValue()) {
+			if (sidebarVisible && chatBox.getPrefWidth() + 10 > newValue.doubleValue()) {
 				sidebar.setVisible(false);
 				sidebarVisible = false;
 			}
@@ -66,7 +64,7 @@ public class CurrentChatController extends Loader {
 	public void switchChat(String chatID) {
 		reset();
 		this.chatID = chatID;
-		linkUpdateProperties();
+		linkProperties();
 	}
 
 	private void reset() {
@@ -84,7 +82,7 @@ public class CurrentChatController extends Loader {
 	 * Building Update links from UI properties to Manager methods
 	 * all links are guaranteed to get updated at a specified interval
 	 */
-	private void linkUpdateProperties() {
+	private void linkProperties() {
 		Bindings.bindContent(
 				currentMessages.itemsProperty().get(), Manager.getChatMessages(chatID)
 		);

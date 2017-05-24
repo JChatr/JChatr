@@ -47,6 +47,7 @@ class MessageCellController extends Loader {
 
 	MessageCellController() {
 		load(this);
+		linkProperties();
 		addListeners();
 	}
 
@@ -89,13 +90,12 @@ class MessageCellController extends Loader {
 	 */
 	private void alignLeft() {
 		spacer.toFront();
-		userName.toBack();
 		userName.setVisible(true);
-		userName.setManaged(true);
 		userThumbnail.toBack();
 		background.setId("background-left");
 		text.setId("text-left");
 		timestamp.setId("text-left");
+		userName.setId("text-left");
 	}
 
 	/**
@@ -103,12 +103,11 @@ class MessageCellController extends Loader {
 	 */
 	private void alignRight() {
 		spacer.toBack();
-		//userName.toFront();
 		userName.setVisible(false);
-		userName.setManaged(false);
 		background.setId("background-right");
 		text.setId("text-right");
 		timestamp.setId("text-right");
+		userName.setId("text-right");
 	}
 
 	private void addListeners() {
@@ -127,6 +126,10 @@ class MessageCellController extends Loader {
 			textBox.setMaxWidth(width);
 			parent.setPrefHeight(height);
 		});
+	}
+
+	private void linkProperties(){
+		userName.managedProperty().bind(userName.visibleProperty());
 	}
 
 	private void displayUserThumbnail(String sender) {

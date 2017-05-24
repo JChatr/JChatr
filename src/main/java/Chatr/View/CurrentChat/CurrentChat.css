@@ -1,32 +1,30 @@
+
+
 #sendButton {
     -fx-background-image: url("/icons/sendSmall.png");
-    -fx-background-size: 20 20;
+
+}
+#emojiButton {
+    -fx-background-image: url("/icons/emojiSmall.png");
+}
+
+#currentChat {
+    -fx-background-image: url("/img/background.jpeg");
     -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
     -fx-background-position: center;
-}
-
-.button {
     -fx-background-color: transparent;
-    -fx-border-color: transparent;
-    -fx-opacity: 0.75;
-}
-
-.button:hover .button:selected {
-    -fx-opacity: 1;
-}
-
-.tab-container {
-
 }
 
 .emoji-button {
-    -fx-background-color: red;
+    -fx-background-color: transparent;
     -fx-margin: 5px;
 }
 
 .gif-button {
 
 }
+
 
 .sticker-button {
 
