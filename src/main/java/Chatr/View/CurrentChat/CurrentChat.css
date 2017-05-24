@@ -1,4 +1,13 @@
 
+.list-cell {
+    -fx-background-color: transparent;
+}
+.list-cell:selected, .list-cell:focused, .list-cell:filled {
+    -fx-text-fill: #333;
+}
+.list-view {
+    -fx-background-color: transparent;
+}
 
 #sendButton {
     -fx-background-image: url("/icons/sendSmall.png");
