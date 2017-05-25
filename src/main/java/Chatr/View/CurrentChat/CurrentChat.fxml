@@ -172,45 +172,77 @@
                                 <FlowPane fx:id="gif" VBox.vgrow="ALWAYS" />
                                 <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                                     <children>
-                                        <Button fx:id="gifButton1" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton1" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton2" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton2" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton3" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton3" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton4" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton4" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton5" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton5" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton6" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton6" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton7" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton7" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
-                                        <Button fx:id="gifButton8" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="gif-button">
+                                        <Button fx:id="gifButton8" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                             <HBox.margin>
                                                 <Insets left="4.0" right="4.0" />
                                             </HBox.margin>
+                                 <styleClass>
+                                    <String fx:value="gif-button" />
+                                    <String fx:value="img-button" />
+                                 </styleClass>
                                         </Button>
                                     </children>
                                     <padding>
@@ -227,45 +259,77 @@
                             <FlowPane fx:id="sticker" VBox.vgrow="ALWAYS" />
                             <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                                 <children>
-                                    <Button fx:id="stickerButton1" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton1" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton2" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton2" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton3" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton3" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton4" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton4" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton5" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton5" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton6" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton6" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton7" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton7" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
-                                    <Button fx:id="stickerButton8" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0" styleClass="sticker-button">
+                                    <Button fx:id="stickerButton8" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
                                         <HBox.margin>
                                             <Insets left="4.0" right="4.0" />
                                         </HBox.margin>
+                              <styleClass>
+                                 <String fx:value="sticker-button" />
+                                 <String fx:value="img-button" />
+                              </styleClass>
                                     </Button>
                                 </children>
                                 <padding>

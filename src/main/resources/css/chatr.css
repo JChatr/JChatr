@@ -1,4 +1,4 @@
-/* defining some variables to be used throughout the stylesheet hierarchy */
+/* defining some global variables to be used throughout the stylesheet hierarchy */
 /* they are usable in all loaded stylesheets */
 .root {
     -fx-accent: #419fd9;
@@ -17,6 +17,8 @@
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-opacity: 0.7;
+    /* default image remove later */
+    -fx-background-image: url("/icons/emojiSmall.png");
 }
 
 .img-button:hover {
