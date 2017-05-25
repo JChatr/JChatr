@@ -1,5 +1,14 @@
+/* defining some variables to be used throughout the stylesheet hierarchy */
+/* they are usable in all loaded stylesheets */
+.root {
+    -fx-accent: #419fd9;
+    -fx-background-hover: #f1f1f1;
+    -fx-white: #fff;
+}
 
-
+*:focused, *:selected {
+    -fx-background-insets: 0 !important;
+}
 
 .img-button, .img-button:hover {
     -fx-background-size: 20 20;
@@ -9,9 +18,11 @@
     -fx-border-color: transparent;
     -fx-opacity: 0.7;
 }
+
 .img-button:hover {
     -fx-opacity: 0.9;
 }
+
 .img-button:selected, .img-button:focused {
 }
 
@@ -25,6 +36,7 @@
     -fx-opacity: 0.5;
     -fx-color: black;
 }
+
 .thumb:hover, .thumb:selected {
     -fx-background-color: black;
     -fx-opacity: 1;

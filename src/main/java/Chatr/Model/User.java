@@ -58,7 +58,6 @@ public class User {
 		return userName;
 	}
 
-
 	public BufferedImage getPicture(){
 		if(userPicture == null) {
 			String hash = HashGen.hashMD5(email);

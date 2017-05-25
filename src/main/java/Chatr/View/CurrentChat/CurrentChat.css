@@ -34,6 +34,12 @@
 
 }
 
+.text-area, .text-area:selected, .text-area:focused {
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-effect: none;
+}
 
 .sticker-button {
 
