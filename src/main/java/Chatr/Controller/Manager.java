@@ -13,10 +13,9 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -95,13 +94,13 @@ public class Manager {
 		return null;
 	}
 
-	public static BufferedImage getUserImage(String userID) {
+	public static Image getUserImage(String userID) {
 		for (User u : users) {
 			if (u.equals(new User(userID))) {
-				return u.getPicture();
+				return u.getImage();
 			}
 		}
-		return localUser.get().getPicture();
+		return localUser.get().getImage();
 	}
 
 

@@ -57,7 +57,8 @@ class DatabaseFixtures {
 		LinkedList<Message> messages = new LinkedList<>();
 		User u1 = new User("@bJohnson");
 		User u2 = new User("@aMerkel");
-		u2.setEmail("angela@merkel.#");
+		u2.setEmail("kasanloe@web.de");
+		u1.setEmail("wrong@email.test");
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());

@@ -2,12 +2,13 @@ package Chatr.Model;
 
 import Chatr.Helper.Enums.Status;
 import Chatr.Helper.HashGen;
+import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
@@ -57,31 +58,41 @@ public class User {
 		return userName;
 	}
 
-
-	public BufferedImage getPicture(){
-		if(userPicture == null) {
+	public Image getImage(){
+		Image userImage = null;
+		if(userImage == null) {
 			String hash = HashGen.hashMD5(email);
-			try {
-				URL urlPic = new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404");
-				String content = urlPic.openConnection().getContentType();
-				//hash.equals Checks if empty string was hashed
-				if(content == null || hash.equals("d41d8cd98f00b204e9800998ecf8427e") || content.contains("text")){
-					userPicture = ImageIO.read(getClass().getResource("/icons/default_user.png"));
-					log.trace("Local user picture was used for user " + userID);
-				}else{
-					userPicture = ImageIO.read(new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404"));
-					log.trace("Gravatar user picture was used for user " + userID);
-				}
-
-			} catch (IOException e) {
-				log.error("Could not pull Gravatar or local picture, " + e);
+			String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
+			if (hash.equals("d41d8cd98f00b204e9800998ecf8427e") || !getURLAvailable(url)){
+				url = "/icons/default_user.png";
 			}
+			userImage = new Image(url, 40, 40, true, false, true);
+			log.trace("userImage loaded for " + userID);
+
+
+
 		}
-		return userPicture;
+		return userImage;
+	}
+
+	private boolean getURLAvailable(String url){
+		boolean available = true;
+		try {
+			HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
+			connection.setRequestMethod("HEAD");
+			int responseCode = connection.getResponseCode();
+			if (responseCode != 200) {
+				available = false;
+			}
+		} catch (IOException e){
+			log.error("Exception in URLAvailable, no Internet" + e);
+			available = false;
+		}
+		return available;
 	}
 
 	public String getPicturePath(){
-		return ("https://www.gravatar.com/avatar/" + HashGen.hashMD5(email) + ".jpg");
+		return ("https://www.gravatar.com/avatar/" + HashGen.hashMD5(email) + ".jpg?s=40&d=404");
 	}
 
 	/**

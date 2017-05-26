@@ -10,7 +10,7 @@ import java.util.List;
  * uses GSON Library to serialize / deserialize Objects to from JSON
  */
 public class JSONTransformer {
-	private static Gson parser = FxGson.create();
+	private static Gson parser = FxGson.createWithExtras();
 
 	/**
 	 * converts the Object to JSON

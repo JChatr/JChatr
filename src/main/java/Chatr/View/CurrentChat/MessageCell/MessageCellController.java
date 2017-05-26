@@ -4,7 +4,6 @@ import Chatr.Controller.Manager;
 import Chatr.Helper.DateFormatter;
 import Chatr.Model.Message;
 import Chatr.View.Loader;
-import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -130,7 +129,8 @@ class MessageCellController extends Loader {
 	}
 
 	private void displayUserThumbnail(String sender) {
-		userThumbnail.imageProperty().setValue(SwingFXUtils.toFXImage(Manager.getUserImage(sender), null));
+		userThumbnail.setImage(Manager.getUserImage(sender));
+		userThumbnail.setCache(true);
 	}
 
 	/**
