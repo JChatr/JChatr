@@ -7,22 +7,21 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Objects;
 
 /**
  * Class to save and edit user data.
- * @author mk285
  *
+ * @author mk285
  */
 public class User {
 
 	private String userName;
 	//private String userID = HashGen.getID(false);
 	private String userID;
-	private BufferedImage userPicture;
+	private Image userImage;
 	private String email;
 	private Status status;
 	private String password;
@@ -30,9 +29,10 @@ public class User {
 
 	/**
 	 * Constructor to create user object with the user name.
+	 *
 	 * @param userName The name of the user.
 	 */
-	public User(String userName){
+	public User(String userName) {
 		this.userName = userName;
 		this.userID = userName;
 		email = "";
@@ -52,14 +52,13 @@ public class User {
 
 	/**
 	 * This method is used to get the user name.
+	 *
 	 * @return Returns the user name.
 	 */
-	public String getUserName(){
+	public String getUserName() {
 		return userName;
 	}
-
 	public Image getImage(){
-		Image userImage = null;
 		if(userImage == null) {
 			String hash = HashGen.hashMD5(email);
 			String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
@@ -90,29 +89,30 @@ public class User {
 		}
 		return available;
 	}
-
 	public String getPicturePath(){
 		return ("https://www.gravatar.com/avatar/" + HashGen.hashMD5(email) + ".jpg?s=40&d=404");
 	}
 
 	/**
 	 * This method is used to set the user name.
+	 *
 	 * @param newName The new user name.
 	 */
-	public User setUserName(String newName){
+	public User setUserName(String newName) {
 		userName = newName;
 		return this;
 	}
-	
+
 	/**
 	 * This method is used to get the user ID.
+	 *
 	 * @return Returns the user ID.
 	 */
-	public String getUserID(){
+	public String getUserID() {
 		return userID;
 	}
-	
-	public User setEmail(String email){
+
+	public User setEmail(String email) {
 		this.email = email.toLowerCase();
 		return this;
 	}

@@ -1,6 +1,9 @@
 package Chatr.Helper;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
+import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
 
 import java.util.ArrayList;
@@ -10,7 +13,11 @@ import java.util.List;
  * uses GSON Library to serialize / deserialize Objects to from JSON
  */
 public class JSONTransformer {
-	private static Gson parser = FxGson.createWithExtras();
+	private static Gson parser = FxGson
+			.coreBuilder()
+			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
+			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
+			.create();
 
 	/**
 	 * converts the Object to JSON
@@ -62,5 +69,23 @@ public class JSONTransformer {
 			out.add(fromJSON(json, type));
 		}
 		return out;
+	}
+
+	private static class UserDefinedExclusionStrategy implements ExclusionStrategy {
+		private Class<?> excludedClass;
+
+		private UserDefinedExclusionStrategy(Class<Image> excludedClass) {
+			this.excludedClass = excludedClass;
+		}
+
+		@Override
+		public boolean shouldSkipField(FieldAttributes f) {
+			return excludedClass.equals(f.getDeclaredClass());
+		}
+
+		@Override
+		public boolean shouldSkipClass(Class<?> clazz) {
+			return excludedClass.equals(clazz);
+		}
 	}
 }
