@@ -1,0 +1,18 @@
+
+.chat-selector .list-cell:empty, .chat-selector .list-cell:empty:hover {
+    -fx-background-color: transparent;
+}
+
+.chat-selector .list-cell:hover {
+    -fx-background-color: -fx-background-hover;
+}
+
+/* if the chat cell is selected make the labels white */
+.chat-selector .list-cell:focused .label, .chat-selector .list-cell:focused .label {
+    -fx-text-fill: -fx-white;
+}
+
+.chat-selector .list-cell:focused, .chat-selector .list-cell:selected {
+    -fx-background-color: -fx-accent;
+    -fx-text-fill: -fx-white;
+}

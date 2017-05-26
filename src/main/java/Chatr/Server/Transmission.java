@@ -1,11 +1,12 @@
 package Chatr.Server;
 
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+
+import Chatr.Controller.Manager;
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
-import Chatr.Controller.Manager;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -26,8 +27,8 @@ public class Transmission {
 	private String userID;
 	private Set<User> users;
 	private Boolean status;
-	private Conversation conversation;
-	private Set<Conversation> conversations;
+	private Chat chat;
+	private Set<Chat> chats;
 	private Long timestamp;
 	private byte[] img;
 	private byte[] voice;
@@ -36,26 +37,16 @@ public class Transmission {
 		this.type = type;
 		this.crud = crud;
 		this.localUserID = (Manager.localUser == null) ? "042b9135b65cc71d9c94df01add70cbf" :
-				Manager.localUser.getUserID();
+				Manager.getLocalUserID();
 	}
 
 	public Request getRequestType() {
 		return type;
 	}
 
-//	public Transmission setRequestType(Request type) {
-//		this.type = type;
-//		return this;
-//	}
-
 	public Crud getCRUD() {
 		return crud;
 	}
-
-//	public Transmission setCRUD(Crud crud) {
-//		this.crud = crud;
-//		return this;
-//	}
 
 	public Message getMessage() {
 		return message;
@@ -111,15 +102,6 @@ public class Transmission {
 		return this;
 	}
 
-//	public String getLocalUserID() {
-//		return localUserID;
-//	}
-
-//	public Transmission setLocalUserID(String userID) {
-//		this.localUserID = userID;
-//		return this;
-//	}
-
 	public Boolean getStatus() {
 		return status;
 	}
@@ -129,12 +111,12 @@ public class Transmission {
 		return this;
 	}
 
-	public Conversation getConversation() {
-		return this.conversation;
+	public Chat getChat() {
+		return this.chat;
 	}
 
-	public Transmission setConversation(Conversation conversation) {
-		this.conversation = conversation;
+	public Transmission setChat(Chat chat) {
+		this.chat = chat;
 		return this;
 	}
 
@@ -147,12 +129,12 @@ public class Transmission {
 		return this;
 	}
 
-	public Set<Conversation> getConversations() {
-		return this.conversations;
+	public Set<Chat> getChats() {
+		return this.chats;
 	}
 
-	public Transmission setConversations(Set<Conversation> conversations) {
-		this.conversations = conversations;
+	public Transmission setChats(Set<Chat> chats) {
+		this.chats = chats;
 		return this;
 	}
 
@@ -166,10 +148,6 @@ public class Transmission {
 	}
 
 	public Transmission reset() {
-//		type = null;
-//		crud = null;
-//		localUserID = null;
-//		conversationID = null;
 		message = null;
 		messages = null;
 		user = null;
@@ -178,8 +156,8 @@ public class Transmission {
 		users = null;
 		status = null;
 		timestamp = null;
-		conversation = null;
-		conversations = null;
+		chat = null;
+		chats = null;
 		img = null;
 		voice = null;
 		return this;

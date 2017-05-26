@@ -1,7 +1,7 @@
 package Chatr.Server.Database;
 
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -25,7 +25,7 @@ class DatabaseFixtures {
 	}
 
 	/**
-	 * inserts John Doe & Donalt Trump with their own conversation into the database
+	 * inserts John Doe & Donalt Trump with their own conversatio   n into the database
 	 *
 	 * @param db Database to insert the fixtures into
 	 * @throws InterruptedException
@@ -35,7 +35,7 @@ class DatabaseFixtures {
 		LinkedList<Message> messages = new LinkedList<>();
 		User u1 = new User("@jDoe");
 		User u2 = new User("@dTrump");
-		String conID = "2934239402394";
+		String conID = "Financial POWER";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
 		db.addUser(u1);
@@ -57,15 +57,24 @@ class DatabaseFixtures {
 		LinkedList<Message> messages = new LinkedList<>();
 		User u1 = new User("@bJohnson");
 		User u2 = new User("@aMerkel");
+		u2.setEmail("angela@merkel.#");
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
+
+		//Profile Picture Test
+		User u3 = addMaroko();
+		uIDs.add(u3.getUserID());
+		db.addUser(u3);
+
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all"));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u2.getUserID(), "another random message"));
+		Thread.sleep(2);
+		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!"));
 	}
 
 	/**
@@ -85,7 +94,7 @@ class DatabaseFixtures {
 		Set<String> uIDs = new HashSet<>();
 		db.readUsers().forEach(u -> uIDs.add(u.getUserID()));
 		User u1 = db.readUser("@aMerkel");
-		String conID = "293423988894";
+		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "hey there"));
 		Thread.sleep(2);
@@ -93,4 +102,13 @@ class DatabaseFixtures {
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel"));
 	}
+
+
+	private static User addMaroko() {
+		User maroko96 = new User("@maroko96");
+		maroko96.setUserName("Matthias");
+		maroko96.setEmail("maroko96@web.de");
+		return maroko96;
+	}
 }
+

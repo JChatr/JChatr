@@ -1,21 +1,59 @@
+
+.list-cell {
+    -fx-background-color: transparent;
+}
+.list-cell:selected, .list-cell:focused, .list-cell:filled {
+    -fx-text-fill: #333;
+}
+.list-view {
+    -fx-background-color: transparent;
+}
+
 #sendButton {
     -fx-background-image: url("/icons/sendSmall.png");
-    -fx-background-size: 20 20;
+
+}
+#emojiButton {
+    -fx-background-image: url("/icons/emojiSmall.png");
+}
+
+#currentChat {
+    -fx-background-image: url("/img/background.jpeg");
     -fx-background-repeat: no-repeat;
+    -fx-background-size: cover;
     -fx-background-position: center;
+    -fx-background-color: transparent;
+}
+
+.emoji-button {
+    -fx-margin: 5px;
+}
+
+.gif-button {
+
+}
+
+.text-area, .text-area:selected, .text-area:focused {
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-effect: none;
+}
+
+.sticker-button {
+
 }
 
 /*.list-cell:filled:selected:focused, .list-cell:filled:selected {*/
-    /*-fx-background-color: transparent;*/
+/*-fx-background-color: transparent;*/
 /*}*/
 
-
 /*.list-cell:empty {*/
-    /*visibility: hidden;*/
+/*visibility: hidden;*/
 /*}*/
 
 /*.list-view {*/
-    /*fx-background-color: transparent !important;*/
+/*fx-background-color: transparent !important;*/
 /*}*/
 
 /*#currentChat {*/

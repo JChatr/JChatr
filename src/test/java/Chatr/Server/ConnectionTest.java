@@ -1,9 +1,9 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
-import Chatr.Converstation.Conversation;
-import Chatr.Converstation.Message;
-import Chatr.Converstation.User;
+import Chatr.Model.Chat;
+import Chatr.Model.Message;
+import Chatr.Model.User;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,8 +29,8 @@ public class ConnectionTest {
 		Set<User> users = new HashSet<>();
 		users.add(u1);
 		users.add(u2);
-		Conversation c = Conversation.preConfigServer("asihdfakslöf#", u1.getUserID(), users, new LinkedList<>());
-		boolean status = Connection.createConversation(c.getID(),
+		Chat c = Chat.preConfigServer("asihdfakslöf#", u1.getUserID(), users, new LinkedList<>());
+		boolean status = Connection.createConversation(c.getID().get(),
 				c.getMemberIDs());
 		assertTrue(status);
 	}
@@ -38,15 +38,15 @@ public class ConnectionTest {
 	@Test
 	public void createIdenticalConversations() {
 		User u1 = new User("createIdenticalConversations");
-		Conversation c = Conversation.newConversation(u1, new User("createIdenticalConversations2"));
-		Set<Conversation> localC = new HashSet<>();
-		boolean status = Connection.createConversation(c.getID(), c.getMemberIDs());
+		Chat c = Chat.newConversation(u1, new User("createIdenticalConversations2"));
+		Set<Chat> localC = new HashSet<>();
+		boolean status = Connection.createConversation(c.getID().get(), c.getMemberIDs());
 
-		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
-		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
-		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
-		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
-		status &= Connection.createConversation(c.getID(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		status &= Connection.createConversation(c.getID().get(), c.getMemberIDs());
 		localC.add(c);
 
 		assertFalse(status);
@@ -56,61 +56,61 @@ public class ConnectionTest {
 	@Test
 	public void readAllConversationsSingle() {
 		User u1 = new User("readAllConversationsSingle");
-		Set<Conversation> localc = new HashSet<>();
-		Set<Conversation> conversations = null;
+		Set<Chat> localc = new HashSet<>();
+		Set<Chat> chats = null;
 		try {
-			Conversation c1 = Conversation.newConversation(u1, new User("b"));
+			Chat c1 = Chat.newConversation(u1, new User("b"));
 			Thread.sleep(2);
-			Conversation c2 = Conversation.newConversation(u1, new User("b"));
+			Chat c2 = Chat.newConversation(u1, new User("b"));
 			Thread.sleep(2);
-			Conversation c3 = Conversation.newConversation(u1, new User("b"));
-			Connection.createConversation(c1.getID(), c1.getMemberIDs());
-			Connection.createConversation(c2.getID(), c2.getMemberIDs());
-			Connection.createConversation(c3.getID(), c3.getMemberIDs());
-			conversations = Connection.readAllConversations(u1.getUserID());
+			Chat c3 = Chat.newConversation(u1, new User("b"));
+			Connection.createConversation(c1.getID().get(), c1.getMemberIDs());
+			Connection.createConversation(c2.getID().get(), c2.getMemberIDs());
+			Connection.createConversation(c3.getID().get(), c3.getMemberIDs());
+			chats = Connection.readAllConversations(u1.getUserID());
 			localc.add(c1);
 			localc.add(c2);
 			localc.add(c3);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		assertEquals(localc, conversations);
+		assertEquals(localc, chats);
 	}
 
 	@Test
 	public void readAllConversationsMultiple() {
 		User u1 = new User("readAllConversationsMultiple"),
 				u2 = new User("readAllConversationsMultiple2");
-		Set<Conversation> localc = new HashSet<>();
+		Set<Chat> localc = new HashSet<>();
 
 		try {
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u1, u2));
+			localc.add(Chat.newConversation(u1, u2));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u2, u1));
+			localc.add(Chat.newConversation(u2, u1));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u2, u1));
+			localc.add(Chat.newConversation(u2, u1));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u2, u1));
+			localc.add(Chat.newConversation(u2, u1));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u2, u1));
+			localc.add(Chat.newConversation(u2, u1));
 			Thread.sleep(2);
-			localc.add(Conversation.newConversation(u2, u1));
+			localc.add(Chat.newConversation(u2, u1));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		localc.forEach(c -> Connection.createConversation(c.getID(), c.getMemberIDs()));
+		localc.forEach(c -> Connection.createConversation(c.getID().get(), c.getMemberIDs()));
 
 		assertEquals(localc, Connection.readAllConversations(u1.getUserID()));
 	}
@@ -119,10 +119,10 @@ public class ConnectionTest {
 	public void deleteConversationValid() {
 		User u1 = new User("deleteConversationValid"),
 				u2 = new User("deleteConversationValid2");
-		Conversation c = Conversation.newConversation(u1, u2);
+		Chat c = Chat.newConversation(u1, u2);
 
-		Connection.createConversation(c.getID(), c.getMemberIDs());
-		boolean deleted = Connection.deleteConversation(c.getID());
+		Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		boolean deleted = Connection.deleteConversation(c.getID().get());
 
 		assertTrue(deleted);
 		assertTrue(Connection.readAllConversations(u1.getUserID()).isEmpty());
@@ -140,11 +140,11 @@ public class ConnectionTest {
 				u2 = new User("updateConversationUsersValid2"),
 				u3 = new User("updateConversationUsersValid3"),
 				u4 = new User("updateConversationUsersValid4");
-		Conversation c = Conversation.newConversation(u1, u2);
-		Connection.createConversation(c.getID(), c.getMemberIDs());
+		Chat c = Chat.newConversation(u1, u2);
+		Connection.createConversation(c.getID().get(), c.getMemberIDs());
 		c.addMember(u3);
 		c.addMember(u4);
-		boolean updated = Connection.updateConversationUsers(c.getID(), c.getMemberIDs());
+		boolean updated = Connection.updateConversationUsers(c.getID().get(), c.getMemberIDs());
 
 		assertTrue(updated);
 		assertFalse(Connection.readAllConversations(u3.getUserID()).isEmpty());
@@ -166,7 +166,7 @@ public class ConnectionTest {
 	public void readNewMessagesValid() {
 		User u1 = Connection.readUser("@aMerkel"),
 				u2 = Connection.readUser("@dTrump");
-		Conversation c = Conversation.newConversation(u1, new User("readNewMessagesValid"));
+		Chat c = Chat.newConversation(u1, new User("readNewMessagesValid"));
 		List<Message> messages = new ArrayList<>();
 		Message m1 = null, m2 = null, m3 = null, m4 = null, m5 = null;
 		try {
@@ -184,12 +184,12 @@ public class ConnectionTest {
 		messages.add(m3);
 		messages.add(m4);
 		messages.add(m5);
-		Connection.createConversation(c.getID(), c.getMemberIDs());
-		Connection.addMessage(c.getID(), m2);
-		Connection.addMessage(c.getID(), m3);
-		Connection.addMessage(c.getID(), m4);
-		Connection.addMessage(c.getID(), m5);
-		List<Message> response = Connection.readNewMessages(c.getID(), m2.getTime());
+		Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		Connection.addMessage(c.getID().get(), m2);
+		Connection.addMessage(c.getID().get(), m3);
+		Connection.addMessage(c.getID().get(), m4);
+		Connection.addMessage(c.getID().get(), m5);
+		List<Message> response = Connection.readNewMessages(c.getID().get(), m2.getTime());
 		assertTrue(messages.size() == response.size());
 		assertEquals(messages, response);
 	}
@@ -198,11 +198,11 @@ public class ConnectionTest {
 	public void addMessage() {
 		User u1 = new User("addMessage"),
 				u2 = new User("addMessage2");
-		Conversation c = Conversation.newConversation(u1, u2);
+		Chat c = Chat.newConversation(u1, u2);
 		Message m1 = new Message(u1.getUserID(), "testtesttesttesttesttesttesttesttesttest");
 
-		Connection.createConversation(c.getID(), c.getMemberIDs());
-		boolean posted = Connection.addMessage(c.getID(), m1);
+		Connection.createConversation(c.getID().get(), c.getMemberIDs());
+		boolean posted = Connection.addMessage(c.getID().get(), m1);
 		assertTrue(posted);
 	}
 
