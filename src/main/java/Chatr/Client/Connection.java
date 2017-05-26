@@ -75,6 +75,8 @@ public class Connection {
 		return response.getMessages();
 	}
 
+
+
 	/**
 	 * Add a new message to a conversation
 	 *

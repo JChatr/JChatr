@@ -1,6 +1,7 @@
 package Chatr.View.Login;
 
 import Chatr.Controller.Login;
+import Chatr.Controller.Manager;
 import Chatr.Model.Exceptions.EmailException;
 import Chatr.Model.Exceptions.PasswordException;
 import Chatr.Model.Exceptions.UserIDException;
@@ -37,15 +38,19 @@ public class LoginController extends Loader {
 	private TextField password;
 	@FXML
 	private AnchorPane parent;
+
+	private ChatListController clc;
 	private static Logger log = LogManager.getLogger(LoginController.class);
 
 	@FXML
-	private void intitialize() {
-
+	private void initialize() {
+		clc = new ChatListController();
+		log.info("loaded Login: " + Manager.getTime());
 	}
 
 	@FXML
 	private void onRegisterButtonClick() {
+		log.info("register: " + Manager.getTime());
 		String userID = this.userId.getText();
 		String email = this.eMail.getText();
 		String userName = this.username.getText();
@@ -67,8 +72,8 @@ public class LoginController extends Loader {
 
 
 	private void changeScene() {
-		ChatListController clc = new ChatListController();
 		parent.getChildren().clear();
 		parent.getChildren().add(clc.getView());
+		log.info("added chat list: " + Manager.getTime());
 	}
 }

@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
  * starts the app
  */
 public class Manager {
+	private static Long startTime = System.currentTimeMillis();
 	public static ObjectProperty<User> localUser;
 	private static ListProperty<Chat> userChats;
 	private static ListProperty<User> users;
@@ -32,10 +33,14 @@ public class Manager {
 
 	private static Logger log = LogManager.getLogger(Manager.class);
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
+		log.info("starting: " + getTime());
+		Manager.startTime = System.currentTimeMillis();
 		startServer();
 		initialize();
 		log.info(String.format("Connecting to : %s", CONFIG.SERVER_ADDRESS));
+		log.info("starting JavaFX: " + getTime());
+		Manager.startTime = System.currentTimeMillis();
 		JavaFX.initGUI(args);
 	}
 
@@ -157,5 +162,12 @@ public class Manager {
 			if (c.getID().get().equals(chatID)) return c;
 		}
 		throw new IllegalStateException("Chat ID could not be resolved");
+	}
+
+	public static long getTime() {
+		long currentTime = System.currentTimeMillis();
+		long delta = currentTime - startTime;
+		startTime = currentTime;
+		return delta;
 	}
 }

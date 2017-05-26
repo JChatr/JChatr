@@ -10,6 +10,9 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.omg.CORBA.Current;
 
 public class CurrentChatController extends Loader {
 	@FXML
@@ -31,7 +34,8 @@ public class CurrentChatController extends Loader {
 
 	private String chatID;
 	private boolean sidebarVisible;
-	private Node test;
+	private static Logger log = LogManager.getLogger(CurrentChatController.class);
+
 
 	/**
 	 * init UI links to Manager class and set up event Methods
@@ -41,7 +45,7 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
-
+		log.info("loaded current Chat: " + Manager.getTime());
 	}
 
 	private void addListeners() {
@@ -65,6 +69,7 @@ public class CurrentChatController extends Loader {
 		reset();
 		this.chatID = chatID;
 		linkProperties();
+		log.info("CurrentChat switch Time: " + Manager.getTime());
 	}
 
 	private void reset() {

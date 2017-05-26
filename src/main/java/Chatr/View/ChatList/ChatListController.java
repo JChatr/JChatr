@@ -33,12 +33,14 @@ public class ChatListController extends Loader {
 
 	@FXML
 	private void initialize() {
+		log.info("loaded ChatList: " + Manager.getTime());
 		addListeners();
 		linkUpdateProperties();
 		CurrentChatController chatView = new CurrentChatController();
 		setChatWindow(chatView.getView());
 		currentChat = (CurrentChatController) chatView.getController();
 		chatsList.setCellFactory(param -> new ChatCell());
+		log.info("finished loading chat list: " + Manager.getTime());
 	}
 
 	/**
