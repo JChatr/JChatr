@@ -1,25 +1,29 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
+import Chatr.Helper.CONFIG;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.net.URI;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class ConnectionTest {
 
-
 	/**
 	 * guarantees that the server is started when a test is run
 	 */
-	@Before
+	@Ignore
 	public void before() {
-		new Thread(new Server()).start();
+
 	}
 
 	@Test

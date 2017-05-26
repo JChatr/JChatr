@@ -17,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -33,7 +34,7 @@ public class Manager {
 	private static Logger log = LogManager.getLogger(Manager.class);
 
 	public static void main(String[] args) {
-		startServer();
+		//startServer();
 		initialize();
 		log.info(String.format("Connecting to : %s", CONFIG.SERVER_ADDRESS));
 		JavaFX.initGUI(args);
@@ -42,9 +43,14 @@ public class Manager {
 	/**
 	 * this method is for testing purposes ONLY delete when manager gets properly implemented
 	 */
-	private static void startServer() {
-		Executors.newSingleThreadExecutor().execute(new Server());
-	}
+//	private static void startServer() {
+//		try {
+//			Executors.newCachedThreadPool().execute( Server.main());
+//		}
+//		catch (InterruptedException|IOException e){
+//			log.error("Exception on Server: "+ e);
+//		}
+//	}
 
 	public static Message addMessage(String content) {
 		return currentChat.get().newMessage(content);

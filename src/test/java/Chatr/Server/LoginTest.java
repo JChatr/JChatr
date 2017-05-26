@@ -6,6 +6,7 @@ import Chatr.Helper.Terminal;
 import Chatr.Controller.Login;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.ByteArrayInputStream;
@@ -20,9 +21,9 @@ public class LoginTest {
 	/**
 	 * guarantees the server is started for every test
 	 */
-	@Before
+	@Ignore
 	public void start() {
-		new Thread(new Server()).start();
+		//new Thread(new Server()).start();
 	}
 
     /*
