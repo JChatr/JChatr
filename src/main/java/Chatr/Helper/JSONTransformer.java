@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
