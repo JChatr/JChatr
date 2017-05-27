@@ -1,10 +1,12 @@
 package Chatr.View.Login;
 
 import Chatr.Controller.Login;
+import Chatr.Controller.Manager;
 import Chatr.Model.Exceptions.EmailException;
 import Chatr.Model.Exceptions.PasswordException;
 import Chatr.Model.Exceptions.UserIDException;
 import Chatr.Model.Exceptions.UserNameException;
+import Chatr.Model.User;
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
@@ -52,7 +54,9 @@ public class LoginController extends Loader {
 		String password = this.password.getText();
 
 		try {
-			Login.loginUser(userID, password);
+			User user = Login.loginUser(userID, password);
+			Manager.setLocalUser(user);
+			Manager.startUpdateLoop();
 			changeScene();
 		} catch (UserIDException e) {
 			log.error(e);

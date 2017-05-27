@@ -28,8 +28,6 @@ public class Login {
 			throw new UserIDException(errorMessage);
 		}
 		log.info("logged in user", userID);
-		Manager.setLocalUser(user);
-		Manager.startUpdateLoop();
 		return user;
 	}
 
@@ -50,8 +48,6 @@ public class Login {
 		user.setPassword(HashGen.hashPW(password));
 		Connection.createUser(userID, user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
-		Manager.setLocalUser(user);
-		Manager.startUpdateLoop();
 		return user;
 	}
 
