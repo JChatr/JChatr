@@ -12,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +38,12 @@ public class LoginController extends Loader {
 	@FXML
 	private TextField password;
 	@FXML
-	private AnchorPane parent;
+	private BorderPane parent;
+	@FXML
+	private AnchorPane aparent;
+	@FXML
+	private HBox passwordHBox;
+
 	private static Logger log = LogManager.getLogger(LoginController.class);
 
 	@FXML
@@ -51,8 +58,9 @@ public class LoginController extends Loader {
 		String userName = this.username.getText();
 		String password = this.password.getText();
 
+
 		try {
-			Login.loginUser(userID, password);
+			Login.registerUser(userID, password, userName, email);
 			changeScene();
 		} catch (UserIDException e) {
 			log.error(e);
@@ -65,10 +73,15 @@ public class LoginController extends Loader {
 		}
 	}
 
+	@FXML
+	private void onLoginButtonClick(){
+		passwordHBox.setVisible(false);
+	}
+
 
 	private void changeScene() {
 		ChatListController clc = new ChatListController();
-		parent.getChildren().clear();
-		parent.getChildren().add(clc.getView());
+		aparent.getChildren().clear();
+		aparent.getChildren().add(clc.getView());
 	}
 }

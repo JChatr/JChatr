@@ -152,8 +152,8 @@ public class Login {
 	 * @param email Email to validate
 	 * @throws EmailException Exception is thrown if Email is not permitted.
 	 */
-	private static boolean validateEmail(String email) throws EmailException {
-		Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+	private static boolean validateEmail(String email) throws EmailException {  //^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$
+		Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE); //^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$
 		Matcher matcher = emailRegex.matcher(email);
 		if (matcher.find()) {
 			log.trace(String.format("Email %s is valid.", email));

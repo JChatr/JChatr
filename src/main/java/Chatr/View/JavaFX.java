@@ -25,6 +25,7 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeLoginLayout();
+		//initializeRootLayout();
 		primaryStage.show();
 	}
 
