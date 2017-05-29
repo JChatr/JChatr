@@ -76,7 +76,8 @@ class MessageCellController extends Loader {
 		text.setText("");
 		timestamp.setText("");
 		alignRight();
-		userThumbnail.imageProperty().setValue(null);
+		userThumbnail.imageProperty().unbind();
+		userThumbnail.setImage(null);
 		textBox.setPrefWidth(MIN_WIDTH);
 		textBox.setMaxWidth(MAX_WIDTH);
 		parent.setPrefHeight(MIN_HEIGHT);
@@ -129,8 +130,7 @@ class MessageCellController extends Loader {
 	}
 
 	private void displayUserThumbnail(String sender) {
-		userThumbnail.setImage(Manager.getUserImage(sender));
-		userThumbnail.setCache(true);
+		userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
 	}
 
 	/**

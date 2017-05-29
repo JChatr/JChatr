@@ -85,16 +85,9 @@ public class Manager {
 		return resolveChatID(chatID).getMessages();
 	}
 
-	public static String getUserImagePath(String userID) {
-		for (User u : users) {
-			if (u.equals(new User(userID))) {
-				return u.getPicturePath();
-			}
-		}
-		return null;
-	}
 
-	public static Image getUserImage(String userID) {
+
+	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
 			if (u.equals(new User(userID))) {
 				return u.getImage();
@@ -102,7 +95,6 @@ public class Manager {
 		}
 		return localUser.get().getImage();
 	}
-
 
 	public static void setCurrentChat(Chat chat) {
 		currentChat.setValue(chat);
