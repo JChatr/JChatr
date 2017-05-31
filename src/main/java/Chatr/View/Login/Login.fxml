@@ -6,74 +6,122 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="parent" minHeight="500.0" minWidth="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
-   <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+<AnchorPane fx:id="parent" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
+   <children>
+      <GridPane minHeight="500.0" minWidth="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="550.0" />
+            <ColumnConstraints hgrow="ALWAYS" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints vgrow="ALWAYS" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints vgrow="ALWAYS" />
+         </rowConstraints>
          <children>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User-ID :">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin></Text>
-                  <TextField fx:id="userId" promptText="\@MaxMustermann">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></TextField>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User-ID :">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <TextField fx:id="userId" promptText="\@MaxMustermann">
+                           <HBox.margin>
+                              <Insets left="20.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="userIdLabel" textFill="#eb0909" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="passwordHBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password :">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <PasswordField fx:id="password">
+                           <HBox.margin>
+                              <Insets left="8.0" />
+                           </HBox.margin>
+                        </PasswordField>
+                        <Label fx:id="passwordLabel" textFill="#ee0707" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="eMailBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="E-Mail :">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <TextField fx:id="eMail">
+                           <HBox.margin>
+                              <Insets left="29.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="eMailLabel" textFill="#ee0707" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                  </HBox>
+                  <HBox fx:id="userNameBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username :">
+                           <HBox.margin>
+                              <Insets top="5.0" />
+                           </HBox.margin>
+                        </Text>
+                        <TextField fx:id="username">
+                           <HBox.margin>
+                              <Insets left="6.0" />
+                           </HBox.margin>
+                        </TextField>
+                        <Label fx:id="usernameLabel" textFill="#ee0707" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox fx:id="signInLoginButtonBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="signInButton" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSignInButtonClick" text="Sign in">
+                           <HBox.margin>
+                              <Insets left="96.0" right="55.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login" />
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox fx:id="registerButtonBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Button fx:id="registerButton" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register">
+                           <HBox.margin>
+                              <Insets left="96.0" />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </HBox>
                </children>
-            </HBox>
-            <HBox fx:id="passwordHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password :">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin></Text>
-                  <PasswordField fx:id="password">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></PasswordField>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="E-Mail :">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin></Text>
-                  <TextField fx:id="eMail">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></TextField>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username :">
-                     <HBox.margin>
-                        <Insets top="5.0" />
-                     </HBox.margin></Text>
-                  <TextField fx:id="username">
-                     <HBox.margin>
-                        <Insets right="10.0" />
-                     </HBox.margin></TextField>
-               </children>
-            </HBox>
-            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
-               <children>
-                  <Button fx:id="registerButton" alignment="CENTER" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Registter">
-                     <HBox.margin>
-                        <Insets left="100.0" right="40.0" />
-                     </HBox.margin></Button>
-                  <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login" />
-               </children>
-            </HBox>
+            </VBox>
          </children>
-         <BorderPane.margin>
-            <Insets bottom="100.0" left="100.0" right="100.0" top="100.0" />
-         </BorderPane.margin>
-      </VBox>
-   </center>
-   <opaqueInsets>
-      <Insets />
-   </opaqueInsets>
-</BorderPane>
+      </GridPane>
+   </children>
+</AnchorPane>

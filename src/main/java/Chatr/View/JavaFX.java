@@ -25,11 +25,14 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeLoginLayout();
-		//initializeRootLayout();
 		primaryStage.show();
 	}
 
+	/**
+	 * Method initializes the Login GUI layout
+	 */
 	private void initializeLoginLayout() {
+		log.info(String.format("Initialize Login-Layout"));
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
 		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();

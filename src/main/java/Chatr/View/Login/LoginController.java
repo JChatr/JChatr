@@ -1,87 +1,160 @@
 package Chatr.View.Login;
 
 import Chatr.Controller.Login;
+import Chatr.Controller.Manager;
 import Chatr.Model.Exceptions.EmailException;
 import Chatr.Model.Exceptions.PasswordException;
 import Chatr.Model.Exceptions.UserIDException;
 import Chatr.Model.Exceptions.UserNameException;
+import Chatr.Model.User;
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import java.net.URL;
+import java.util.ResourceBundle;
 
-public class LoginController extends Loader {
+public class LoginController extends Loader implements Initializable{
 
-	@FXML
-	private Button registrerButton;
-	@FXML
-	private Label userIdLabel;
 	@FXML
 	private TextField userId;
 	@FXML
-	private Label eMailLabel;
-	@FXML
 	private TextField eMail;
-	@FXML
-	private Label usernameLabel;
 	@FXML
 	private TextField username;
 	@FXML
+	private PasswordField password;
+	@FXML
+	private AnchorPane parent;
+	@FXML
+	private HBox eMailBox;
+	@FXML
+	private HBox userNameBox;
+	@FXML
+	private HBox registerButtonBox;
+	@FXML
+	private HBox signInLoginButtonBox;
+	@FXML
+	private Label userIdLabel;
+	@FXML
 	private Label passwordLabel;
 	@FXML
-	private TextField password;
+	private Label eMailLabel;
 	@FXML
-	private BorderPane parent;
-	@FXML
-	private AnchorPane aparent;
-	@FXML
-	private HBox passwordHBox;
+	private Label usernameLabel;
 
 	private static Logger log = LogManager.getLogger(LoginController.class);
 
-	@FXML
-	private void intitialize() {
 
+	@Override
+	public void initialize(URL location, ResourceBundle resources) {
+		bindings();
+		eMailBox.setVisible(false);
+		userNameBox.setVisible(false);
+		registerButtonBox.setVisible(false);
+		signInLoginButtonBox.setVisible(true);
 	}
 
+	/**
+	 * Method makes it easier to show GUI elements
+	 */
+	private void bindings(){
+		eMailBox.managedProperty().bind(eMailBox.visibleProperty());
+		userNameBox.managedProperty().bind(userNameBox.visibleProperty());
+		registerButtonBox.managedProperty().bind(registerButtonBox.visibleProperty());
+		signInLoginButtonBox.managedProperty().bind(signInLoginButtonBox.visibleProperty());
+	}
+
+	/**
+	 * Shows input fields to register
+	 */
+	@FXML
+	private void onSignInButtonClick(){
+		log.info(String.format("Sign in Button clicked"));
+		eMailBox.setVisible(true);
+		userNameBox.setVisible(true);
+		registerButtonBox.setVisible(true);
+		signInLoginButtonBox.setVisible(false);
+		password.clear();
+	}
+
+	/**
+	 * Method calls methods to register the user if he presses the register-Button in the GUI
+	 */
 	@FXML
 	private void onRegisterButtonClick() {
+		log.info(String.format("Register Button clicked"));
 		String userID = this.userId.getText();
 		String email = this.eMail.getText();
 		String userName = this.username.getText();
 		String password = this.password.getText();
 
+		userIdLabel.setText("");
+		usernameLabel.setText("");
+		eMailLabel.setText("");
+		passwordLabel.setText("");
 
 		try {
-			Login.registerUser(userID, password, userName, email);
+			Login.registerUser(userID, email, userName, password);
+			User user = Login.loginUser(userID, password);
+			Manager.setLocalUser(user);
+			Manager.startUpdateLoop();
 			changeScene();
 		} catch (UserIDException e) {
+			userIdLabel.setText(e.getErrorMessage());
 			log.error(e);
 		} catch (UserNameException e) {
+			usernameLabel.setText(e.getErrorMessage());
 			log.error(e);
 		} catch (EmailException e) {
+			eMailLabel.setText(e.getErrorMessage());
 			log.error(e);
 		} catch (PasswordException e) {
+			passwordLabel.setText(e.getErrorMessage());
 			log.error(e);
 		}
 	}
 
+	/**
+	 * Method calls methods to login the user if he presses the login-Button in the GUI
+	 */
 	@FXML
 	private void onLoginButtonClick(){
-		passwordHBox.setVisible(false);
+		log.info(String.format("Login Button pressed"));
+		String userID = this.userId.getText();
+		String password = this.password.getText();
+		userIdLabel.setText("");
+		passwordLabel.setText("");
+		try{
+			User user = Login.loginUser(userID, password);
+			Manager.setLocalUser(user);
+			Manager.startUpdateLoop();
+			changeScene();
+		} catch(UserIDException e){
+			userIdLabel.setText(e.getErrorMessage());
+			log.error(e);
+		} catch(PasswordException e) {
+			passwordLabel.setText(e.getErrorMessage());
+			log.error(e);
+		}
 	}
 
-
+	/**
+	 * Method changes the Login-Scene to Chat-Scene
+	 */
 	private void changeScene() {
+		log.info(String.format("Change scene to chat"));
 		ChatListController clc = new ChatListController();
-		aparent.getChildren().clear();
-		aparent.getChildren().add(clc.getView());
+		parent.getChildren().clear();
+		parent.getChildren().add(clc.getView());
 	}
+
+
 }
