@@ -43,3 +43,8 @@
     -fx-background-color: black;
     -fx-opacity: 1;
 }
+
+/* padding to keep the spacing between the cells to the defined values in the respective fxml */
+.list-cell {
+    -fx-padding: 0;
+}

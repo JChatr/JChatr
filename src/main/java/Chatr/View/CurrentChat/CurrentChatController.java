@@ -41,7 +41,6 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
-
 	}
 
 	private void addListeners() {

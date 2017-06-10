@@ -5,6 +5,7 @@ import Chatr.Model.Chat;
 import Chatr.View.ChatList.ChatCell.ChatCell;
 import Chatr.View.CurrentChat.CurrentChatController;
 import Chatr.View.Loader;
+import com.jfoenix.controls.JFXButton;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
@@ -17,7 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 public class ChatListController extends Loader {
 	@FXML
-	private Button newChatButton;
+	private JFXButton newChat;
 	@FXML
 	private Button searchButton;
 	@FXML
