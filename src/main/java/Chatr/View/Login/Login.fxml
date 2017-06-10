@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
@@ -8,10 +10,10 @@
 
 <AnchorPane fx:id="parent" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
    <children>
-      <GridPane minHeight="500.0" minWidth="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <GridPane id="pane" minHeight="500.0" minWidth="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
             <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="550.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="415.0" />
             <ColumnConstraints hgrow="ALWAYS" />
          </columnConstraints>
          <rowConstraints>
@@ -20,105 +22,188 @@
             <RowConstraints vgrow="ALWAYS" />
          </rowConstraints>
          <children>
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
+            <VBox id="elementBox" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
                <children>
-                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <Label alignment="CENTER" text="Log in to Chatr!">
+                     <VBox.margin>
+                        <Insets bottom="20.0" left="110.0" top="20.0" />
+                     </VBox.margin>
+                     <font>
+                        <Font size="29.0" />
+                     </font></Label>
+                  <Label fx:id="userIdLabel" styleClass="errorLabels" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets left="98.0" top="30.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="User-ID :">
+                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/user_all_black.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="userId" promptText="\@UserId">
                            <HBox.margin>
-                              <Insets top="5.0" />
-                           </HBox.margin>
-                        </Text>
-                        <TextField fx:id="userId" promptText="\@MaxMustermann">
-                           <HBox.margin>
-                              <Insets left="20.0" />
+                              <Insets />
                            </HBox.margin>
                         </TextField>
-                        <Label fx:id="userIdLabel" textFill="#eb0909" />
+                     </children>
+                     <padding>
+                        <Insets bottom="10.0" />
+                     </padding>
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Label fx:id="usernameLabel" styleClass="errorLabels" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="98.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox fx:id="userNameBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/user_outlines.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="username" promptText="username">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </TextField>
+                     </children>
+                     <VBox.margin>
+                        <Insets bottom="10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <Label fx:id="eMailLabel" styleClass="errorLabels" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="98.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox fx:id="eMailBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                     <children>
+                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/Mail.png" />
+                           </image>
+                        </ImageView>
+                        <TextField fx:id="eMail" promptText="Email adress">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </TextField>
                      </children>
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
                   </HBox>
-                  <HBox fx:id="passwordHBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <Label fx:id="passwordLabel" styleClass="errorLabels" textFill="WHITE">
+                     <VBox.margin>
+                        <Insets bottom="10.0" left="98.0" />
+                     </VBox.margin>
+                     <padding>
+                        <Insets left="5.0" right="5.0" />
+                     </padding>
+                  </Label>
+                  <HBox fx:id="passwordHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Password :">
+                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@/icons/Lock.png" />
+                           </image>
+                        </ImageView>
+                        <PasswordField fx:id="password" promptText="Password">
                            <HBox.margin>
-                              <Insets top="5.0" />
-                           </HBox.margin>
-                        </Text>
-                        <PasswordField fx:id="password">
-                           <HBox.margin>
-                              <Insets left="8.0" />
+                              <Insets />
                            </HBox.margin>
                         </PasswordField>
-                        <Label fx:id="passwordLabel" textFill="#ee0707" />
                      </children>
                      <padding>
                         <Insets bottom="10.0" />
                      </padding>
                   </HBox>
-                  <HBox fx:id="eMailBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
+                  <VBox fx:id="signInLoginButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="E-Mail :">
-                           <HBox.margin>
-                              <Insets top="5.0" />
-                           </HBox.margin>
-                        </Text>
-                        <TextField fx:id="eMail">
-                           <HBox.margin>
-                              <Insets left="29.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <Label fx:id="eMailLabel" textFill="#ee0707" />
-                     </children>
-                     <padding>
-                        <Insets bottom="10.0" />
-                     </padding>
-                  </HBox>
-                  <HBox fx:id="userNameBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
-                     <children>
-                        <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Username :">
-                           <HBox.margin>
-                              <Insets top="5.0" />
-                           </HBox.margin>
-                        </Text>
-                        <TextField fx:id="username">
-                           <HBox.margin>
-                              <Insets left="6.0" />
-                           </HBox.margin>
-                        </TextField>
-                        <Label fx:id="usernameLabel" textFill="#ee0707" />
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox fx:id="signInLoginButtonBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Button fx:id="signInButton" alignment="CENTER" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#onSignInButtonClick" text="Sign in">
-                           <HBox.margin>
-                              <Insets left="96.0" right="55.0" />
-                           </HBox.margin>
+                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
+                           <VBox.margin>
+                              <Insets left="148.0" />
+                           </VBox.margin>
                         </Button>
-                        <Button fx:id="loginButton" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login" />
-                     </children>
-                     <VBox.margin>
-                        <Insets bottom="10.0" />
-                     </VBox.margin>
-                  </HBox>
-                  <HBox fx:id="registerButtonBox" alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
-                     <children>
-                        <Button fx:id="registerButton" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register">
-                           <HBox.margin>
-                              <Insets left="96.0" />
-                           </HBox.margin>
-                        </Button>
+                        <HBox onMouseClicked="#onSignInButtonClick" prefHeight="100.0" prefWidth="200.0" styleClass="buttomMessage">
+                           <children>
+                              <Label text="New to Chatr?">
+                                 <HBox.margin>
+                                    <Insets left="148.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label onMouseClicked="#onSignInButtonClick" text="Sign in..." textFill="#0084ff" underline="true">
+                                 <HBox.margin>
+                                    <Insets left="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
                      </children>
                      <VBox.margin>
                         <Insets />
                      </VBox.margin>
-                  </HBox>
+                  </VBox>
+                  <VBox fx:id="registerButtonBox" prefHeight="200.0" prefWidth="100.0">
+                     <children>
+                        <Button fx:id="registerButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register">
+                           <VBox.margin>
+                              <Insets left="148.0" />
+                           </VBox.margin>
+                        </Button>
+                        <HBox onMouseClicked="#backButtonPressed" prefHeight="100.0" prefWidth="200.0" styleClass="buttomMessage">
+                           <children>
+                              <Label text="Already signed in?">
+                                 <HBox.margin>
+                                    <Insets left="148.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label onMouseClicked="#backButtonPressed" text="Log in..." textFill="#0084ff" underline="true">
+                                 <HBox.margin>
+                                    <Insets left="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                           </children>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <padding>
+                              <Insets bottom="10.0" top="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets />
+                     </VBox.margin>
+                  </VBox>
                </children>
             </VBox>
          </children>
