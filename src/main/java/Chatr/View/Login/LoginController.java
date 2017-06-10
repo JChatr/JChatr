@@ -2,10 +2,8 @@ package Chatr.View.Login;
 
 import Chatr.Controller.Login;
 import Chatr.Controller.Manager;
-import Chatr.Model.Exceptions.EmailException;
-import Chatr.Model.Exceptions.PasswordException;
-import Chatr.Model.Exceptions.UserIDException;
-import Chatr.Model.Exceptions.UserNameException;
+import Chatr.Model.ErrorMessagesValidation;
+import Chatr.Model.Exceptions.*;
 import Chatr.Model.User;
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Loader;
@@ -18,6 +16,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -101,24 +100,22 @@ public class LoginController extends Loader implements Initializable{
 		eMailLabel.setText("");
 		passwordLabel.setText("");
 
-		try {
+
+		ErrorMessagesValidation errorMessagesValidation = Login.validateUser(userID, email, password, userName);
+		boolean existingError = errorMessagesValidation.isErrorexisting();
+		String[] errorMessages = errorMessagesValidation.getErrormessages();
+
+		if (existingError == false){
 			Login.registerUser(userID, email, userName, password);
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
 			Manager.startUpdateLoop();
 			changeScene();
-		} catch (UserIDException e) {
-			userIdLabel.setText(e.getErrorMessage());
-			log.error(e);
-		} catch (UserNameException e) {
-			usernameLabel.setText(e.getErrorMessage());
-			log.error(e);
-		} catch (EmailException e) {
-			eMailLabel.setText(e.getErrorMessage());
-			log.error(e);
-		} catch (PasswordException e) {
-			passwordLabel.setText(e.getErrorMessage());
-			log.error(e);
+		}else{
+			userIdLabel.setText(errorMessages[0]);
+			eMailLabel.setText(errorMessages[1]);
+			passwordLabel.setText(errorMessages[2]);
+			usernameLabel.setText(errorMessages[3]);
 		}
 	}
 

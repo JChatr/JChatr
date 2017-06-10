@@ -4,6 +4,7 @@ import Chatr.Client.Connection;
 import Chatr.Helper.HashGen;
 import Chatr.Model.Exceptions.*;
 import Chatr.Model.User;
+import Chatr.Model.ErrorMessagesValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -16,6 +17,8 @@ import java.util.regex.Pattern;
  * @author mk285, mf140
  */
 public class Login {
+
+	//public static String[] errorMessages = new String[4];
 
 	private static Logger log = LogManager.getLogger(Login.class);
 
@@ -39,8 +42,11 @@ public class Login {
 	 * @return Returns a new object of user
 	 */
 	public static User registerUser(String userID, String eMail, String userName, String password) {
-		validateUser(userID, eMail, password);
-		validateUniqueID(userID);
+
+		//Arrays.fill(errorMessages, null );
+
+		ErrorMessagesValidation errorMessagesValidation = validateUser(userID, eMail, password, userName);
+
 
 		User user = new User(userID);
 		user.setUserName(userName);
@@ -51,24 +57,63 @@ public class Login {
 		return user;
 	}
 
-
 	/**
-	 * @param userID
-	 * @param eMail
-	 * @return
+	 *
+	 * @param userID The UserID you wanna validate
+	 * @param eMail the email you wanna validate
+	 * @param password the password you wanna validate
+	 * @param username the username you wanna validate
+	 * @return ErrormessagesValidation Object; contains error Messages for the GUI
 	 */
-	private static boolean validateUser(String userID, String eMail, String password) {
-		boolean valid = validateUserID(userID);
-		valid &= validateEmail(eMail);
-		valid &= validatePassword(password);
-		return valid;
+	public static ErrorMessagesValidation validateUser(String userID, String eMail, String password, String username) {
+		boolean errorExisting = false;
+		String[] errorMessages = new String[4];
+		try{
+			validateUserID(userID);
+		}catch(UserIDException e){
+			errorMessages[0] = e.getErrorMessage();
+			errorExisting = true;
+			log.error(e);
+		}
+		try{
+			validateUniqueID(userID);
+		}catch (UserIDException e){
+			errorMessages[0] = e.getErrorMessage();
+			errorExisting = true;
+			log.error(e);
+		}
+		try{
+			validateEmail(eMail);
+		}catch(EmailException e){
+			errorMessages[1] = e.getErrorMessage();
+			errorExisting = true;
+			log.error(e);
+		}
+		try{
+				validatePassword(password);
+		}catch(PasswordException e){
+			errorMessages[2] = e.getErrorMessage();
+			errorExisting = true;
+			log.error(e);
+		}
+		try{
+			validateUserName(username);
+		}catch(UserNameException e){
+			errorMessages[3] = e.getErrorMessage();
+			errorExisting = true;
+			log.error(e);
+		}
+
+		ErrorMessagesValidation errorMessagesValidation = new ErrorMessagesValidation(errorExisting, errorMessages);
+
+		return errorMessagesValidation;
 	}
 
 	/**
 	 * @param userID
 	 * @return
 	 */
-	private static boolean validateUser(String userID, String password) {
+	private static boolean validateUser(String userID, String password){
 		boolean valid = validateUserID(userID);
 		valid &= validatePassword(password);
 		return valid;
@@ -149,7 +194,7 @@ public class Login {
 	 * @throws EmailException Exception is thrown if Email is not permitted.
 	 */
 	private static boolean validateEmail(String email) throws EmailException {
-		Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE); 
+		Pattern emailRegex = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
 		Matcher matcher = emailRegex.matcher(email);
 		if (matcher.find()) {
 			log.trace(String.format("Email %s is valid.", email));
