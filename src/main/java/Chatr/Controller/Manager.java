@@ -90,6 +90,7 @@ public class Manager {
 	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
 			if (u.equals(new User(userID))) {
+				log.trace("(getUserImage) User found!" + u.getUserID());
 				return u.getImage();
 			}
 		}

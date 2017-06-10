@@ -130,6 +130,7 @@ class MessageCellController extends Loader {
 	}
 
 	private void displayUserThumbnail(String sender) {
+		//userThumbnail.setImage(Manager.getUserImage(sender).getValue());
 		userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
 	}
 

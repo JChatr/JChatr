@@ -7,11 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -23,9 +18,8 @@ import java.util.concurrent.Executors;
 public class User {
 
     private String userName;
-    //private String userID = HashGen.getID(false);
     private String userID;
-    private ObjectProperty<Image> userImage = new SimpleObjectProperty<>();
+    private ObjectProperty<Image> userImage;
     private String email;
     private Status status;
     private String password;
@@ -63,22 +57,31 @@ public class User {
         return userName;
     }
 
+    /**
+     * This method is used to load the user image from gravatar.
+     * @return Returns user image if cached. If not, tries to load a gravatar image or returns a default image.
+     */
     public ObjectProperty<Image> getImage() {
-        if (userImage.getValue() == null) {
+         if(userImage == null){
+             log.trace("UserImage is null");
+            userImage = new SimpleObjectProperty<>();
             Executors.newSingleThreadExecutor().execute(() -> {
                 String hash = HashGen.hashMD5(email);
                 String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
                 if (hash.equals("d41d8cd98f00b204e9800998ecf8427e")) {
                     url = "/icons/default_user.png";
+                    log.trace("Email hash is empty. URL = default image");
                 }
                 Image img = new Image(url, 40, 40, true, false, false);
+                log.trace("Trying to load image from gravatar!");
                 if (img.isError()) {
+                    log.debug("Error in image. Loading default image.");
                     img = new Image("/icons/default_user.png", 40, 40, true, false, false);
                 }
                 userImage.set(img);
             });
-            log.trace("userImage loaded for " + userID);
         }
+        log.trace("userImage loaded for " + userID);
         return userImage;
     }
 
