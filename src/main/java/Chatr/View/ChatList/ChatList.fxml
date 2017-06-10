@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.String?>
+<?import com.jfoenix.controls.JFXButton?>
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -16,37 +16,23 @@
     <children>
         <VBox maxWidth="300.0" minHeight="300.0" minWidth="300.0" prefWidth="300.0" HBox.hgrow="SOMETIMES">
             <children>
-                <AnchorPane>
-                    <children>
-                        <Label fx:id="userName" text="\@dTrump" AnchorPane.leftAnchor="0.0">
+            <HBox alignment="CENTER">
+               <children>
+                        <Label fx:id="userName" text="\@dTrump">
                             <padding>
                                 <Insets bottom="10.0" top="10.0" />
                             </padding>
                         </Label>
-                        <Button fx:id="newChatButton" alignment="CENTER" mnemonicParsing="false" styleClass="btn" text="New Chat" AnchorPane.rightAnchor="0.0" />
-                    </children>
-                    <opaqueInsets>
-                        <Insets />
-                    </opaqueInsets>
-                    <VBox.margin>
-                        <Insets left="10.0" right="10.0" />
-                    </VBox.margin>
-                </AnchorPane>
+                  <Pane HBox.hgrow="ALWAYS" />
+                  <JFXButton fx:id="newChat" text="newChat" />
+               </children>
+               <VBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </VBox.margin>
+            </HBox>
                 <HBox>
                     <children>
-                        <Button fx:id="searchButton" alignment="CENTER" mnemonicParsing="false" text="Search" HBox.hgrow="NEVER" VBox.vgrow="NEVER">
-                            <styleClass>
-                                <String fx:value="first" />
-                                <String fx:value="action-btn" />
-                            </styleClass>
-                            <VBox.margin>
-                                <Insets right="-4.0" />
-                            </VBox.margin>
-                            <HBox.margin>
-                                <Insets />
-                            </HBox.margin>
-                        </Button>
-                        <TextField fx:id="searchBox" prefWidth="200.0" promptText="Search or start a new chat" styleClass="last" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                        <TextField fx:id="searchBox" prefWidth="200.0" promptText="Search" styleClass="last" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                             <font>
                                 <Font size="11.0" />
                             </font>
