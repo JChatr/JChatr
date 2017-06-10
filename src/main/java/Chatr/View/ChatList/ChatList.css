@@ -16,3 +16,9 @@
     -fx-background-color: -fx-accent;
     -fx-text-fill: -fx-white;
 }
+
+.split-pane-divider {
+    -fx-padding: 1px;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+}
