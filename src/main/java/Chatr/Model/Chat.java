@@ -1,6 +1,7 @@
 package Chatr.Model;
 
 import Chatr.Client.Connection;
+import Chatr.Controller.Manager;
 import Chatr.Helper.HashGen;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -62,11 +63,11 @@ public class Chat {
 		this.messages = new SimpleListProperty<>(FXCollections.observableArrayList());
 	}
 
-	public Message newMessage(String content) {
+	public void newMessage(String content) {
 		Message message = new Message(localUser, content);
 		messages.add(message);
 		Connection.addMessage(conversationID.get(), message);
-		return message;
+
 	}
 
 

@@ -18,6 +18,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -27,33 +28,23 @@ import java.util.concurrent.Executors;
  */
 public class Manager {
 	public static ObjectProperty<User> localUser;
-	private static ListProperty<Chat> userChats;
+	public static ListProperty<Chat> userChats;
 	private static ListProperty<User> users;
 	private static ObjectProperty<Chat> currentChat;
 
 	private static Logger log = LogManager.getLogger(Manager.class);
 
 	public static void main(String[] args) {
-		//startServer();
 		initialize();
+
 		log.info(String.format("Connecting to : %s", CONFIG.SERVER_ADDRESS));
 		JavaFX.initGUI(args);
 	}
 
-	/**
-	 * this method is for testing purposes ONLY delete when manager gets properly implemented
-	 */
-//	private static void startServer() {
-//		try {
-//			Executors.newCachedThreadPool().execute( Server.main());
-//		}
-//		catch (InterruptedException|IOException e){
-//			log.error("Exception on Server: "+ e);
-//		}
-//	}
 
-	public static Message addMessage(String content) {
-		return currentChat.get().newMessage(content);
+
+	public static void addMessage(String content) {
+		currentChat.get().newMessage(content);
 	}
 
 	public static ObjectProperty<Chat> getCurrentChat() {
@@ -124,22 +115,31 @@ public class Manager {
 		currentChat = new SimpleObjectProperty<>();
 	}
 
+	protected static void initialPull(){
+		Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
+		readChats.forEach(readChat -> {
+			if (!userChats.contains(readChat)) {
+				userChats.add(readChat);
+			}
+		});
+	}
+
 	protected static void startUpdateLoop() {
-		userChats.addListener((ListChangeListener<Chat>) c -> {
+		/*userChats.addListener((ListChangeListener<Chat>) c -> {
 			c.next();
 			c.getAddedSubList().forEach(chat ->
 					UpdateService.schedule(chat.getMessages(), messages -> {
 						Long newestMessage = messages.isEmpty() ? 0 :
 								messages.get(messages.size() - 1).getTime();
 						String chatID = chat.getID().get();
-						List<Message> newMessages = Connection.readNewMessages(chatID, newestMessage);
+						List<Message> newMessages = connection.readNewMessages(chatID, newestMessage);
 						messages.addAll(newMessages);
 						return messages;
 					})
 			);
 		});
 		UpdateService.schedule(userChats, userChats -> {
-			Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
+			Set<Chat> readChats = connection.readAllConversations(localUser.get().getUserID());
 			readChats.forEach(readChat -> {
 				if (!userChats.contains(readChat)) {
 					userChats.add(readChat);
@@ -148,14 +148,14 @@ public class Manager {
 			return userChats;
 		});
 		UpdateService.schedule(users, users -> {
-			Set<User> user = Connection.readUsers();
+			Set<User> user = connection.readUsers();
 			user.forEach(readUser -> {
 				if (!users.contains(readUser)) {
 					users.add(readUser);
 				}
 			});
 			return users;
-		});
+		});*/
 	}
 
 	private static Chat resolveChatID(String chatID) {

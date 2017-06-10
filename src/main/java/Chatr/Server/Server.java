@@ -20,12 +20,14 @@ import java.util.Collection;
 /**
  * Multithreaded server, spawns a new Thread for every connection
  */
-public class Server extends WebSocketServer {
+public class Server extends WebSocketServer{
 
 	public static Logger log = LogManager.getLogger(Server.class);
 
 	public Server(int port) throws UnknownHostException{
-		super(new InetSocketAddress(port));
+
+			super(new InetSocketAddress(port));
+
 	}
 
 	@Override
@@ -41,7 +43,11 @@ public class Server extends WebSocketServer {
 	@Override
 	public void onMessage(WebSocket webSocket, String s) {
 
+
+
 		Transmission request = JSONTransformer.fromJSON(s, Transmission.class);
+
+		log.info("Transmission recived: " +request.toString());
 		MessageHandler handler = new MessageHandler(request);
 
 		Transmission response= handler.process();
@@ -62,26 +68,31 @@ public class Server extends WebSocketServer {
 
 	}
 
-	public static void main(String[] args ) throws InterruptedException, IOException{
 
-		WebSocketImpl.DEBUG= true;
+	static public void main(String args[]){
 
-		int port = 3456;
+		try {
+			WebSocketImpl.DEBUG = true;
 
-		Server s= new Server(port);
-		s.start();
+			int port = 3456;
 
-		BufferedReader sysin = new BufferedReader( new InputStreamReader(System.in));
-		while(true){
-			String in = sysin.readLine();
+			Server s = new Server(port);
+			s.start();
 
-			if(in.equals("exit")){
-				s.stop();
-				break;
+			BufferedReader sysin = new BufferedReader(new InputStreamReader(System.in));
+			while (true) {
+				String in = sysin.readLine();
+
+				if (in.equals("exit")) {
+					s.stop();
+					break;
+				}
 			}
+
 		}
-
-
+		catch(InterruptedException | IOException e){
+			log.error(e);
+		}
 	}
 
 	void sendToAll(String s){

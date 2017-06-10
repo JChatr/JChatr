@@ -1,6 +1,8 @@
 package Chatr.Controller;
 
+import Chatr.Client.Client;
 import Chatr.Client.Connection;
+import Chatr.Client.ConnectionEvent;
 import Chatr.Helper.HashGen;
 import Chatr.Model.Exceptions.*;
 import Chatr.Model.User;
@@ -15,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author mk285, mf140
  */
-public class Login {
+public class Login{
 
 	private static Logger log = LogManager.getLogger(Login.class);
 
@@ -29,7 +31,8 @@ public class Login {
 		}
 		log.info("logged in user", userID);
 		Manager.setLocalUser(user);
-		Manager.startUpdateLoop();
+		//Manager.startUpdateLoop();
+		Manager.initialPull();
 		return user;
 	}
 
@@ -164,6 +167,7 @@ public class Login {
 			throw new EmailException(errorMessage);
 		}
 	}
+
 }
 
 

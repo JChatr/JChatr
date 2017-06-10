@@ -2,10 +2,12 @@ package Chatr.Client;
 
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
+import Chatr.Helper.JSONTransformer;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Transmission;
+import org.java_websocket.client.WebSocketClient;
 
 import java.util.List;
 import java.util.Set;
@@ -13,10 +15,9 @@ import java.util.Set;
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
-public class Connection {
+public final class Connection{
 
-	private Connection() {
-	}
+	private static final Client client =new Client();
 
 	/**
 	 * creates a new conversation on the server and adds the specified users
@@ -40,8 +41,19 @@ public class Connection {
 	 */
 	public static Set<Chat> readAllConversations(String userID) {
 		Transmission request = build(CONVERSATION, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getChats();
+		TransmissionListener conversationListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(conversationListener);
+		String json =JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try{
+			Thread.sleep(2000);
+		}
+		catch(InterruptedException e){
+			client.removeListener(conversationListener);
+			return conversationListener.getResponse().getChats();
+		}
+
+		return null;
 	}
 
 	/**
@@ -71,8 +83,18 @@ public class Connection {
 	 */
 	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		Transmission response = new Client().get(request);
-		return response.getMessages();
+		TransmissionListener messageListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(messageListener);
+		String json= JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try{
+			Thread.sleep(2000);
+		}
+		catch(InterruptedException e){
+			client.removeListener(messageListener);
+			return messageListener.getResponse().getMessages();
+		}
+		return null;
 	}
 
 	/**
@@ -82,10 +104,11 @@ public class Connection {
 	 * @param message        Message to get
 	 * @return if the operation was successful
 	 */
-	public static boolean addMessage(String conversationID, Message message) {
+	public static void addMessage(String conversationID, Message message) {
 		Transmission request = build(MESSAGE, CREATE, conversationID, message);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		String json= JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+
 	}
 
 
@@ -111,8 +134,19 @@ public class Connection {
 	 */
 	public static User readUser(String userID) {
 		Transmission request = build(USER, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getUser();
+		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(userListener);
+		String json =JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try {
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e){
+			client.removeListener(userListener);
+			return userListener.getResponse().getUser();
+
+		}
+		return null;
 	}
 
 	/**
@@ -122,8 +156,19 @@ public class Connection {
 	 */
 	public static Set<User> readUsers() {
 		Transmission request = build(USERS, READ, null, null);
-		Transmission response = new Client().get(request);
-		return response.getUsers();
+		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(userListener);
+		String json =JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try {
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e){
+			client.removeListener(userListener);
+			return userListener.getResponse().getUsers();
+
+		}
+		return null;
 	}
 
 	/**
@@ -190,4 +235,25 @@ public class Connection {
 		}
 		return request;
 	}
+
+	static class TransmissionListener implements ConnectionListener{
+		Thread thread;
+		Transmission response;
+
+		TransmissionListener(Thread currentThread){
+			this.thread= currentThread;
+		}
+		@Override
+		public void notify(ConnectionEvent e) {
+			response= e.getTransmission();
+
+			thread.interrupt();
+		}
+
+		public Transmission getResponse(){
+			return response;
+		}
+	}
+
+
 }
