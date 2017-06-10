@@ -31,8 +31,10 @@ public class JavaFX extends Application {
 	private void initializeLoginLayout() {
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
-		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
-		scene.getStylesheets().add(cssUri);
+		scene.getStylesheets().addAll(
+				getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
+				getClass().getResource("/css/chatr.css").toExternalForm()
+		);
 		primaryStage.setScene(scene);
 	}
 

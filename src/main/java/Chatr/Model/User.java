@@ -16,8 +16,7 @@ import java.util.concurrent.Executors;
  * @author mk285
  */
 public class User {
-
-    private String userName;
+	private String userName;
     private String userID;
     private ObjectProperty<Image> userImage;
     private String email;
