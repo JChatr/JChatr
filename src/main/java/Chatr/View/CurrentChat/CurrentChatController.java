@@ -19,6 +19,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 import java.util.Set;
+import java.util.concurrent.Executors;
 
 public class CurrentChatController extends Loader {
 	@FXML
@@ -46,7 +47,9 @@ public class CurrentChatController extends Loader {
 	@FXML
 	private FlowPane gifPane;
 	@FXML
-	private Button gifButton1;
+	private Button gifButton;
+	@FXML
+	private TextField gifText;
 
 
 	private String chatID;
@@ -81,33 +84,16 @@ public class CurrentChatController extends Loader {
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if(newValue.getId().equals("gifTab")){
-						showGIFs();
+						showGIFs("");
 						}
 					});
                 }
 
-	@FXML
-	public void showGIFs(){
-		System.out.println("Gif Tab was selected!");
-		gifPane = new FlowPane();
-		gifPane.setVgap(8);
-		gifPane.setHgap(4);
-		gifPane.setPrefWrapLength(300);
-		gifPane.setVisible(true);
-		Image gifArray[] = new Image[10];
-		for(int i = 0; i < 10; i++) {
-			//ImageView gifIV = new ImageView();
-			//gifIV.imageProperty().bind(GIFCellController.getGIFs("", i));
-			//gifPane.getChildren().add(gifIV);
-			//gifArray[i] = GIFCellController.getGIFs("", i).getValue();
-		}
-		for (int i = 0; i < gifArray.length; i++){
-			//gifPane.getChildren().add(new ImageView(gifArray[i]));
-			Image img = new Image("/icons/default_user.png");
-			gifPane.getChildren().add(new ImageView(img));
-			gifPane.getChildren().add(new Button("Fuck you!"));
-		}
-
+	public void showGIFs(String searchstring){
+		int limit = 25;
+			for (int i = 0; i < limit; i++) {
+				gifPane.getChildren().add(new ImageView(GIFCellController.getGIFs(searchstring, i).getValue()));
+			}
 	}
 
 	public void switchChat(String chatID) {
@@ -157,5 +143,12 @@ public class CurrentChatController extends Loader {
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
+	}
+
+	@FXML
+	private void onGIFButtonClick(){
+		gifPane.getChildren().clear();
+		String gifSearch = gifText.getText();
+		showGIFs(gifSearch);
 	}
 }
