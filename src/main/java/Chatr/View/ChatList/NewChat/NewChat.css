@@ -1,9 +1,35 @@
-#transparent-bg {
+.transparent-bg {
     -fx-background-color: black;
     -fx-opacity: 0.25;
 }
 
-#white-bg {
+.white-bg {
     -fx-background-color: white;
     -fx-background-radius: 5px;
+}
+
+.selector .list-cell:empty, .selector .list-cell:empty:hover {
+    -fx-background-color: transparent;
+}
+
+.selector .list-cell:hover {
+    -fx-background-color: -fx-background-hover;
+}
+
+/* if the chat cell is selected make the labels white */
+.selector .list-cell:focused .label, .selector .list-cell:focused .label {
+    /*-fx-text-fill: -fx-white;*/
+}
+.selector .list-cell:odd {
+    -fx-background-color: transparent;
+}
+
+.selector .list-cell:focused, .selector .list-cell:selected {
+    -fx-background-color: transparent;
+    /*-fx-text-fill: #000;*/
+}
+.split-pane-divider {
+    -fx-padding: 1px;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
 }

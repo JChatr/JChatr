@@ -6,6 +6,7 @@
     -fx-white: #fff;
     -fx-light-grey: #d4d4d4;
     -fx-grey: #c2c2c2;
+    -fx-dark-grey: #696969;
 }
 
 *:focused, *:selected {
