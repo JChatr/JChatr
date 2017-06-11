@@ -22,7 +22,7 @@
             <RowConstraints vgrow="ALWAYS" />
          </rowConstraints>
          <children>
-            <VBox id="elementBox" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
+            <VBox id="elementBox" fx:id="content" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
                <children>
                   <Label alignment="CENTER" text="Log in to Chatr!">
                      <VBox.margin>
@@ -31,12 +31,12 @@
                      <font>
                         <Font size="29.0" />
                      </font></Label>
-                  <Label fx:id="userIdLabel" styleClass="errorLabels" textFill="WHITE">
+                  <Label fx:id="userIdLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <VBox.margin>
                         <Insets left="98.0" top="30.0" />
                      </VBox.margin>
                      <padding>
-                        <Insets left="5.0" right="5.0" />
+                        <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                      </padding>
                   </Label>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
@@ -46,7 +46,7 @@
                               <Image url="@/icons/user_all_black.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="userId" promptText="\@UserId">
+                        <TextField fx:id="userId" promptText="\@UserId" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -59,13 +59,13 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="usernameLabel" styleClass="errorLabels" textFill="WHITE">
+                  <Label fx:id="usernameLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="JUSTIFY" textFill="WHITE">
+                     <padding>
+                        <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
+                     </padding>
                      <VBox.margin>
                         <Insets bottom="10.0" left="98.0" />
                      </VBox.margin>
-                     <padding>
-                        <Insets left="5.0" right="5.0" />
-                     </padding>
                   </Label>
                   <HBox fx:id="userNameBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
@@ -74,7 +74,7 @@
                               <Image url="@/icons/user_outlines.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="username" promptText="username">
+                        <TextField fx:id="username" promptText="username" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -84,13 +84,13 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="eMailLabel" styleClass="errorLabels" textFill="WHITE">
+                  <Label fx:id="eMailLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE">
+                     <padding>
+                        <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
+                     </padding>
                      <VBox.margin>
                         <Insets bottom="10.0" left="98.0" />
                      </VBox.margin>
-                     <padding>
-                        <Insets left="5.0" right="5.0" />
-                     </padding>
                   </Label>
                   <HBox fx:id="eMailBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
@@ -99,7 +99,7 @@
                               <Image url="@/icons/Mail.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="eMail" promptText="Email adress">
+                        <TextField fx:id="eMail" promptText="Email adress" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -109,13 +109,13 @@
                         <Insets bottom="10.0" />
                      </padding>
                   </HBox>
-                  <Label fx:id="passwordLabel" styleClass="errorLabels" textFill="WHITE">
+                  <Label fx:id="passwordLabel" alignment="CENTER" prefWidth="219.0" styleClass="errorLabels" text="absixubasiulgiuasbxlusgduzlsgdczusuzfdgyskzdcvy sdcbyszdvc+" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                     <padding>
+                        <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
+                     </padding>
                      <VBox.margin>
                         <Insets bottom="10.0" left="98.0" />
                      </VBox.margin>
-                     <padding>
-                        <Insets left="5.0" right="5.0" />
-                     </padding>
                   </Label>
                   <HBox fx:id="passwordHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
@@ -124,7 +124,7 @@
                               <Image url="@/icons/Lock.png" />
                            </image>
                         </ImageView>
-                        <PasswordField fx:id="password" promptText="Password">
+                        <PasswordField fx:id="password" promptText="Password" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>

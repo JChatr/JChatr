@@ -18,7 +18,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -68,7 +67,9 @@ public class LoginController extends Loader implements Initializable{
 		usernameLabel.setVisible(false);
 	}
 
-
+	/**
+	 * logs user in if he presses Enter
+	 */
 	private void addListenerLogin() {
 		userId.setOnKeyPressed((event) -> {
 			if(event.getCode() == KeyCode.ENTER) {
@@ -80,6 +81,9 @@ public class LoginController extends Loader implements Initializable{
 		});
 	}
 
+	/**
+	 * registers user if he presses enter
+	 */
 	private void addListenerRegister() {
 		userId.setOnKeyPressed((event) -> {
 			if(event.getCode() == KeyCode.ENTER) {
@@ -99,7 +103,9 @@ public class LoginController extends Loader implements Initializable{
 		});
 	}
 
-
+	/**
+	 * Method changes GUI from register-window to login-window
+	 */
 	@FXML
 	private void backButtonPressed(){
 		bindings();
@@ -112,6 +118,7 @@ public class LoginController extends Loader implements Initializable{
 		eMailLabel.setVisible(false);
 		usernameLabel.setVisible(false);
 		password.clear();
+		addListenerLogin();
 	}
 	/**
 	 * Method makes it easier to show GUI elements
@@ -165,7 +172,6 @@ public class LoginController extends Loader implements Initializable{
 
 		ErrorMessagesValidation errorMessagesValidation = Login.validateUser(userID, email, password, userName);
 		boolean existingError = errorMessagesValidation.isErrorexisting();
-		String[] errorMessages = errorMessagesValidation.getErrormessages();
 
 		if (existingError == false){
 			Login.registerUser(userID, email, userName, password);
@@ -174,21 +180,21 @@ public class LoginController extends Loader implements Initializable{
 			Manager.startUpdateLoop();
 			changeScene();
 		}else{
-			if (errorMessages[0] != null){
+			if (errorMessagesValidation.getUserIdErrorMessage() != null){
 				userIdLabel.setVisible(true);
-				userIdLabel.setText(errorMessages[0]);
+				userIdLabel.setText(errorMessagesValidation.getUserIdErrorMessage());
 			}
-			if (errorMessages[1] != null){
+			if (errorMessagesValidation.getEmailErrorMessage() != null){
 				eMailLabel.setVisible(true);
-				eMailLabel.setText(errorMessages[1]);
+				eMailLabel.setText(errorMessagesValidation.getEmailErrorMessage());
 			}
-			if (errorMessages[2] != null){
+			if (errorMessagesValidation.getPasswordErrorMessage() != null){
 				passwordLabel.setVisible(true);
-				passwordLabel.setText(errorMessages[2]);
+				passwordLabel.setText(errorMessagesValidation.getPasswordErrorMessage());
 			}
-			if(errorMessages[3] != null){
+			if( errorMessagesValidation.getUsernameErrorMessage() != null){
 				usernameLabel.setVisible(true);
-				usernameLabel.setText(errorMessages[3]);
+				usernameLabel.setText(errorMessagesValidation.getUsernameErrorMessage());
 			}
 		}
 	}
