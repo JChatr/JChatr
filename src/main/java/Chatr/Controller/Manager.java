@@ -118,7 +118,7 @@ public class Manager {
 		currentChat = new SimpleObjectProperty<>();
 	}
 
-	protected static void startUpdateLoop() {
+	public static void startUpdateLoop() {
 		userChats.addListener((ListChangeListener<Chat>) c -> {
 			c.next();
 			c.getAddedSubList().forEach(chat ->
