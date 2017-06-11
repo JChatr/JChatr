@@ -18,7 +18,7 @@
 }
 
 #currentChat {
-    -fx-background-image: url("/img/background.jpeg");
+    -fx-background-image: url("/img/background_wide.jpeg");
     -fx-background-repeat: no-repeat;
     -fx-background-size: cover;
     -fx-background-position: center;
