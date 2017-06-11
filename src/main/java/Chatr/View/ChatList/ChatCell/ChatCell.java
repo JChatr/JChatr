@@ -3,6 +3,8 @@ package Chatr.View.ChatList.ChatCell;
 import Chatr.Model.Chat;
 import javafx.scene.control.ListCell;
 
+import java.util.ArrayList;
+
 public class ChatCell extends ListCell<Chat> {
 	private ChatCellController cp = new ChatCellController();
 

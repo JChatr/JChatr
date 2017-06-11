@@ -1,6 +1,5 @@
 package Chatr.View;
 
-
 import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Login.LoginController;
 import javafx.application.Application;
@@ -25,6 +24,8 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeLoginLayout();
+		primaryStage.setMinWidth(400);
+		primaryStage.setMinHeight(600);
 		primaryStage.show();
 	}
 
@@ -35,16 +36,10 @@ public class JavaFX extends Application {
 		log.info(String.format("Initialize Login-Layout"));
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
-		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
-		scene.getStylesheets().add(cssUri);
-		primaryStage.setScene(scene);
-	}
-
-	private void initializeRootLayout() {
-		ChatListController chatList = new ChatListController();
-		Scene scene = new Scene(chatList.getView());
-		final String cssUri = getClass().getResource("/jbootx/bootstrap3.css").toExternalForm();
-		scene.getStylesheets().add(cssUri);
+		scene.getStylesheets().addAll(
+				getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
+				getClass().getResource("/css/chatr.css").toExternalForm()
+		);
 		primaryStage.setScene(scene);
 	}
 }

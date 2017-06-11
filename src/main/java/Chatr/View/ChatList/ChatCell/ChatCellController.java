@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import org.apache.logging.log4j.LogManager;
@@ -25,8 +26,6 @@ class ChatCellController extends Loader {
 	@FXML
 	private ImageView thumbnail;
 	@FXML
-	private Pane background;
-	@FXML
 	private Label title;
 	@FXML
 	private Label timestamp;
@@ -35,7 +34,7 @@ class ChatCellController extends Loader {
 	@FXML
 	private Label notification;
 	@FXML
-	private HBox parent;
+	private AnchorPane parent;
 	private int unreadMessages;
 	private Chat chat;
 	private static Logger log = LogManager.getLogger(ChatCellController.class);
