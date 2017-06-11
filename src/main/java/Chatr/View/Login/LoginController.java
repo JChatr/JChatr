@@ -18,10 +18,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class LoginController extends Loader implements Initializable{
+public class LoginController extends Loader implements Initializable {
 
 	@FXML
 	private TextField userId;
@@ -72,12 +73,14 @@ public class LoginController extends Loader implements Initializable{
 	 */
 	private void addListenerLogin() {
 		userId.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onLoginButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onLoginButtonClick();
+			}
 		});
 		password.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onLoginButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onLoginButtonClick();
+			}
 		});
 	}
 
@@ -86,20 +89,24 @@ public class LoginController extends Loader implements Initializable{
 	 */
 	private void addListenerRegister() {
 		userId.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onRegisterButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onRegisterButtonClick();
+			}
 		});
 		password.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onRegisterButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onRegisterButtonClick();
+			}
 		});
 		eMail.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onRegisterButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onRegisterButtonClick();
+			}
 		});
 		username.setOnKeyPressed((event) -> {
-			if(event.getCode() == KeyCode.ENTER) {
-				onRegisterButtonClick(); }
+			if (event.getCode() == KeyCode.ENTER) {
+				onRegisterButtonClick();
+			}
 		});
 	}
 
@@ -107,8 +114,7 @@ public class LoginController extends Loader implements Initializable{
 	 * Method changes GUI from register-window to login-window
 	 */
 	@FXML
-	private void backButtonPressed(){
-		bindings();
+	private void backButtonPressed() {
 		eMailBox.setVisible(false);
 		userNameBox.setVisible(false);
 		registerButtonBox.setVisible(false);
@@ -120,10 +126,11 @@ public class LoginController extends Loader implements Initializable{
 		password.clear();
 		addListenerLogin();
 	}
+
 	/**
 	 * Method makes it easier to show GUI elements
 	 */
-	private void bindings(){
+	private void bindings() {
 		eMailBox.managedProperty().bind(eMailBox.visibleProperty());
 		userNameBox.managedProperty().bind(userNameBox.visibleProperty());
 		registerButtonBox.managedProperty().bind(registerButtonBox.visibleProperty());
@@ -132,21 +139,21 @@ public class LoginController extends Loader implements Initializable{
 		passwordLabel.managedProperty().bind(passwordLabel.visibleProperty());
 		eMailLabel.managedProperty().bind(eMailLabel.visibleProperty());
 		usernameLabel.managedProperty().bind(usernameLabel.visibleProperty());
-
 	}
 
 	/**
 	 * Shows input fields to register
 	 */
 	@FXML
-	private void onSignInButtonClick(){
-		log.info(String.format("Sign in Button clicked"));
+	private void onSignInButtonClick() {
+		log.debug("Sign in Button clicked");
 		eMailBox.setVisible(true);
 		userNameBox.setVisible(true);
 		registerButtonBox.setVisible(true);
 		signInLoginButtonBox.setVisible(false);
 		password.clear();
 		addListenerRegister();
+		resetPasswordErrorMessage();
 	}
 
 	/**
@@ -154,73 +161,76 @@ public class LoginController extends Loader implements Initializable{
 	 */
 	@FXML
 	private void onRegisterButtonClick() {
-		log.info(String.format("Register Button clicked"));
+		log.debug("Register Button clicked");
 		String userID = this.userId.getText();
 		String email = this.eMail.getText();
 		String userName = this.username.getText();
 		String password = this.password.getText();
 
-		userIdLabel.setVisible(false);
-		passwordLabel.setVisible(false);
-		eMailLabel.setVisible(false);
-		usernameLabel.setVisible(false);
-		userIdLabel.setText("");
-		usernameLabel.setText("");
-		eMailLabel.setText("");
-		passwordLabel.setText("");
-
+		resetErrorMessages();
 
 		ErrorMessagesValidation errorMessagesValidation = Login.validateUser(userID, email, password, userName);
-		boolean existingError = errorMessagesValidation.isErrorexisting();
 
-		if (existingError == false){
+		if (!errorMessagesValidation.isErrorexisting()) {
 			Login.registerUser(userID, email, userName, password);
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
 			Manager.startUpdateLoop();
 			changeScene();
-		}else{
-			if (errorMessagesValidation.getUserIdErrorMessage() != null){
+		} else {
+			if (errorMessagesValidation.getUserIdErrorMessage() != null) {
 				userIdLabel.setVisible(true);
 				userIdLabel.setText(errorMessagesValidation.getUserIdErrorMessage());
 			}
-			if (errorMessagesValidation.getEmailErrorMessage() != null){
+			if (errorMessagesValidation.getEmailErrorMessage() != null) {
 				eMailLabel.setVisible(true);
 				eMailLabel.setText(errorMessagesValidation.getEmailErrorMessage());
 			}
-			if (errorMessagesValidation.getPasswordErrorMessage() != null){
+			if (errorMessagesValidation.getPasswordErrorMessage() != null) {
 				passwordLabel.setVisible(true);
 				passwordLabel.setText(errorMessagesValidation.getPasswordErrorMessage());
 			}
-			if( errorMessagesValidation.getUsernameErrorMessage() != null){
+			if (errorMessagesValidation.getUsernameErrorMessage() != null) {
 				usernameLabel.setVisible(true);
 				usernameLabel.setText(errorMessagesValidation.getUsernameErrorMessage());
 			}
 		}
 	}
 
+	private void resetErrorMessages() {
+		userIdLabel.setVisible(false);
+		eMailLabel.setVisible(false);
+		usernameLabel.setVisible(false);
+		userIdLabel.setText("");
+		usernameLabel.setText("");
+		eMailLabel.setText("");
+		resetPasswordErrorMessage();
+	}
+
+	private void resetPasswordErrorMessage() {
+		passwordLabel.setVisible(false);
+		passwordLabel.setText("");
+	}
+
 	/**
 	 * Method calls methods to login the user if he presses the login-Button in the GUI
 	 */
 	@FXML
-	private void onLoginButtonClick(){
-		log.info(String.format("Login Button pressed"));
+	private void onLoginButtonClick() {
+		log.info("Login Button pressed");
 		String userID = this.userId.getText();
 		String password = this.password.getText();
-		userIdLabel.setVisible(false);
-		passwordLabel.setVisible(false);
-		userIdLabel.setText("");
-		passwordLabel.setText("");
-		try{
+		resetErrorMessages();
+		try {
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
 			Manager.startUpdateLoop();
 			changeScene();
-		} catch(UserIDException e){
+		} catch (UserIDException e) {
 			userIdLabel.setVisible(true);
 			userIdLabel.setText(e.getErrorMessage());
 			log.error(e);
-		} catch(PasswordException e) {
+		} catch (PasswordException e) {
 			passwordLabel.setVisible(true);
 			passwordLabel.setText(e.getErrorMessage());
 			log.error(e);
@@ -231,11 +241,9 @@ public class LoginController extends Loader implements Initializable{
 	 * Method changes the Login-Scene to Chat-Scene
 	 */
 	private void changeScene() {
-		log.info(String.format("Change scene to chat"));
+		log.info("Change scene to chat");
 		ChatListController clc = new ChatListController();
 		parent.getChildren().clear();
 		parent.getChildren().add(clc.getView());
 	}
-
-
 }

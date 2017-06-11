@@ -22,8 +22,7 @@ public class Login {
 	private static Logger log = LogManager.getLogger(Login.class);
 
 	/**
-	 *
-	 * @param userID the users UserID
+	 * @param userID   the users UserID
 	 * @param password the users password
 	 * @return a users object
 	 */
@@ -57,9 +56,8 @@ public class Login {
 	}
 
 	/**
-	 *
-	 * @param userID The UserID you wanna validate
-	 * @param eMail the email you wanna validate
+	 * @param userID   The UserID you wanna validate
+	 * @param eMail    the email you wanna validate
 	 * @param password the password you wanna validate
 	 * @param username the username you wanna validate
 	 * @return ErrormessagesValidation Object; contains error Messages for the GUI
@@ -67,55 +65,51 @@ public class Login {
 	public static ErrorMessagesValidation validateUser(String userID, String eMail, String password, String username) {
 		ErrorMessagesValidation errorMessagesValidation = new ErrorMessagesValidation();
 		boolean errorExisting = false;
-		String[] errorMessages = new String[4];
-		try{
+		try {
 			validateUserID(userID);
-		}catch(UserIDException e){
+		} catch (UserIDException e) {
 			errorMessagesValidation.setUserIdErrorMessage(e.getErrorMessage());
 			errorExisting = true;
 			log.error(e);
 		}
-		try{
+		try {
 			validateUniqueID(userID);
-		}catch (UserIDException e){
+		} catch (UserIDException e) {
 			errorMessagesValidation.setUserIdErrorMessage(e.getErrorMessage());
 			errorExisting = true;
 			log.error(e);
 		}
-		try{
+		try {
 			validateEmail(eMail);
-		}catch(EmailException e){
+		} catch (EmailException e) {
 			errorMessagesValidation.setEmailErrorMessage(e.getErrorMessage());
 			errorExisting = true;
 			log.error(e);
 		}
-		try{
+		try {
 			validatePassword(password);
-		}catch(PasswordException e){
+		} catch (PasswordException e) {
 			errorMessagesValidation.setPasswordErrorMessage(e.getErrorMessage());
 			errorExisting = true;
 			log.error(e);
 		}
-		try{
+		try {
 			validateUserName(username);
-		}catch(UserNameException e){
+		} catch (UserNameException e) {
 			errorMessagesValidation.setUsernameErrorMessages(e.getErrorMessage());
 			errorExisting = true;
 			log.error(e);
 		}
-
 		errorMessagesValidation.setErrorexisting(errorExisting);
-
 		return errorMessagesValidation;
 	}
 
 	/**
-	 *
-	 * @param userID the users Userid
+	 * @param userID   the users Userid
 	 * @param password the users password
 	 * @return true if the user is Valid
 	 */
-	private static boolean validateUser(String userID, String password){
+	private static boolean validateUser(String userID, String password) {
 		boolean valid = validateUserID(userID);
 		valid &= validatePassword(password);
 		return valid;
@@ -153,17 +147,15 @@ public class Login {
 	 * @throws UserNameException
 	 */
 	private static boolean validateUserName(String userName) throws UserNameException {
-		final String userNameRegex= "^(.){5,20}$";
+		final String userNameRegex = "^(.){5,20}$";
 		String errorMessage;
-		if(userName.matches(userNameRegex)){
+		if (userName.matches(userNameRegex)) {
 			log.trace(String.format("Validated syntax of username %s.", userName));
-		}else{
-			if(userName.length() < 5){
+		} else {
+			if (userName.length() < 5) {
 				errorMessage = "Username is too short.";
-			}else if(userName.length() > 20){
+			} else {
 				errorMessage = "Username is too long.";
-			}else{
-				errorMessage = "Username is invalid.";
 			}
 			log.error(errorMessage, userName);
 			throw new UserNameException(errorMessage);

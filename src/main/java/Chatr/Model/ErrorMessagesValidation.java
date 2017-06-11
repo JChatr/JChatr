@@ -22,34 +22,39 @@ public class ErrorMessagesValidation {
 		this.errorexisting = errorexisting;
 	}
 
-	public boolean isErrorexisting(){ return errorexisting; }
+	public boolean isErrorexisting() {
+		return errorexisting;
+	}
 
-
-	public String getUserIdErrorMessage(){
+	public String getUserIdErrorMessage() {
 		return errorMessages[0];
 	}
-	public void setUserIdErrorMessage(String userIdErrorMessage){
+
+	public void setUserIdErrorMessage(String userIdErrorMessage) {
 		this.errorMessages[0] = userIdErrorMessage;
 	}
 
-	public String getEmailErrorMessage(){
+	public String getEmailErrorMessage() {
 		return errorMessages[1];
 	}
-	public void setEmailErrorMessage(String emailErrorMessage){
+
+	public void setEmailErrorMessage(String emailErrorMessage) {
 		this.errorMessages[1] = emailErrorMessage;
 	}
 
 	public String getPasswordErrorMessage() {
 		return errorMessages[2];
 	}
-	public void setPasswordErrorMessage(String passwordErrorMessage){
+
+	public void setPasswordErrorMessage(String passwordErrorMessage) {
 		this.errorMessages[2] = passwordErrorMessage;
 	}
 
-	public String getUsernameErrorMessage(){
+	public String getUsernameErrorMessage() {
 		return errorMessages[3];
 	}
-	public void setUsernameErrorMessages(String usernameErrorMessages){
+
+	public void setUsernameErrorMessages(String usernameErrorMessages) {
 		this.errorMessages[3] = usernameErrorMessages;
 	}
 
