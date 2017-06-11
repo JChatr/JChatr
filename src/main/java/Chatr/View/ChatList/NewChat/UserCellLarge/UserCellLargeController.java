@@ -22,7 +22,7 @@ class UserCellLargeController extends Loader {
 	private GridPane parent;
 
 	private User user;
-	private byte selected;
+//	private byte selected;
 
 	UserCellLargeController() {
 		load(this);
@@ -30,7 +30,7 @@ class UserCellLargeController extends Loader {
 
 	@FXML
 	private void initialize() {
-		parent.setOnMouseClicked(event -> onSelected());
+
 	}
 
 	void setInfo(User user) {
@@ -42,22 +42,9 @@ class UserCellLargeController extends Loader {
 	}
 
 	private void reset() {
-		this.selected = 0;
 		this.user = null;
 		userName.setText("");
 		userName.setId("");
 		timestamp.setText("");
-	}
-
-	@FXML
-	private void onSelected() {
-		selected++;
-		System.out.println("selected = " + selected + " + " + user.getUserName());
-		if (selected == 2) {
-			userName.setId("selected");
-		} else if (selected > 2) {
-			userName.setId("");
-			selected = -1;
-		}
 	}
 }

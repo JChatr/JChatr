@@ -9,6 +9,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 
 public class CurrentChatController extends Loader {
@@ -28,6 +29,8 @@ public class CurrentChatController extends Loader {
 	private TabPane sidebar;
 	@FXML
 	private VBox chatBox;
+
+
 
 	private String chatID;
 	private boolean sidebarVisible;

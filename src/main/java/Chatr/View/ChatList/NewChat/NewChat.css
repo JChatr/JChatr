@@ -12,22 +12,23 @@
     -fx-background-color: transparent;
 }
 
-.selector .list-cell:hover {
-    -fx-background-color: -fx-background-hover;
-}
-
-/* if the chat cell is selected make the labels white */
-.selector .list-cell:focused .label, .selector .list-cell:focused .label {
-    /*-fx-text-fill: -fx-white;*/
-}
 .selector .list-cell:odd {
     -fx-background-color: transparent;
 }
 
-.selector .list-cell:focused, .selector .list-cell:selected {
-    -fx-background-color: transparent;
-    /*-fx-text-fill: #000;*/
+.selector .list-cell:hover, .selector .list-cell:selected:hover {
+    -fx-background-color: -fx-background-hover;
 }
+
+/* if the chat cell is selected make the labels white */
+.selector .list-cell:selected .userName {
+    -fx-text-fill: -fx-accent;
+}
+
+.selector .list-cell:selected {
+    -fx-background-color: transparent;
+}
+
 .split-pane-divider {
     -fx-padding: 1px;
     -fx-background-color: transparent;
