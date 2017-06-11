@@ -169,7 +169,7 @@
                     <content>
                         <VBox>
                             <children>
-                                <FlowPane fx:id="gif" VBox.vgrow="ALWAYS" />
+                                <FlowPane fx:id="gifPane" onMouseClicked="#showGIFs" VBox.vgrow="ALWAYS" />
                                 <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                                     <children>
                                         <Button fx:id="gifButton1" contentDisplay="GRAPHIC_ONLY" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" mnemonicParsing="false" prefWidth="30.0">
