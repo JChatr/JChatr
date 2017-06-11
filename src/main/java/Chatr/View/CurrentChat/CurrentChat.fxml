@@ -77,7 +77,7 @@
         </VBox>
         <TabPane fx:id="sidebar" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="315.0" scaleShape="false" tabClosingPolicy="UNAVAILABLE" tabMaxHeight="100.0" tabMaxWidth="100.0" HBox.hgrow="NEVER">
             <tabs>
-                <Tab text="EMOJI">
+                <Tab fx:id="emojiTab" text="EMOJI">
                     <content>
                         <VBox>
                             <children>
@@ -165,7 +165,7 @@
                         </VBox>
                     </content>
                 </Tab>
-                <Tab text="GIFS">
+                <Tab fx:id="gifTab" text="GIFS">
                     <content>
                         <VBox>
                             <children>
@@ -253,7 +253,7 @@
                         </VBox>
                     </content>
                 </Tab>
-                <Tab text="STICKER">
+                <Tab fx:id="stickerTab" text="STICKER">
                     <VBox>
                         <children>
                             <FlowPane fx:id="sticker" VBox.vgrow="ALWAYS" />

@@ -6,6 +6,8 @@ import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -28,6 +30,13 @@ public class CurrentChatController extends Loader {
 	private TabPane sidebar;
 	@FXML
 	private VBox chatBox;
+	@FXML
+	private Tab gifTab;
+	@FXML
+	private Tab emojiTab;
+	@FXML
+	private Tab stickerTab;
+
 
 	private String chatID;
 	private boolean sidebarVisible;
@@ -57,6 +66,24 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
+
+		sidebar.getSelectionModel().selectedItemProperty().addListener(
+				new ChangeListener<Tab>() {
+					@Override
+					public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
+						if(newValue.getId().equals("gifTab")){
+							System.out.println("Gif Tab was selected!");
+						}
+					}
+				}
+
+
+		);
+
+	}
+
+
+	private void showGIFs(String searchString){
 
 	}
 
