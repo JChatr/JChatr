@@ -3,6 +3,7 @@ package Chatr.View.ChatList;
 import Chatr.Controller.Manager;
 import Chatr.Model.Chat;
 import Chatr.View.ChatList.ChatCell.ChatCell;
+import Chatr.View.ChatList.NewChat.NewChatController;
 import Chatr.View.CurrentChat.CurrentChatController;
 import Chatr.View.Loader;
 import com.jfoenix.controls.JFXButton;
@@ -12,15 +13,17 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChatListController extends Loader {
+
+	@FXML
+	private SplitPane parent;
 	@FXML
 	private JFXButton newChat;
-	@FXML
-	private Button searchButton;
 	@FXML
 	private Label userName;
 	@FXML
@@ -62,6 +65,13 @@ public class ChatListController extends Loader {
 	private void linkUpdateProperties() {
 		userName.textProperty().bind(Manager.getLocalUserName());
 		Bindings.bindContent(chatsList.getItems(), Manager.getUserChats());
+	}
+
+	@FXML
+	private void onNewChatButtonClick() {
+		AnchorPane parent = (AnchorPane) this.parent.getParent();
+		NewChatController ncc = new NewChatController(parent);
+		parent.getChildren().add(ncc.getView());
 	}
 
 	/**

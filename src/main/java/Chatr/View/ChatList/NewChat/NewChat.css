@@ -1,0 +1,9 @@
+#transparent-bg {
+    -fx-background-color: black;
+    -fx-opacity: 0.25;
+}
+
+#white-bg {
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+}
