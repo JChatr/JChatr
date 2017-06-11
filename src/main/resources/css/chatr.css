@@ -4,6 +4,8 @@
     -fx-accent: #419fd9;
     -fx-background-hover: #f1f1f1;
     -fx-white: #fff;
+    -fx-light-grey: #d4d4d4;
+    -fx-grey: #c2c2c2;
 }
 
 *:focused, *:selected {
