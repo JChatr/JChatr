@@ -38,7 +38,7 @@ public class Login {
 		if(!HashGen.checkPW(password, user.getPassword())){
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
-			throw new PasswordException(errorMessage);
+			throw new UserIDException(errorMessage);
 		}
 		log.info("logged in user", userID);
 		return user;
