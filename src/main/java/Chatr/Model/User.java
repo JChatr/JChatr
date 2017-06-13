@@ -46,7 +46,7 @@ public class User {
 	}
 
 	public User setPassword(String password) {
-		this.password = HashGen.hashPW(password);
+		this.password = password;
 		return this;
 	}
 

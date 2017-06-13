@@ -8,6 +8,7 @@ import Chatr.Model.ErrorMessagesValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,7 +30,12 @@ public class Login {
 	public static User loginUser(String userID, String password) {
 		validateUser(userID, password);
 		User user = Connection.readUser(userID);
-		if (user == null) {
+		if (user == null ) {
+			String errorMessage = "UserID or password invalid";
+			log.error(errorMessage);
+			throw new UserIDException(errorMessage);
+		}
+		if(!HashGen.checkPW(password, user.getPassword())){
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
