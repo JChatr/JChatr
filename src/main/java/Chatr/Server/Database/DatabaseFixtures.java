@@ -1,5 +1,6 @@
 package Chatr.Server.Database;
 
+import Chatr.Helper.HashGen;
 import Chatr.Model.Message;
 import Chatr.Model.User;
 
@@ -55,10 +56,14 @@ class DatabaseFixtures {
 	private static void userSet2(Database db) throws InterruptedException {
 		Set<String> uIDs = new HashSet<>();
 		LinkedList<Message> messages = new LinkedList<>();
-		User u1 = new User("@bJohnson");
-		User u2 = new User("@aMerkel");
-		u2.setEmail("kasanloe@web.de");
-		u1.setEmail("wrong@email.test");
+		User u1 = new User("@bJohnson")
+				.setUserName("Boris Johnson")
+				.setEmail("b@johnson.co.uk")
+				.setPassword(HashGen.hashPW("godSaveTheQueen"));
+		User u2 = new User("@aMerkel")
+				.setUserName("Angela Merkel")
+				.setEmail("kasanloe@web.de")
+				.setPassword(HashGen.hashPW("42IsNotTheSolution"));
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
@@ -106,9 +111,10 @@ class DatabaseFixtures {
 
 
 	private static User addMaroko() {
-		User maroko96 = new User("@maroko96");
-		maroko96.setUserName("Matthias");
-		maroko96.setEmail("maroko96@web.de");
+		User maroko96 = new User("@maroko96")
+				.setUserName("Matthias Koch")
+				.setEmail("maroko96@web.de")
+				.setPassword(HashGen.hashPW("12345"));
 		return maroko96;
 	}
 }

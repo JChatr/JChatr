@@ -3,10 +3,9 @@ package Chatr.Helper;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
-import javafx.beans.property.ObjectProperty;
 import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
-
+import javafx.beans.property.ObjectProperty;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +16,8 @@ import java.util.List;
 public class JSONTransformer {
 	private static Gson parser = FxGson
 			.coreBuilder()
+			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
+			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
 			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(ObjectProperty.class))
 			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(ObjectProperty.class))
 			.create();

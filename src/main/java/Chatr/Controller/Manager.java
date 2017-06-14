@@ -13,9 +13,9 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import javafx.scene.image.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -85,8 +85,6 @@ public class Manager {
 		return resolveChatID(chatID).getMessages();
 	}
 
-
-
 	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
 			if (u.equals(new User(userID))) {
@@ -94,10 +92,10 @@ public class Manager {
 				return u.getImage();
 			}
 		}
-		return localUser.get().getImage();
+			return localUser.get().getImage();
 	}
 
-	public static void setCurrentChat(Chat chat) {
+		public static void setCurrentChat(Chat chat) {
 		currentChat.setValue(chat);
 	}
 
@@ -110,7 +108,7 @@ public class Manager {
 		currentChat = new SimpleObjectProperty<>();
 	}
 
-	protected static void startUpdateLoop() {
+	public static void startUpdateLoop() {
 		userChats.addListener((ListChangeListener<Chat>) c -> {
 			c.next();
 			c.getAddedSubList().forEach(chat ->

@@ -64,12 +64,10 @@ public class GIFCellController extends Loader {
                 HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
                 httpsConn.setRequestProperty("User-Agent", "Wget/1.9.1");
                 httpsConn.setRequestProperty("Accept", "image/gif");
-          //      gifImg = new Image(urlStr, Integer.parseInt(gifImage.getWidth()), Integer.parseInt(gifImage.getHeight()), false, true);
                 gifImg = new Image(httpsConn.getInputStream(), Integer.parseInt(gifImage.getWidth()), Integer.parseInt(gifImage.getHeight()), true, true);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            System.out.println(urlStr);
             gifObj.set(gifImg);
         });
 

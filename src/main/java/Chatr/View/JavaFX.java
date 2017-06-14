@@ -29,7 +29,11 @@ public class JavaFX extends Application {
 		primaryStage.show();
 	}
 
+	/**
+	 * Method initializes the Login GUI layout
+	 */
 	private void initializeLoginLayout() {
+		log.info(String.format("Initialize Login-Layout"));
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
 		scene.getStylesheets().addAll(
