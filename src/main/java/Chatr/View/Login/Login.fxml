@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import java.lang.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="parent" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
+<AnchorPane fx:id="parent" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
    <children>
       <GridPane id="pane" minHeight="500.0" minWidth="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <columnConstraints>
@@ -136,7 +144,7 @@
                   </HBox>
                   <VBox fx:id="signInLoginButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
+                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" onKeyPressed="#onLoginButtonClick" text="Login">
                            <VBox.margin>
                               <Insets left="148.0" />
                            </VBox.margin>

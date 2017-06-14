@@ -4,10 +4,15 @@ import Chatr.Controller.Manager;
 import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
+import at.mukprojects.giphy4j.*;
+import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
+import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import Chatr.View.CurrentChat.GIFCell.GIFCellController;
@@ -17,6 +22,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 import java.util.Set;
 import java.util.concurrent.Executors;
 
@@ -83,19 +91,28 @@ public class CurrentChatController extends Loader {
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if(newValue.getId().equals("gifTab")){
-						showGIFs("");
+						showGIFs("", 25,0);
 					}
 				});
 	}
 
-	public void showGIFs(String searchstring){
-		int limit = 25;
-		for (int i = 0; i < limit; i++) {
-			gifPane.getChildren().add(new ImageView(GIFCellController.getGIFs(searchstring, i).getValue()));
+
+	public void showGIFs(String searchstring, int limit, int offset){
+		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
+		for (int i = offset; i < limit; i++){
+			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
+			ImageView gifIV = new ImageView();
+			gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
+			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
+			gifIV.setOnMouseClicked(event -> System.out.printf("Klicked on a GIF"));
+			gifIV.setOnMouseClicked(event -> sendGIF());
+			gifPane.getChildren().add(gifIV);
+			gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage, i));
 		}
-
-
+		Button moreGif = new Button("more GIfs");
+		gifPane.getChildren().add(moreGif);
 	}
+
 
 	public void switchChat(String chatID) {
 		reset();
@@ -128,6 +145,10 @@ public class CurrentChatController extends Loader {
 		));
 	}
 
+	private void sendGIF(){
+
+	}
+
 	/**
 	 * Method to be executed when the send button is clicked
 	 */
@@ -149,7 +170,7 @@ public class CurrentChatController extends Loader {
 	private void onGIFButtonClick(){
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
-		showGIFs(gifSearch);
+		showGIFs(gifSearch, 25, 0);
 	}
 
 }

@@ -111,9 +111,10 @@ class DatabaseFixtures {
 
 
 	private static User addMaroko() {
-		User maroko96 = new User("@maroko96");
-		maroko96.setUserName("Matthias");
-		maroko96.setEmail("maroko96@web.de");
+		User maroko96 = new User("@maroko96")
+				.setUserName("Matthias Koch")
+				.setEmail("maroko96@web.de")
+				.setPassword(HashGen.hashPW("12345"));
 		return maroko96;
 	}
 }
