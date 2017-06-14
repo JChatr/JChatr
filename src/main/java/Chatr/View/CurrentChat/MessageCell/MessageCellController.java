@@ -40,7 +40,7 @@ class MessageCellController extends Loader {
 	private final static int MAX_WIDTH = 600;
 	private final static int MIN_WIDTH = 50;
 	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
-	private final static int MIN_HEIGHT = 40;
+	private  static int MIN_HEIGHT = 40;
 	private final static int WIDTH_PADDING = 20;
 
 	private static Logger log = LogManager.getLogger(MessageCellController.class);
@@ -53,16 +53,15 @@ class MessageCellController extends Loader {
 
 	public void setInfo(Message message) {
 		resetData();
-		userName.setText(message.getSender());
-		text.setText(message.getContent());
-		String time = DateFormatter.convertTimestamp(message.getTime());
-		timestamp.setText(time);
 		userThumbnail.setManaged(false);
+		userName.setText(message.getSender());
+		timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
 		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
 			userThumbnail.setManaged(true);
 			displayUserThumbnail(message.getSender());
 			alignLeft();
 		}
+		text.setText(message.getContent());
 	}
 
 	@Override
@@ -96,6 +95,7 @@ class MessageCellController extends Loader {
 		text.setId("text-left");
 		timestamp.setId("text-left");
 		userName.setId("text-left");
+		MIN_HEIGHT = 56;
 	}
 
 	/**
@@ -108,6 +108,7 @@ class MessageCellController extends Loader {
 		text.setId("text-right");
 		timestamp.setId("text-right");
 		userName.setId("text-right");
+		MIN_HEIGHT = 37;
 	}
 
 	private void addListeners() {
@@ -120,10 +121,10 @@ class MessageCellController extends Loader {
 			width += WIDTH_PADDING;
 			width = clamp(width, MIN_WIDTH, MAX_WIDTH);
 			text.setWrappingWidth(width);
-			double height = text.getLayoutBounds().getHeight();
-			height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
 			textBox.setPrefWidth(width);
 			textBox.setMaxWidth(width);
+			double height = text.getLayoutBounds().getHeight();
+			height = clamp(height, MIN_HEIGHT, MAX_HEIGHT);
 			parent.setPrefHeight(height);
 		});
 	}
