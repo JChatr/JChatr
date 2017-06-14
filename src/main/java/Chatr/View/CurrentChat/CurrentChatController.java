@@ -5,6 +5,8 @@ import Chatr.Model.Message;
 import Chatr.View.CurrentChat.GIFCell.GIFCellController;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
+import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
+import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -84,16 +86,24 @@ public class CurrentChatController extends Loader {
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if(newValue.getId().equals("gifTab")){
-						showGIFs("");
+						showGIFs("", 25,0);
 						}
 					});
                 }
 
-	public void showGIFs(String searchstring){
-		int limit = 25;
-			for (int i = 0; i < limit; i++) {
-				gifPane.getChildren().add(new ImageView(GIFCellController.getGIFs(searchstring, i).getValue()));
+	public void showGIFs(String searchstring, int limit, int offset){
+		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
+
+		for (int i = offset; i < limit; i++){
+				GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
+				ImageView gifIV = new ImageView();
+				gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
+				gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
+				gifPane.getChildren().add(gifIV);
+				gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage, i));
 			}
+
+
 	}
 
 	public void switchChat(String chatID) {
@@ -149,6 +159,6 @@ public class CurrentChatController extends Loader {
 	private void onGIFButtonClick(){
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
-		showGIFs(gifSearch);
+		showGIFs(gifSearch, 25, 0);
 	}
 }
