@@ -149,9 +149,9 @@ public class Manager {
 		});
 		UpdateService.schedule(users, users -> {
 			Set<User> user = connection.readUsers();
-			user.forEach(readUser -> {
-				if (!users.contains(readUser)) {
-					users.add(readUser);
+			user.forEach(readUserLogin -> {
+				if (!users.contains(readUserLogin)) {
+					users.add(readUserLogin);
 				}
 			});
 			return users;

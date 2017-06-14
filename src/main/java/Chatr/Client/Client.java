@@ -45,19 +45,28 @@ public final class Client {
 				@Override
 				public void onMessage(String s) {
 					Transmission tin = JSONTransformer.fromJSON(s, Transmission.class);
-
+					log.info("Message received: "+ tin.toString());
 					switch (tin.getRequestType()) {
 						case MESSAGE:
 							switch(tin.getCRUD()){
-								case CREATE:
-									for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-										l.notify(new ConnectionEvent(this,tin));
+								case CREATE:{
+									Manager.userChats.forEach(chat->{
+										if(chat.getID().get().equals(tin.getConversationID())){
+											chat.addMessage(tin.getMessage());
+										}
+									});
+								}
 									break;
 								case READ:
 									for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
 										l.notify(new ConnectionEvent(this,tin));
 									break;
+								case UPDATE:
 							}
+							break;
+						case CONNECT:
+							for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
+								l.notify(new ConnectionEvent(this,tin));
 							break;
 						case CONVERSATION:
 							switch (tin.getCRUD()) {
@@ -65,8 +74,6 @@ public final class Client {
 									//request.setConversationID(ID).setUserIDs((Set<String>) data);
 									break;
 								case READ:
-									for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-										l.notify(new ConnectionEvent(this,tin));
 									break;
 								case UPDATE:
 									//request.setConversationID(ID).setUserIDs((Set<String>) data);
@@ -76,7 +83,7 @@ public final class Client {
 									break;
 							}
 							break;
-						case USER:
+						case LOGIN:
 								for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
 									l.notify(new ConnectionEvent(this,tin));
 							break;
@@ -100,6 +107,8 @@ public final class Client {
 			};
 
 			socketClient= webSocketClient;
+
+
 			socketClient.connect();
 		}
 

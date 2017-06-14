@@ -1,18 +1,12 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
-import Chatr.Controller.Manager;
-import Chatr.Helper.CONFIG;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.net.URI;
 import java.util.*;
 
 import static org.junit.Assert.*;
@@ -169,8 +163,8 @@ public class ConnectionTest {
 
 	@Test
 	public void readNewMessagesValid() {
-		User u1 = Connection.readUser("@aMerkel"),
-				u2 = Connection.readUser("@dTrump");
+		User u1 = Connection.readUserLogin("@aMerkel"),
+				u2 = Connection.readUserLogin("@dTrump");
 		Chat c = Chat.newConversation(u1, new User("readNewMessagesValid"));
 		List<Message> messages = new ArrayList<>();
 		Message m1 = null, m2 = null, m3 = null, m4 = null, m5 = null;
@@ -214,16 +208,16 @@ public class ConnectionTest {
 
 	@Test
 	public void createUser() {
-		User u3 = new User("@createUser");
-		boolean created = Connection.createUser(u3.getUserID(), u3);
+		User u3 = new User("@createUserLogin");
+		boolean created = Connection.createUserLogin(u3.getUserID(), u3);
 		assertTrue(created);
 	}
 
 	@Test
 	public void readUser() {
 		User u3 = new User("93049q34522332");
-		Connection.createUser(u3.getUserID(), u3);
-		assertEquals(u3, Connection.readUser(u3.getUserID()));
+		Connection.createUserLogin(u3.getUserID(), u3);
+		assertEquals(u3, Connection.readUserLogin(u3.getUserID()));
 	}
 
 	@Test
@@ -237,13 +231,13 @@ public class ConnectionTest {
 		User u9 = new User("oe4u5we4u5w4o5");
 
 
-		Connection.createUser(u3.getUserID(), u3);
-		Connection.createUser(u4.getUserID(), u4);
-		Connection.createUser(u5.getUserID(), u5);
-		Connection.createUser(u6.getUserID(), u6);
-		Connection.createUser(u7.getUserID(), u7);
-		Connection.createUser(u8.getUserID(), u8);
-		Connection.createUser(u9.getUserID(), u9);
+		Connection.createUserLogin(u3.getUserID(), u3);
+		Connection.createUserLogin(u4.getUserID(), u4);
+		Connection.createUserLogin(u5.getUserID(), u5);
+		Connection.createUserLogin(u6.getUserID(), u6);
+		Connection.createUserLogin(u7.getUserID(), u7);
+		Connection.createUserLogin(u8.getUserID(), u8);
+		Connection.createUserLogin(u9.getUserID(), u9);
 
 		assertTrue(Connection.readUsers().contains(u3));
 		assertTrue(Connection.readUsers().contains(u4));
@@ -257,7 +251,7 @@ public class ConnectionTest {
 	@Test
 	public void updateUserValid() {
 		User u3 = new User("sekfjselöfs");
-		Connection.createUser(u3.getUserID(), u3);
+		Connection.createUserLogin(u3.getUserID(), u3);
 		u3.setUserName("Donald Trump");
 		boolean updated = Connection.updateUser(u3.getUserID(), u3);
 		assertTrue(updated);
@@ -274,7 +268,7 @@ public class ConnectionTest {
 	@Test
 	public void deleteUserValid() {
 		User u3 = new User("sekfjselöfs");
-		boolean created = Connection.createUser(u3.getUserID(), u3);
+		boolean created = Connection.createUserLogin(u3.getUserID(), u3);
 		boolean deleted = Connection.deleteUser(u3.getUserID());
 		assertTrue(created && deleted);
 	}

@@ -1,27 +1,29 @@
 package Chatr.Server;
 
-import Chatr.Helper.CONFIG;
+import Chatr.Controller.Login;
+import Chatr.Helper.Enums.Request;
 import Chatr.Helper.JSONTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.WebSocket;
 import org.java_websocket.WebSocketImpl;
-import org.java_websocket.framing.Framedata;
 import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
-import sun.plugin2.message.Message;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.*;
 import java.util.Collection;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Multithreaded server, spawns a new Thread for every connection
  */
 public class Server extends WebSocketServer{
 
+	private Map<String, InetSocketAddress> socketIDLink= new ConcurrentHashMap<>();
 	public static Logger log = LogManager.getLogger(Server.class);
 
 	public Server(int port) throws UnknownHostException{
@@ -38,21 +40,28 @@ public class Server extends WebSocketServer{
 	@Override
 	public void onClose(WebSocket webSocket, int i, String s, boolean b) {
 		log.info("Connection closed: "+ webSocket.getResourceDescriptor());
+
+		socketIDLink.entrySet().removeIf(
+				entry-> entry.getValue().equals(webSocket.getRemoteSocketAddress()));
 	}
 
 	@Override
 	public void onMessage(WebSocket webSocket, String s) {
 
-
-
 		Transmission request = JSONTransformer.fromJSON(s, Transmission.class);
-
-		log.info("Transmission recived: " +request.toString());
-		MessageHandler handler = new MessageHandler(request);
-
-		Transmission response= handler.process();
-
-		webSocket.send(JSONTransformer.toJSON(response));
+		log.info("Transmission received: "+ request.toString());
+		if(request.getRequestType()== Request.CONNECT) {
+			socketIDLink.put(request.getLocalUserID(), webSocket.getRemoteSocketAddress());
+			handleRequest(request);
+		}
+		else if(request.getRequestType()==Request.LOGIN){
+			HandlerFactory.LoginHandler handler= (HandlerFactory.LoginHandler) HandlerFactory.getInstance(request.getRequestType());
+			Transmission response =handler.processTransmission(request);
+			webSocket.send(JSONTransformer.toJSON(response));
+		}
+		else{
+			handleRequest(request);
+		}
 
 	}
 
@@ -69,10 +78,12 @@ public class Server extends WebSocketServer{
 	}
 
 
+
+
 	static public void main(String args[]){
 
 		try {
-			WebSocketImpl.DEBUG = true;
+			WebSocketImpl.DEBUG = false;
 
 			int port = 3456;
 
@@ -95,14 +106,22 @@ public class Server extends WebSocketServer{
 		}
 	}
 
-	void sendToAll(String s){
+	public void sendToUsers(Collection<Transmission> responses){
 
-		Collection<WebSocket> con = connections();
-		synchronized ( con ) {
-			for( WebSocket c : con ) {
-				c.send( s );
+		responses.forEach(response ->  {
+			InetSocketAddress socketAddress = socketIDLink.get(response.getLocalUserID());
+			Collection<WebSocket> cons = this.connections();
+			for(WebSocket ws: cons){
+				if(ws.getRemoteSocketAddress().equals(socketAddress))
+					ws.send(JSONTransformer.toJSON(response));
 			}
-		}
 
+		});
+	}
+
+	private void handleRequest(Transmission request){
+		Handler handler = HandlerFactory.getInstance(request.getRequestType());
+		Collection<Transmission> response= handler.process(request);
+		sendToUsers(response);
 	}
 }

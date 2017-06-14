@@ -2,6 +2,8 @@ package Chatr.Server;
 
 import Chatr.Server.Database.Database;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -11,7 +13,7 @@ public abstract class Handler {
     protected Database database;
 
     protected Transmission request;
-    protected List<Transmission> responses;
+    protected List<Transmission> responses= new LinkedList<>();
 
     protected String senderID;
 
@@ -20,6 +22,6 @@ public abstract class Handler {
         this.database =Database.getCachedDatabase();
     }
 
-    protected abstract void process(Transmission request);
+    protected abstract Collection<Transmission> process(Transmission request);
 
 }

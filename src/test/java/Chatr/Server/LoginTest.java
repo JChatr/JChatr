@@ -41,17 +41,17 @@ public class LoginTest {
 		ByteArrayInputStream in = new ByteArrayInputStream(("abc\nabc\nabc\n@abc\n\n\n").getBytes());
 		setTerminalInput(in);
 		User userData = new User("@abc");
-		Connection.createUser("@abc", userData);
+		Connection.createUserLogin("@abc", userData);
 		Assert.assertEquals(userData, Login.registerUser("abc"));
 	}
     */
 
     /*
 	@Test
-	public void createUser() {
+	public void createUserLogin() {
 		String userID = "@dTrump";
 		User userData = new User(userID);
-		Connection.createUser(userID, userData);
+		Connection.createUserLogin(userID, userData);
 		Assert.assertEquals(userData, Login.registerUser(userID));
 	}
 
@@ -59,8 +59,8 @@ public class LoginTest {
 	public void readUserExistent() {
 		String userID = "@aMerkel";
 		User user = new User(userID);
-		Connection.createUser(userID, user);
-		assertEquals(Connection.readUser(userID), Login.registerUser(userID));
+		Connection.createUserLogin(userID, user);
+		assertEquals(Connection.readUserLogin(userID), Login.registerUser(userID));
 	}
 
 	@Test

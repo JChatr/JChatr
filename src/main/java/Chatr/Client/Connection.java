@@ -40,7 +40,7 @@ public final class Connection{
 	 * @return the users conversations
 	 */
 	public static Set<Chat> readAllConversations(String userID) {
-		Transmission request = build(CONVERSATION, READ, userID, null);
+		Transmission request = build(CONNECT, READ, userID, null);
 		TransmissionListener conversationListener= new TransmissionListener(Thread.currentThread());
 		client.addListener(conversationListener);
 		String json =JSONTransformer.toJSON(request);
@@ -119,8 +119,8 @@ public final class Connection{
 	 * @param userData the new Users data
 	 * @return if the operation was successful
 	 */
-	public static boolean createUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
+	public static boolean createUserLogin(String userID, User userData) {
+		Transmission request = build(LOGIN, CREATE, userID, userData);
 		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
@@ -132,8 +132,8 @@ public final class Connection{
 	 * @param userID ID of the User to fetch
 	 * @return User Object from the server
 	 */
-	public static User readUser(String userID) {
-		Transmission request = build(USER, READ, userID, null);
+	public static User readUserLogin(String userID) {
+		Transmission request = build(LOGIN, READ, userID, null);
 		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
 		client.addListener(userListener);
 		String json =JSONTransformer.toJSON(request);
@@ -232,6 +232,11 @@ public final class Connection{
 			case USERS:
 				request.setUserID(ID);
 				break;
+			case LOGIN:
+				request.setUserID(ID).setUser((User) data);
+				break;
+			case CONNECT:
+				request.setUserID(ID);
 		}
 		return request;
 	}

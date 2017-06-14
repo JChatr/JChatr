@@ -278,7 +278,7 @@ public class Database {
 	 * @param conversationID ID to search for
 	 * @return found users matching that conversationID
 	 */
-	private Set<User> findConversationUsers(String conversationID) {
+	public Set<User> findConversationUsers(String conversationID) {
 		Set<User> linkedUsers = new HashSet<>();
 		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
 			for (String conversation : link.getValue()) {

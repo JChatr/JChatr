@@ -1,8 +1,6 @@
 package Chatr.Controller;
 
-import Chatr.Client.Client;
 import Chatr.Client.Connection;
-import Chatr.Client.ConnectionEvent;
 import Chatr.Helper.HashGen;
 import Chatr.Model.Exceptions.*;
 import Chatr.Model.User;
@@ -23,7 +21,7 @@ public class Login{
 
 	public static User loginUser(String userID, String password) {
 		validateUser(userID, password);
-		User user = Connection.readUser(userID);
+		User user = Connection.readUserLogin(userID);
 		if (user == null) {
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
@@ -51,7 +49,7 @@ public class Login{
 		user.setUserName(userName);
 		user.setEmail(eMail);
 		user.setPassword(HashGen.hashPW(password));
-		Connection.createUser(userID, user);
+		Connection.createUserLogin(userID, user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
 		Manager.setLocalUser(user);
 		Manager.startUpdateLoop();
@@ -126,7 +124,7 @@ public class Login{
 	 */
 	private static boolean validateUniqueID(String userID) throws UserIDException {
 		User user;
-		if ((user = Connection.readUser(userID)) != null) {
+		if ((user = Connection.readUserLogin(userID)) != null) {
 			log.trace(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
 			String errorMessage = "UserId is already in use.";
 			log.error(errorMessage, userID);

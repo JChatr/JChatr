@@ -70,6 +70,10 @@ public class Chat {
 
 	}
 
+	public void addMessage(Message message){
+		messages.add(message);
+	}
+
 
 	public ObservableList<User> getMembers() {
 		return members.get();
