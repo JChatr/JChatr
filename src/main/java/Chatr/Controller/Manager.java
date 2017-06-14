@@ -15,8 +15,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.awt.image.BufferedImage;
+import javafx.scene.image.Image;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -86,26 +85,17 @@ public class Manager {
 		return resolveChatID(chatID).getMessages();
 	}
 
-	public static String getUserImagePath(String userID) {
+	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
 			if (u.equals(new User(userID))) {
-				return u.getPicturePath();
+				log.trace("(getUserImage) User found!" + u.getUserID());
+				return u.getImage();
 			}
 		}
-		return null;
+			return localUser.get().getImage();
 	}
 
-	public static BufferedImage getUserImage(String userID) {
-		for (User u : users) {
-			if (u.equals(new User(userID))) {
-				return u.getPicture();
-			}
-		}
-		return localUser.get().getPicture();
-	}
-
-
-	public static void setCurrentChat(Chat chat) {
+		public static void setCurrentChat(Chat chat) {
 		currentChat.setValue(chat);
 	}
 

@@ -10,6 +10,16 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
+import Chatr.View.CurrentChat.GIFCell.GIFCellController;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.FlowPane;
+import java.util.Set;
+import java.util.concurrent.Executors;
+
 
 public class CurrentChatController extends Loader {
 	@FXML
@@ -28,6 +38,19 @@ public class CurrentChatController extends Loader {
 	private TabPane sidebar;
 	@FXML
 	private VBox chatBox;
+	@FXML
+	private Tab gifTab;
+	@FXML
+	private Tab emojiTab;
+	@FXML
+	private Tab stickerTab;
+	@FXML
+	private FlowPane gifPane;
+	@FXML
+	private Button gifButton;
+	@FXML
+	private TextField gifText;
+
 
 	private String chatID;
 	private boolean sidebarVisible;
@@ -57,6 +80,20 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
+		sidebar.getSelectionModel().selectedItemProperty().addListener(
+				(observable, oldValue, newValue) -> {
+					if(newValue.getId().equals("gifTab")){
+						showGIFs("");
+					}
+				});
+	}
+
+	public void showGIFs(String searchstring){
+		int limit = 25;
+		for (int i = 0; i < limit; i++) {
+			gifPane.getChildren().add(new ImageView(GIFCellController.getGIFs(searchstring, i).getValue()));
+		}
+
 
 	}
 
@@ -108,4 +145,11 @@ public class CurrentChatController extends Loader {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
 	}
+	@FXML
+	private void onGIFButtonClick(){
+		gifPane.getChildren().clear();
+		String gifSearch = gifText.getText();
+		showGIFs(gifSearch);
+	}
+
 }
