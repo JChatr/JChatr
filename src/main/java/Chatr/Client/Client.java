@@ -7,6 +7,7 @@ import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Transmission;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
@@ -50,11 +51,13 @@ public final class Client {
 						case MESSAGE:
 							switch(tin.getCRUD()){
 								case CREATE:{
+									Platform.runLater(()->
 									Manager.userChats.forEach(chat->{
 										if(chat.getID().get().equals(tin.getConversationID())){
 											chat.addMessage(tin.getMessage());
 										}
-									});
+									})
+									);
 								}
 									break;
 								case READ:
