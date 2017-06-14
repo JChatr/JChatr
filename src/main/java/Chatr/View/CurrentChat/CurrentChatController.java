@@ -2,26 +2,14 @@ package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
 import Chatr.Model.Message;
-import Chatr.View.CurrentChat.GIFCell.GIFCellController;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
-import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
-import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-
-import java.util.Set;
-import java.util.concurrent.Executors;
 
 public class CurrentChatController extends Loader {
 	@FXML
@@ -40,19 +28,6 @@ public class CurrentChatController extends Loader {
 	private TabPane sidebar;
 	@FXML
 	private VBox chatBox;
-	@FXML
-	private Tab gifTab;
-	@FXML
-	private Tab emojiTab;
-	@FXML
-	private Tab stickerTab;
-	@FXML
-	private FlowPane gifPane;
-	@FXML
-	private Button gifButton;
-	@FXML
-	private TextField gifText;
-
 
 	private String chatID;
 	private boolean sidebarVisible;
@@ -82,27 +57,6 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
-
-		sidebar.getSelectionModel().selectedItemProperty().addListener(
-				(observable, oldValue, newValue) -> {
-					if(newValue.getId().equals("gifTab")){
-						showGIFs("", 25,0);
-						}
-					});
-                }
-
-	public void showGIFs(String searchstring, int limit, int offset){
-		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
-
-		for (int i = offset; i < limit; i++){
-				GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
-				ImageView gifIV = new ImageView();
-				gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
-				gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
-				gifPane.getChildren().add(gifIV);
-				gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage, i));
-			}
-
 
 	}
 
@@ -153,12 +107,5 @@ public class CurrentChatController extends Loader {
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
-	}
-
-	@FXML
-	private void onGIFButtonClick(){
-		gifPane.getChildren().clear();
-		String gifSearch = gifText.getText();
-		showGIFs(gifSearch, 25, 0);
 	}
 }

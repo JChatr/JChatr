@@ -117,3 +117,4 @@ class DatabaseFixtures {
 		return maroko96;
 	}
 }
+
