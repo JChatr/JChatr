@@ -1,0 +1,25 @@
+#pane{
+    -fx-background-color: #0084ff;
+    -fx-background-image: url("/img/background_wide.jpeg");
+    -fx-background-size: cover;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#elementBox{
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+}
+
+.errorLabels{
+    -fx-background-color: #d8474c;
+    -fx-background-radius: 3px;
+}
+
+.buttomMessage{
+   -fx-background-color: #F5F5F5;
+    -fx-background-radius: 0px 0px 5px 5px;
+}
+.persistent-prompt:focused {
+    -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%) !important;
+}
