@@ -2,6 +2,7 @@ package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
 import Chatr.Model.Message;
+import Chatr.View.CurrentChat.GIFCell.GIFCellController;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
@@ -9,26 +10,20 @@ import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
+import javafx.geometry.Orientation;
 import javafx.scene.Node;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
-import Chatr.View.CurrentChat.GIFCell.GIFCellController;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
-import javafx.stage.Stage;
-
-import java.io.IOException;
-import java.util.Set;
-import java.util.concurrent.Executors;
+import javafx.scene.layout.VBox;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 public class CurrentChatController extends Loader {
+	private static Logger log = LogManager.getLogger(GIFCellController.class);
+
+
 	@FXML
 	private ListView<Message> currentMessages;
 	@FXML
@@ -71,6 +66,8 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
+		gifPane.setVgap(3);
+		gifPane.setPrefWrapLength(gifPane.getWidth());
 	}
 
 	private void addListeners() {
@@ -100,17 +97,22 @@ public class CurrentChatController extends Loader {
 
 	public void showGIFs(String searchstring, int limit, int offset){
 		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
-		for (int i = offset; i < limit; i++){
+		for (int i = 0; i < limit; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
 			gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
-			gifIV.setOnMouseClicked(event -> System.out.printf("Klicked on a GIF"));
-			gifIV.setOnMouseClicked(event -> sendGIF());
+			gifIV.setId(gifFeed.getDataList().get(i).getId());
+			gifIV.setOnMouseClicked(event -> sendGIF(gifIV));
 			gifPane.getChildren().add(gifIV);
-			gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage, i));
+			gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage));
 		}
+		ImageView sep = new ImageView("/icons/gifsep.png");
+		sep.setFitHeight(0);
+		sep.setFitWidth(gifPane.getWidth());
 		Button moreGif = new Button("more GIfs");
+		moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
+		gifPane.getChildren().add(sep);
 		gifPane.getChildren().add(moreGif);
 	}
 
@@ -146,7 +148,19 @@ public class CurrentChatController extends Loader {
 		));
 	}
 
-	private void sendGIF(){
+	private void moreGIFs(String searchstring, int limit, Object object){
+		if(limit<100){
+			limit = limit + 25;
+			gifPane.getChildren().remove(object);
+			showGIFs(searchstring, limit, (limit-25));
+		}else{
+			gifPane.getChildren().remove(object);
+		}
+	}
+
+	private void sendGIF(ImageView gifIV){
+		log.debug("sendGIF was pressed");
+		log.debug(gifIV.getId());
 
 	}
 

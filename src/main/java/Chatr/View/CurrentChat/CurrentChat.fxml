@@ -178,13 +178,10 @@
                                 </ScrollPane>
                                 <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                                     <children>
-                                        <TextField fx:id="gifText" minHeight="-Infinity" prefHeight="25.0">
+                                        <TextField fx:id="gifText" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="200.0">
                                  <HBox.margin>
-                                    <Insets left="5.0" right="5.0" />
-                                 </HBox.margin>
-                                 <padding>
-                                    <Insets left="25.0" right="25.0" />
-                                 </padding></TextField>
+                                    <Insets />
+                                 </HBox.margin></TextField>
                                         <Button fx:id="gifButton" alignment="BOTTOM_RIGHT" contentDisplay="CENTER" graphicTextGap="0.0" mnemonicParsing="false" onAction="#onGIFButtonClick" text="Search" textAlignment="CENTER">
                                  <HBox.margin>
                                     <Insets left="5.0" right="5.0" />
