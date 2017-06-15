@@ -1,6 +1,5 @@
 package Chatr.View.CurrentChat.GIFCell;
 
-import Chatr.Helper.GiphyAPI;
 import Chatr.View.Loader;
 import at.mukprojects.giphy4j.Giphy;
 import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
@@ -21,12 +20,11 @@ public class GIFCellController extends Loader {
     private static Logger log = LogManager.getLogger(GIFCellController.class);
 
     public static SearchFeed getGIFUrl(String searchString, int limit, int offset) {
-        Giphy giphy = new GiphyAPI("dc6zaTOxFJmzC");
+        Giphy giphy = new Giphy("dc6zaTOxFJmzC");
         SearchFeed feed = null;
         try {
             if (searchString.isEmpty()) {
-               // feed = giphy.trend(limit, offset);
-                feed = giphy.trend();
+                    feed = giphy.trend();
             } else {
                 feed = giphy.search(searchString, limit, offset);
             }

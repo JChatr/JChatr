@@ -87,15 +87,15 @@ public class CurrentChatController extends Loader {
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if(newValue.getId().equals("gifTab")){
-						showGIFs("", 25,0);
-						}
-					});
-                }
+						showGIFs("", 25,0, false);
+					}
+		});
+	}
 
 
 
 
-	public void showGIFs(String searchstring, int limit, int offset){
+	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn){
 		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
 		for (int i = 0; i < limit; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
@@ -113,7 +113,9 @@ public class CurrentChatController extends Loader {
 		Button moreGif = new Button("more GIfs");
 		moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
 		gifPane.getChildren().add(sep);
-		gifPane.getChildren().add(moreGif);
+		if(moreBtn){
+			gifPane.getChildren().add(moreGif);
+		}
 	}
 
 
@@ -152,16 +154,14 @@ public class CurrentChatController extends Loader {
 		if(limit<100){
 			limit = limit + 25;
 			gifPane.getChildren().remove(object);
-			showGIFs(searchstring, limit, (limit-25));
+			showGIFs(searchstring, limit, (limit-25), true);
 		}else{
 			gifPane.getChildren().remove(object);
 		}
 	}
 
 	private void sendGIF(ImageView gifIV){
-		log.debug("sendGIF was pressed");
 		log.debug(gifIV.getId());
-
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class CurrentChatController extends Loader {
 	private void onGIFButtonClick(){
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
-		showGIFs(gifSearch, 25, 0);
+		showGIFs(gifSearch, 25, 0, true);
 	}
 
 }
