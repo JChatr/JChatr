@@ -44,6 +44,43 @@
 
 }
 
+.text-area{
+    -fx-background-color: -fx-white;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-effect: innershadow(gaussian, transparent, 0, 0, 0, 0);
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area .content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area:focused .content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
+.text-area:focused {
+    -fx-highlight-fill: #7ecfff;
+}
+
+.text-area .content {
+    -fx-padding: 10px;
+    -fx-text-fill: gray;
+    -fx-highlight-fill: #7ecfff;
+}
+
+#vBoxChatWindow, #hBoxPane{
+    -fx-background-color: -fx-white;
+}
+
+#chatInfoButton{
+    -fx-background-image: url("/icons/info.png");
+}
 /*.list-cell:filled:selected:focused, .list-cell:filled:selected {*/
 /*-fx-background-color: transparent;*/
 /*}*/

@@ -12,6 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+
 <SplitPane dividerPositions="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.ChatList.ChatListController">
     <items>
         <VBox minHeight="300.0" minWidth="300.0" prefWidth="300.0" SplitPane.resizableWithParent="false">

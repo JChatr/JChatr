@@ -41,7 +41,7 @@ public class LoginTest {
 		User ref = new User("@aMerkel")
 				.setUserName("Angela Merkel")
 				.setEmail("angela@merkel.de")
-				.setPassword(HashGen.hashMD5("42IsNotTheSolution"));
+				.setPassword(HashGen.hashMD5("12345"));
 		assertEquals(ref, l);
 	}
 

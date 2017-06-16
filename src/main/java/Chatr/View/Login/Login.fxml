@@ -26,14 +26,14 @@
                <children>
                   <Label alignment="CENTER" text="Log in to Chatr!">
                      <VBox.margin>
-                        <Insets bottom="20.0" left="110.0" top="20.0" />
+                        <Insets bottom="20.0" left="101.0" top="20.0" />
                      </VBox.margin>
                      <font>
                         <Font size="29.0" />
                      </font></Label>
-                  <Label fx:id="userIdLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="userIdLabel" alignment="CENTER" prefHeight="23.0" prefWidth="215.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <VBox.margin>
-                        <Insets left="98.0" top="30.0" />
+                        <Insets left="100.0" />
                      </VBox.margin>
                      <padding>
                         <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
@@ -41,12 +41,12 @@
                   </Label>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/icons/user_all_black.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="userId" promptText="\@UserId" styleClass="persistent-prompt">
+                        <TextField fx:id="userId" maxHeight="30.0" maxWidth="165.0" promptText="\@UserId" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -59,22 +59,22 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="usernameLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="JUSTIFY" textFill="WHITE">
+                  <Label fx:id="usernameLabel" alignment="CENTER" prefHeight="23.0" prefWidth="215.0" styleClass="errorLabels" textAlignment="JUSTIFY" textFill="WHITE">
                      <padding>
                         <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                      </padding>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="98.0" />
+                        <Insets bottom="10.0" left="100.0" />
                      </VBox.margin>
                   </Label>
                   <HBox fx:id="userNameBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/icons/user_outlines.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="username" promptText="username" styleClass="persistent-prompt">
+                        <TextField fx:id="username" maxHeight="30.0" maxWidth="165.0" promptText="username" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -84,22 +84,22 @@
                         <Insets bottom="10.0" />
                      </VBox.margin>
                   </HBox>
-                  <Label fx:id="eMailLabel" alignment="CENTER" prefHeight="23.0" prefWidth="219.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE">
+                  <Label fx:id="eMailLabel" alignment="CENTER" prefHeight="23.0" prefWidth="215.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE">
                      <padding>
                         <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                      </padding>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="98.0" />
+                        <Insets bottom="10.0" left="100.0" />
                      </VBox.margin>
                   </Label>
                   <HBox fx:id="eMailBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/icons/Mail.png" />
                            </image>
                         </ImageView>
-                        <TextField fx:id="eMail" promptText="Email adress" styleClass="persistent-prompt">
+                        <TextField fx:id="eMail" maxHeight="30.0" maxWidth="165.0" promptText="Email adress" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -109,22 +109,22 @@
                         <Insets bottom="10.0" />
                      </padding>
                   </HBox>
-                  <Label fx:id="passwordLabel" alignment="CENTER" prefWidth="219.0" styleClass="errorLabels" text="absixubasiulgiuasbxlusgduzlsgdczusuzfdgyskzdcvy sdcbyszdvc+" textAlignment="CENTER" textFill="WHITE" wrapText="true">
+                  <Label fx:id="passwordLabel" alignment="CENTER" prefHeight="23.0" prefWidth="215.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <padding>
                         <Insets bottom="5.0" left="8.0" right="8.0" top="5.0" />
                      </padding>
                      <VBox.margin>
-                        <Insets bottom="10.0" left="98.0" />
+                        <Insets bottom="10.0" left="100.0" />
                      </VBox.margin>
                   </Label>
                   <HBox fx:id="passwordHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0">
                      <children>
-                        <ImageView fitHeight="29.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+                        <ImageView fitHeight="30.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                            <image>
                               <Image url="@/icons/Lock.png" />
                            </image>
                         </ImageView>
-                        <PasswordField fx:id="password" promptText="Password" styleClass="persistent-prompt">
+                        <PasswordField fx:id="password" maxHeight="30.0" maxWidth="165.0" promptText="Password" styleClass="persistent-prompt">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
@@ -136,9 +136,9 @@
                   </HBox>
                   <VBox fx:id="signInLoginButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
+                        <Button fx:id="loginButton" maxWidth="165.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
                            <VBox.margin>
-                              <Insets left="148.0" />
+                              <Insets left="150.0" />
                            </VBox.margin>
                         </Button>
                         <HBox onMouseClicked="#onSignInButtonClick" prefHeight="100.0" prefWidth="200.0" styleClass="buttomMessage">

@@ -17,9 +17,10 @@
 }
 
 .buttomMessage{
-   -fx-background-color: #F5F5F5;
+    -fx-background-color: #F5F5F5;
     -fx-background-radius: 0px 0px 5px 5px;
 }
 .persistent-prompt:focused {
     -fx-prompt-text-fill: derive(-fx-control-inner-background,-30%) !important;
 }
+
