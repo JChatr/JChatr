@@ -36,7 +36,7 @@ public class LoginTest {
 
 	@Test
 	public void loginValidUser() {
-		User l = Login.loginUser("@aMerkel", "42IsNotTheSolution");
+		User l = Login.loginUser("@aMerkel", "12345");
 		System.out.println("login merkel");
 		User ref = new User("@aMerkel")
 				.setUserName("Angela Merkel")
