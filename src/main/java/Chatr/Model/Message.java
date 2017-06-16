@@ -1,11 +1,14 @@
 package Chatr.Model;
 
+import Chatr.Helper.Enums.ContentType;
+
 import java.util.Objects;
 
 public class Message {
 	private String sender;
 	private String content;
 	private boolean isEmpty = false;
+	private ContentType contentType;
 	// timestamp is always guaranteed to be set
 	private final Long timestamp = System.currentTimeMillis();
 
@@ -13,10 +16,10 @@ public class Message {
 		isEmpty = true;
 	}
 
-	public Message(String sender, String content) {
+	public Message(String sender, String content, ContentType contentType) {
 		this.sender = sender;
-
 		this.content = content;
+		this.contentType = contentType;
 	}
 
 
@@ -34,6 +37,10 @@ public class Message {
 
 	public boolean isEmpty() {
 		return isEmpty;
+	}
+
+	public ContentType getContentType(){
+		return this.contentType;
 	}
 
 	// make debug printing easier

@@ -1,5 +1,6 @@
 package Chatr.Server.Database;
 
+import Chatr.Helper.Enums.ContentType;
 import Chatr.Helper.HashGen;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -42,9 +43,9 @@ class DatabaseFixtures {
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "hi there"));
+		db.addMessage(conID, new Message(u1.getUserID(), "hi there", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u2.getUserID(), "let's build a wall"));
+		db.addMessage(conID, new Message(u2.getUserID(), "let's build a wall", ContentType.TEXT));
 	}
 
 	/**
@@ -76,11 +77,11 @@ class DatabaseFixtures {
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all"));
+		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u2.getUserID(), "another random message"));
+		db.addMessage(conID, new Message(u2.getUserID(), "another random message", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!"));
+		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!", ContentType.TEXT));
 	}
 
 	/**
@@ -102,11 +103,11 @@ class DatabaseFixtures {
 		User u1 = db.readUser("@aMerkel");
 		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "hey there"));
+		db.addMessage(conID, new Message(u1.getUserID(), "hey there", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "whats up?"));
+		db.addMessage(conID, new Message(u1.getUserID(), "whats up?", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel"));
+		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel", ContentType.TEXT));
 	}
 
 

@@ -1,8 +1,9 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
+import Chatr.Helper.Enums.ContentType;
+import Chatr.Helper.GIFLoader;
 import Chatr.Model.Message;
-import Chatr.View.CurrentChat.GIFCell.GIFCellController;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
 import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
@@ -21,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 
 public class CurrentChatController extends Loader {
-	private static Logger log = LogManager.getLogger(GIFCellController.class);
+	private static Logger log = LogManager.getLogger(CurrentChatController.class);
 
 
 	@FXML
@@ -96,16 +97,16 @@ public class CurrentChatController extends Loader {
 
 
 	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn){
-		SearchFeed gifFeed = GIFCellController.getGIFUrl(searchstring, limit, offset);
+		SearchFeed gifFeed = GIFLoader.getGIFUrl(searchstring, limit, offset);
 		for (int i = 0; i < limit; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
 			gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
-			gifIV.setId(gifFeed.getDataList().get(i).getId());
-			gifIV.setOnMouseClicked(event -> sendGIF(gifIV));
+			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
+			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId()));
 			gifPane.getChildren().add(gifIV);
-			gifIV.imageProperty().bind(GIFCellController.loadGIF(gifImage));
+			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
 		ImageView sep = new ImageView("/icons/gifsep.png");
 		sep.setFitHeight(0);
@@ -160,8 +161,9 @@ public class CurrentChatController extends Loader {
 		}
 	}
 
-	private void sendGIF(ImageView gifIV){
-		log.debug(gifIV.getId());
+	private void sendGIF(String url){
+		Manager.addMessage(url, ContentType.GIF);
+		log.debug(url);
 	}
 
 	/**
@@ -171,7 +173,7 @@ public class CurrentChatController extends Loader {
 	private void onSendButtonClick() {
 		String userInput = textInput.getText();
 		if (!userInput.trim().isEmpty()) {
-			Manager.addMessage(userInput);
+			Manager.addMessage(userInput, ContentType.TEXT);
 			Platform.runLater(() -> textInput.clear());
 		}
 	}

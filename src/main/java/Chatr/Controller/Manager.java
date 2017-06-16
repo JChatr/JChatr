@@ -3,6 +3,7 @@ package Chatr.Controller;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.Enums.ContentType;
 import Chatr.Helper.UpdateService;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
@@ -45,8 +46,8 @@ public class Manager {
 		Executors.newSingleThreadExecutor().execute(new Server());
 	}
 
-	public static Message addMessage(String content) {
-		return currentChat.get().newMessage(content);
+	public static Message addMessage(String content, ContentType contentType) {
+		return currentChat.get().newMessage(content, contentType);
 	}
 
 	public static ObjectProperty<Chat> getCurrentChat() {
