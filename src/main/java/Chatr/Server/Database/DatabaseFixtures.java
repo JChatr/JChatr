@@ -82,6 +82,8 @@ class DatabaseFixtures {
 		db.addMessage(conID, new Message(u2.getUserID(), "another random message", ContentType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!", ContentType.TEXT));
+		Thread.sleep(2);
+		db.addMessage(conID, new Message(u3.getUserID(), "https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded", ContentType.GIF));
 	}
 
 	/**

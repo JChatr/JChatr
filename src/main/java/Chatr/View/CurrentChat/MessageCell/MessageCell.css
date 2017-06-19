@@ -16,3 +16,8 @@
     -fx-text-fill: #000000;
 }
 
+#text-background{
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #444444;
+}
+

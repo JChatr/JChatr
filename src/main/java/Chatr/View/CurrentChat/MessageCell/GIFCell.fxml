@@ -25,14 +25,6 @@
                 <RowConstraints maxHeight="-Infinity" minHeight="-Infinity" prefHeight="15.0" vgrow="NEVER" />
             </rowConstraints>
             <children>
-                <Pane id="background-right" fx:id="background" prefHeight="200.0" prefWidth="200.0" stylesheets="@MessageCell.css" GridPane.hgrow="ALWAYS" GridPane.rowSpan="3" GridPane.vgrow="ALWAYS">
-                    <GridPane.margin>
-                        <Insets />
-                    </GridPane.margin>
-                    <padding>
-                        <Insets top="5.0" />
-                    </padding>
-                </Pane>
                 <Label id="text-right" fx:id="userName" alignment="TOP_LEFT" minWidth="50.0" text="\@dTrump" textOverrun="CLIP">
                     <font>
                         <Font size="11.0" />
@@ -41,9 +33,9 @@
                         <Insets left="10.0" top="5.0" />
                     </GridPane.margin>
                 </Label>
-            <ImageView fx:id="gifIV" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <ImageView fx:id="gifIV" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.halignment="CENTER" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                <GridPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                  <Insets />
                </GridPane.margin>
             </ImageView>
                 <Label id="text-right" fx:id="timestamp" alignment="BASELINE_RIGHT" text="19:24" textAlignment="RIGHT" textOverrun="CLIP" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
@@ -51,7 +43,7 @@
                         <Font size="10.0" />
                     </font>
                     <GridPane.margin>
-                        <Insets bottom="3.0" right="10.0" />
+                        <Insets bottom="5.0" right="10.0" top="5.0" />
                     </GridPane.margin>
                 </Label>
             </children>

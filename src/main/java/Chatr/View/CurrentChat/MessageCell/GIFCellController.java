@@ -97,11 +97,9 @@ class GIFCellController extends Loader {
         spacer.toFront();
         userName.setVisible(true);
         userThumbnail.toBack();
-        background.setId("background-left");
         gifIV.setId("text-left");
-        timestamp.setId("text-left");
         userName.setId("text-left");
-        MIN_HEIGHT = 56;
+        timestamp.toFront();
     }
 
     /**
@@ -110,11 +108,9 @@ class GIFCellController extends Loader {
     private void alignRight() {
         spacer.toBack();
         userName.setVisible(false);
-        background.setId("background-right");
+        userThumbnail.toFront();
         gifIV.setId("text-right");
-        timestamp.setId("text-right");
         userName.setId("text-right");
-        MIN_HEIGHT = 37;
     }
 
     private void addListeners() {
@@ -122,19 +118,14 @@ class GIFCellController extends Loader {
         // gets called when the text is updated
         //see message cell
         gifIV.imageProperty().addListener(((observable, oldValue, newValue) -> {
-
-
-            /*gifBox.setMinWidth(gifIV.getFitWidth());
-            gifBox.setMinHeight(gifIV.getFitHeight());
-
-            gifBox.setPrefWidth(gifIV.getFitWidth());
-            gifBox.setPrefHeight(gifIV.getFitHeight());
-
-            gifBox.setMaxWidth(gifIV.getFitWidth());
-            gifBox.setMaxHeight(gifIV.getFitHeight());
-
-            parent.setPrefWidth(gifIV.getFitWidth());
-            parent.setPrefHeight(gifIV.getFitHeight());*/
+            double width = gifIV.getLayoutBounds().getWidth();
+            gifIV.setFitWidth(width);
+            gifBox.setPrefWidth(width);
+            gifBox.setMaxWidth(width);
+            double height = gifIV.getLayoutBounds().getHeight();
+            height += 15;
+            parent.setPrefHeight(height);
+            timestamp.setId("text-background");
         }));
     }
 
@@ -156,9 +147,4 @@ class GIFCellController extends Loader {
      * @param max   max output value
      * @return value clamped to the range
      */
-    private double clamp(double value, double min, double max) {
-        return Math.min(Math.max(value, min), max);
-    }
-
-
 }

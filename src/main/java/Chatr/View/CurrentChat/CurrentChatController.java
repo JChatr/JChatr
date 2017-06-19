@@ -206,7 +206,7 @@ public class CurrentChatController extends Loader {
 
 	private void sendGIF(String url){
 		Manager.addMessage(url, ContentType.GIF);
-		log.debug(url);
+		log.debug("GIF send: " + url);
 	}
 
 	/**
