@@ -171,14 +171,14 @@
                     <content>
                         <VBox>
                             <children>
-                                <ScrollPane hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                <ScrollPane fx:id="gifScroll" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
                                     <content>
                                         <FlowPane fx:id="gifPane" />
                                     </content>
                                 </ScrollPane>
                                 <HBox alignment="TOP_CENTER" VBox.vgrow="NEVER">
                                     <children>
-                                        <TextField fx:id="gifText" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="200.0">
+                                        <TextField fx:id="gifText" minHeight="-Infinity" minWidth="-Infinity" onAction="#onGIFButtonClick" prefHeight="25.0" prefWidth="200.0">
                                  <HBox.margin>
                                     <Insets />
                                  </HBox.margin></TextField>

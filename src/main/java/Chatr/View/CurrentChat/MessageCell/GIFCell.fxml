@@ -41,9 +41,9 @@
                         <Insets left="10.0" top="5.0" />
                     </GridPane.margin>
                 </Label>
-            <ImageView id="gifIV" fx:id="gifIV" nodeOrientation="INHERIT" pickOnBounds="true" preserveRatio="true" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
+            <ImageView fx:id="gifIV" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" GridPane.valignment="CENTER" GridPane.vgrow="ALWAYS">
                <GridPane.margin>
-                  <Insets left="10.0" right="10.0" />
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </GridPane.margin>
             </ImageView>
                 <Label id="text-right" fx:id="timestamp" alignment="BASELINE_RIGHT" text="19:24" textAlignment="RIGHT" textOverrun="CLIP" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
@@ -58,6 +58,9 @@
             <HBox.margin>
                 <Insets bottom="1.0" top="1.0" />
             </HBox.margin>
+         <padding>
+            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+         </padding>
         </GridPane>
         <ImageView fx:id="userThumbnail" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">
             <HBox.margin>

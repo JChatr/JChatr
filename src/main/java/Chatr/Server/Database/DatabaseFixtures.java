@@ -64,7 +64,7 @@ class DatabaseFixtures {
 		User u2 = new User("@aMerkel")
 				.setUserName("Angela Merkel")
 				.setEmail("kasanloe@web.de")
-				.setPassword(HashGen.hashPW("42IsNotTheSolution"));
+				.setPassword(HashGen.hashPW("12345"));
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());

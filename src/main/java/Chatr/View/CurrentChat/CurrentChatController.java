@@ -53,6 +53,8 @@ public class CurrentChatController extends Loader {
 	private Button gifButton;
 	@FXML
 	private TextField gifText;
+	@FXML
+	private ScrollPane gifScroll;
 
 
 	private String chatID;
@@ -67,7 +69,8 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
-		gifPane.setVgap(3);
+		gifPane.setVgap(2);
+		gifPane.setHgap(2);
 		gifPane.setPrefWrapLength(gifPane.getWidth());
 	}
 
@@ -98,10 +101,50 @@ public class CurrentChatController extends Loader {
 
 	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn){
 		SearchFeed gifFeed = GIFLoader.getGIFUrl(searchstring, limit, offset);
-		for (int i = 0; i < limit; i++){
+		log.trace("GIF feed size: " + gifFeed.getDataList().size() + " Limit: " + limit + " Offset: " + offset);
+		int feedSize = gifFeed.getDataList().size();
+		if(feedSize==0){
+			return;
+		}
+		int gifSize[] = new int[feedSize];
+		for(int i = 0; i < feedSize; i++){
+			gifSize[i] = Integer.valueOf(gifFeed.getDataList().get(i).getImages().getFixedHeightSmall().getWidth());
+		}
+		int maxSize = (int) gifScroll.getWidth();
+		int sizeSum = 0;
+		int indexSum = 0;
+		for(int i = 0; i < feedSize; i++){
+			maxSize -=  (2*gifPane.getHgap());
+			indexSum++;
+			sizeSum += gifSize[i];
+			if(sizeSum > maxSize){
+				int runter = sizeSum-maxSize;
+				int hoch = maxSize-(sizeSum-gifSize[i]);
+				if(hoch < runter){
+					sizeSum -= gifSize[i];
+					double scale = (double)sizeSum/maxSize;
+					i--;
+					indexSum--;
+					for(int u = 0; u < indexSum; u++){
+						gifSize[i-u] = (int) (gifSize[i-u]/scale);
+					}
+				}else{
+					double scale = (double)sizeSum/maxSize;
+					for(int u = 0; u < indexSum; u++){
+						gifSize[i-u] = (int) (gifSize[i-u]/scale);
+					}
+				}
+				indexSum = 0;
+				sizeSum = 0;
+				maxSize = (int) gifScroll.getWidth();
+			}
+		}
+
+		for (int i = 0; i < feedSize; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
-			gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
+			//gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
+			gifIV.setFitWidth(gifSize[i]);
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
 			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
 			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId()));
@@ -114,7 +157,7 @@ public class CurrentChatController extends Loader {
 		Button moreGif = new Button("more GIfs");
 		moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
 		gifPane.getChildren().add(sep);
-		if(moreBtn){
+		if(moreBtn || (feedSize%25==0)){
 			gifPane.getChildren().add(moreGif);
 		}
 	}

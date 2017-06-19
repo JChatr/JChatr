@@ -122,14 +122,19 @@ class GIFCellController extends Loader {
         // gets called when the text is updated
         //see message cell
         gifIV.imageProperty().addListener(((observable, oldValue, newValue) -> {
-            gifBox.setMinWidth(gifIV.getFitWidth());
+
+
+            /*gifBox.setMinWidth(gifIV.getFitWidth());
             gifBox.setMinHeight(gifIV.getFitHeight());
 
             gifBox.setPrefWidth(gifIV.getFitWidth());
             gifBox.setPrefHeight(gifIV.getFitHeight());
 
+            gifBox.setMaxWidth(gifIV.getFitWidth());
+            gifBox.setMaxHeight(gifIV.getFitHeight());
+
             parent.setPrefWidth(gifIV.getFitWidth());
-            parent.setPrefHeight(gifIV.getFitHeight());
+            parent.setPrefHeight(gifIV.getFitHeight());*/
         }));
     }
 
