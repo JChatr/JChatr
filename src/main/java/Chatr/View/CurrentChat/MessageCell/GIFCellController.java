@@ -52,6 +52,10 @@ class GIFCellController extends Loader {
         addListeners();
     }
 
+    /**
+     * Same as setInfo in MessageCellCOntroller
+     * @param message The message
+     */
     public void setInfo(Message message) {
         resetData();
         userThumbnail.setManaged(false);
@@ -81,6 +85,7 @@ class GIFCellController extends Loader {
         gifIV.imageProperty().unbind();
         gifIV.setImage(null);
         timestamp.setText("");
+        userName.setText("");
         alignRight();
         userThumbnail.imageProperty().unbind();
         userThumbnail.setImage(null);
@@ -98,8 +103,10 @@ class GIFCellController extends Loader {
         userName.setVisible(true);
         userThumbnail.toBack();
         gifIV.setId("text-left");
-        userName.setId("text-left");
+        userName.setId("name-background");
+        timestamp.setId("timestamp-background");
         timestamp.toFront();
+        userName.toFront();
     }
 
     /**
@@ -113,9 +120,11 @@ class GIFCellController extends Loader {
         userName.setId("text-right");
     }
 
+    /**
+     * adjusts cell size to match the image in the imageview
+     */
     private void addListeners() {
-        // adjusts cell size to match the text in the label
-        // gets called when the text is updated
+        // gets called when the image is updated
         //see message cell
         gifIV.imageProperty().addListener(((observable, oldValue, newValue) -> {
             double width = gifIV.getLayoutBounds().getWidth();
@@ -125,7 +134,6 @@ class GIFCellController extends Loader {
             double height = gifIV.getLayoutBounds().getHeight();
             height += 15;
             parent.setPrefHeight(height);
-            timestamp.setId("text-background");
         }));
     }
 
@@ -138,13 +146,4 @@ class GIFCellController extends Loader {
         userThumbnail.setImage(null);
         userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
     }
-
-    /**
-     * clamps a value to within the specified range
-     *
-     * @param value value to clamp
-     * @param min   min output value
-     * @param max   max output value
-     * @return value clamped to the range
-     */
 }

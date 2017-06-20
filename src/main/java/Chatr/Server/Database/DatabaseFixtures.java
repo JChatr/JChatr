@@ -105,11 +105,10 @@ class DatabaseFixtures {
 		User u1 = db.readUser("@aMerkel");
 		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "hey there", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "whats up?", ContentType.TEXT));
+		db.addMessage(conID, new Message(u1.getUserID(), "https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2", ContentType.GIF));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel", ContentType.TEXT));
+		db.addMessage(conID, new Message(u1.getUserID(), "Goot idea! We germans know hau to buld a Wall!", ContentType.TEXT));
 	}
 
 

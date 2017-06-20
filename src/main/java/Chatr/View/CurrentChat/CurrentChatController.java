@@ -88,17 +88,28 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
+		//Changes view when tabs are pressed
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
 					if(newValue.getId().equals("gifTab")){
 						showGIFs("", 25,0, false);
+					} else if(newValue.getId().equals("emojiTab")){
+						gifPane.getChildren().clear();
+					} else if(newValue.getId().equals("stickerTab")){
+						gifPane.getChildren().clear();
+					} else {
+						gifPane.getChildren().clear();
 					}
 		});
 	}
 
-
-
-
+	/**
+	 * Searches GIFs on giphy and displays them
+	 * @param searchstring Search gifs with this string, if empty diaplays trending gifs
+	 * @param limit Limits how many gifs are shown
+	 * @param offset Offset from the giflist
+	 * @param moreBtn Boolean if the more Gifs button shall be shown or not
+	 */
 	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn){
 		SearchFeed gifFeed = GIFLoader.getGIFUrl(searchstring, limit, offset);
 		log.trace("GIF feed size: " + gifFeed.getDataList().size() + " Limit: " + limit + " Offset: " + offset);
@@ -139,11 +150,9 @@ public class CurrentChatController extends Loader {
 				maxSize = (int) gifScroll.getWidth();
 			}
 		}
-
 		for (int i = 0; i < feedSize; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
-			//gifIV.setFitWidth(Double.parseDouble(gifImage.getWidth()));
 			gifIV.setFitWidth(gifSize[i]);
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
 			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
@@ -194,16 +203,26 @@ public class CurrentChatController extends Loader {
 		));
 	}
 
-	private void moreGIFs(String searchstring, int limit, Object object){
+	/**
+	 * Loads and displays more gifs
+	 * @param searchstring Search query for the gif search
+	 * @param limit Limit the returned gifs
+	 * @param button The more Gifs button
+	 */
+	private void moreGIFs(String searchstring, int limit, Object button){
 		if(limit<100){
 			limit = limit + 25;
-			gifPane.getChildren().remove(object);
+			gifPane.getChildren().remove(button);
 			showGIFs(searchstring, limit, (limit-25), true);
 		}else{
-			gifPane.getChildren().remove(object);
+			gifPane.getChildren().remove(button);
 		}
 	}
 
+	/**
+	 * Sends the gif to the chat
+	 * @param url Giphy url
+	 */
 	private void sendGIF(String url){
 		Manager.addMessage(url, ContentType.GIF);
 		log.debug("GIF send: " + url);
@@ -226,6 +245,10 @@ public class CurrentChatController extends Loader {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
 	}
+
+	/**
+	 * Method to be executed when the gif search button is clicked
+	 */
 	@FXML
 	private void onGIFButtonClick(){
 		gifPane.getChildren().clear();

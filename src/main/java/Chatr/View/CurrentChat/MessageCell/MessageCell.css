@@ -16,7 +16,12 @@
     -fx-text-fill: #000000;
 }
 
-#text-background{
+#name-background{
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #444444;
+}
+
+#timestamp-background{
     -fx-text-fill: #ffffff;
     -fx-background-color: #444444;
 }
