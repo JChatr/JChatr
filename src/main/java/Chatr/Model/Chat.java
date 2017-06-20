@@ -11,64 +11,64 @@ import javafx.collections.ObservableList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 public class Chat {
-
-	private StringProperty conversationID;
-	private StringProperty conversationName;
+	private StringProperty chatID;
+	private StringProperty chatName;
 	private ListProperty<User> members;
 	private ListProperty<Message> messages;
-	private String localUser;
-
+	private String localUserID;
 	private static Logger log = LogManager.getLogger(Chat.class);
 
-	private Chat(User localUser, User... otherUsers) {
-		initialize();
-		this.members.add(localUser);
+	private Chat(String chatName, User localUserID, Collection<User> otherUsers) {
+		initProperties();
+		this.members.add(localUserID);
 		this.members.addAll(otherUsers);
-		this.localUser = localUser.getUserID();
-		conversationID.set(HashGen.getID(false));
-		this.conversationName = conversationID;
-		Connection.createConversation(conversationID.get(), this.getMemberIDs());
+		this.localUserID = localUserID.getUserID();
+		chatID.set(HashGen.getID(false));
+		this.chatName.set(chatName);
+		Connection.createConversation(chatID.get(), this.getMemberIDs());
+		log.info("New Chat created " + this);
 	}
 
-	private Chat(String conversationID, String localUserID, Set<User> members, List<Message> messages) {
-		initialize();
+	private Chat(String chatName, String chatID, String localUserID, Set<User> members, List<Message> messages) {
+		initProperties();
 		this.members.addAll(members);
-		this.localUser = localUserID;
-		this.conversationID.set(conversationID);
-		this.conversationName = this.conversationID;
+		this.localUserID = localUserID;
+		this.chatID.set(chatID);
+		this.chatName.set(chatName);
 		this.messages.addAll(messages);
 	}
 
-	static public Chat newConversation(User localUser, User... otherUsers) {
-		return new Chat(localUser, otherUsers);
-	}
-
-	public static Chat preConfigServer(String conversationID, String localUserID,
-	                                   Set<User> members, List<Message> messages) {
-		return new Chat(conversationID, localUserID, members, messages);
-	}
-
-	private void initialize() {
-		this.conversationID = new SimpleStringProperty();
-		this.conversationName = new SimpleStringProperty();
+	private void initProperties() {
+		this.chatID = new SimpleStringProperty();
+		this.chatName = new SimpleStringProperty();
 		this.members = new SimpleListProperty<>(FXCollections.observableArrayList());
 		this.messages = new SimpleListProperty<>(FXCollections.observableArrayList());
 	}
 
-	public Message newMessage(String content) {
-		Message message = new Message(localUser, content);
-		messages.add(message);
-		Connection.addMessage(conversationID.get(), message);
-		return message;
+	public static Chat newChat(String chatName, User localUser, User... otherUsers) {
+		return new Chat(chatName, localUser, Arrays.asList(otherUsers));
 	}
 
+	public static Chat newChat(String chatName, User localUser, Collection<User> otherUsers) {
+		return new Chat(chatName, localUser, otherUsers);
+	}
+
+	public static Chat preConfigServer(String chatName, String chatID, String localUserID,
+	                                   Set<User> members, List<Message> messages) {
+		return new Chat(chatName, chatID, localUserID, members, messages);
+	}
+
+
+	public Message newMessage(String content) {
+		Message message = new Message(localUserID, content);
+		messages.add(message);
+		Connection.addMessage(chatID.get(), message);
+		return message;
+	}
 
 	public ObservableList<User> getMembers() {
 		return members.get();
@@ -82,54 +82,40 @@ public class Chat {
 
 	public void addMember(User member) {
 		members.add(member);
-		Connection.updateConversationUsers(conversationID.get(), getMemberIDs());
-
+		Connection.updateConversationUsers(chatID.get(), getMemberIDs());
 	}
 
-	public void setLocalUser(String userID) {
-		this.localUser = userID;
+	public Chat setLocalUserID(String userID) {
+		this.localUserID = userID;
+		return this;
 	}
 
 	public StringProperty getID() {
-		return this.conversationID;
+		return this.chatID;
 	}
 
 	public StringProperty getName() {
-		return this.conversationName;
+		return this.chatName;
 	}
 
 	public ObservableList<Message> getMessages() {
 		return this.messages;
 	}
 
-	/**
-	 * @return
-	 */
-//	public void update() {
-//		UpdateService.schedule(messages, m -> {
-//			int lastMessageIndex = messages.getSize() - 1;
-//			long newestMessageTime = messages.isEmpty() ?
-//					0 : messages.get(lastMessageIndex).getTime(); //Get timestamp
-//			final List<Message> newMessages = Connection.readNewMessages(conversationID.get(), newestMessageTime);
-////			m.addAll(newMessages);
-//			return newMessages;
-//		});
-//	}
-
 	@Override
 	public boolean equals(Object o) {
 		return o != null &&
 				getClass().equals(o.getClass()) &&
-				Objects.equals(conversationID.get(), o.toString());
+				Objects.equals(chatID.get(), o.toString());
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(conversationID.get());
+		return Objects.hash(chatID.get());
 	}
 
 	@Override
 	public String toString() {
-		return this.conversationID.get();
+		return this.chatID.get();
 	}
 }

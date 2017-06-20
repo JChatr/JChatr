@@ -76,23 +76,23 @@ public class MessageHandler {
 				case CONVERSATION:
 					switch (request.getCRUD()) {
 						case CREATE: {
-							boolean status = database.addConversation(request.getConversationID(),
+							boolean status = database.addChat(request.getConversationID(),
 									request.getUserIDs());
 							responses.add(request.reset().setStatus(status));
 							break;
 						}
 						case READ: {
-							Set<Chat> c = database.readUserConversations(request.getUserID());
+							Set<Chat> c = database.readAllChats(request.getUserID());
 							responses.add(request.reset().setChats(c));
 							break;
 						}
 						case UPDATE: {
-							boolean status = database.updateConversationUsers(request.getConversationID(), request.getUserIDs());
+							boolean status = database.updateChatUsers(request.getConversationID(), request.getUserIDs());
 							responses.add(request.reset().setStatus(status));
 							break;
 						}
 						case DELETE: {
-							boolean status = database.deleteConversation(request.getConversationID());
+							boolean status = database.deleteChat(request.getConversationID());
 							responses.add(request.reset().setStatus(status));
 							break;
 						}

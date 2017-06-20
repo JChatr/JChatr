@@ -104,7 +104,9 @@ public class Manager {
 		return localUser.get().getPicture();
 	}
 
-
+	public static ObjectProperty<User> getLocalUser() {
+		return localUser;
+	}
 	public static void setCurrentChat(Chat chat) {
 		currentChat.setValue(chat);
 	}

@@ -40,7 +40,7 @@ class DatabaseFixtures {
 		uIDs.add(u2.getUserID());
 		db.addUser(u1);
 		db.addUser(u2);
-		db.addConversation(conID, uIDs);
+		db.addChat(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "hi there"));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u2.getUserID(), "let's build a wall"));
@@ -69,7 +69,7 @@ class DatabaseFixtures {
 
 		db.addUser(u1);
 		db.addUser(u2);
-		db.addConversation(conID, uIDs);
+		db.addChat(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all"));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u2.getUserID(), "another random message"));
@@ -95,7 +95,7 @@ class DatabaseFixtures {
 		db.readUsers().forEach(u -> uIDs.add(u.getUserID()));
 		User u1 = db.readUser("@aMerkel");
 		String conID = "Financial POWER";
-		db.addConversation(conID, uIDs);
+		db.addChat(conID, uIDs);
 		db.addMessage(conID, new Message(u1.getUserID(), "hey there"));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u1.getUserID(), "whats up?"));

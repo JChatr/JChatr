@@ -1,10 +1,13 @@
 package Chatr.View.ChatList.NewChat;
 
 import Chatr.Controller.Manager;
+import Chatr.Model.Chat;
 import Chatr.Model.User;
 import Chatr.View.ChatList.NewChat.UserCellLarge.UserCellLarge;
+import Chatr.View.ChatList.NewChat.UserCellSmall.UserCellSmallController;
 import Chatr.View.Loader;
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXTextField;
 import com.sun.javafx.tk.Toolkit;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
@@ -23,6 +26,9 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.LinkedList;
+import java.util.List;
+
 public class NewChatController extends Loader {
 	@FXML
 	private GridPane parent;
@@ -38,6 +44,8 @@ public class NewChatController extends Loader {
 	private FlowPane selectedUsers;
 	@FXML
 	private Label memberCount;
+	@FXML
+	private JFXTextField chatNameField;
 
 	private AnchorPane parentNode;
 	private static Logger log = LogManager.getLogger(NewChatController.class);
@@ -63,12 +71,14 @@ public class NewChatController extends Loader {
 	private void linkProperties() {
 		namePanel.managedProperty().bind(namePanel.visibleProperty());
 		usersPanel.managedProperty().bind(usersPanel.visibleProperty());
-		Bindings.bindContent(users.itemsProperty().get(), Manager.getUsers());
+		Bindings.bindContent(users.itemsProperty().get(), Manager.getUsers().filtered(user ->
+				!user.equals(Manager.getLocalUser().get())
+		));
 	}
 
 	private void switchPanels(boolean forward) {
-		usersPanel.setVisible(forward);
-		namePanel.setVisible(!forward);
+		namePanel.setVisible(forward);
+		usersPanel.setVisible(!forward);
 	}
 
 	/**
@@ -89,9 +99,13 @@ public class NewChatController extends Loader {
 		users.getSelectionModel().getSelectedItems().addListener((ListChangeListener<User>) c -> {
 			selectedUsers.getChildren().clear();
 			ObservableList<User> items = users.getSelectionModel().getSelectedItems();
-			items.forEach(item -> {
-				selectedUsers.getChildren().add(new Label(item.toString()));
-			});
+			for (int i = 0; i < items.size(); i++) {
+				if (i >= 256) break;
+				User item = items.get(i);
+				final UserCellSmallController usc = new UserCellSmallController();
+				usc.setInfo(item);
+				selectedUsers.getChildren().add(usc.getView());
+			}
 			memberCount.setText(String.format("%d / 256", items.size()));
 		});
 	}
@@ -203,7 +217,9 @@ public class NewChatController extends Loader {
 
 	@FXML
 	private void onNextButtonClick() {
-		switchPanels(true);
+		ObservableList<User> users = this.users.getSelectionModel().getSelectedItems();
+		createChat(chatNameField.getText(), users);
+		onCancelButtonClick();
 	}
 
 	@FXML
@@ -218,6 +234,21 @@ public class NewChatController extends Loader {
 
 	@FXML
 	private void onCreateButtonClick() {
-		onCancelButtonClick();
+		ObservableList<User> users = this.users.getSelectionModel().getSelectedItems();
+		if (users.size() == 1) {
+			createChat(users.get(0).getUserName(), users);
+			onCancelButtonClick();
+		} else {
+			switchPanels(true);
+		}
+	}
+
+
+	private void createChat(String chatName, ObservableList<User> users) {
+		Chat chat = Chat.newChat(
+				chatName,
+				Manager.getLocalUser().get(),
+				users);
+		Manager.getUserChats().add(chat);
 	}
 }

@@ -45,7 +45,7 @@
                         <Image url="@/icons/default_user.png" />
                     </image>
                 </ImageView>
-                <JFXTextField promptText="Group Name" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                <JFXTextField fx:id="chatNameField" promptText="Group Name" GridPane.columnIndex="1" GridPane.columnSpan="2">
                     <GridPane.margin>
                         <Insets />
                     </GridPane.margin>
