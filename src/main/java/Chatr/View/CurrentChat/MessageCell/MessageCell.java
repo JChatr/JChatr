@@ -3,11 +3,13 @@ package Chatr.View.CurrentChat.MessageCell;
 import Chatr.Model.Message;
 import javafx.scene.control.ListCell;
 
+
 /**
  * renders the Message items in the current Chat box
  */
 public class MessageCell extends ListCell<Message> {
 	private MessageCellController mp = new MessageCellController();
+	private GIFCellController gifC = new GIFCellController();
 
 	@Override
 	protected void updateItem(Message item, boolean empty) {
@@ -17,7 +19,16 @@ public class MessageCell extends ListCell<Message> {
 			setGraphic(null);
 			return;
 		}
-		mp.setInfo(item);
-		setGraphic(mp.getView());
+		switch(item.getContentType()){
+			case TEXT:
+				mp.setInfo(item);
+				setGraphic(mp.getView());
+				break;
+			case GIF:
+				gifC.setInfo(item);
+				setGraphic(gifC.getView());
+				break;
+		}
+
 	}
 }

@@ -5,12 +5,10 @@ import Chatr.Helper.HashGen;
 import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.URL;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 
 /**
  * Class to save and edit user data.
@@ -22,7 +20,7 @@ public class User {
 	private String userName;
 	//private String userID = HashGen.getID(false);
 	private String userID;
-	private BufferedImage userPicture;
+	private ObjectProperty<Image> userImage;
 	private String email;
 	private Status status;
 	private String password;
@@ -61,30 +59,32 @@ public class User {
 	}
 
 
-	public BufferedImage getPicture() {
-		if (userPicture == null) {
-			String hash = HashGen.hashMD5(email);
-			try {
-				URL urlPic = new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404");
-				String content = urlPic.openConnection().getContentType();
-				//hash.equals Checks if empty string was hashed
-				if (content == null || hash.equals("d41d8cd98f00b204e9800998ecf8427e") || content.contains("text")) {
-					userPicture = ImageIO.read(getClass().getResource("/icons/default_user.png"));
-					log.trace("Local user picture was used for user " + userID);
-				} else {
-					userPicture = ImageIO.read(new URL("https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404"));
-					log.trace("Gravatar user picture was used for user " + userID);
+	/**
+	 * This method is used to load the user image from gravatar.
+	 * @return Returns user image if cached. If not, tries to load a gravatar image or returns a default image.
+	 */
+	public ObjectProperty<Image> getImage() {
+		if(userImage == null){
+			log.trace("UserImage is null");
+			userImage = new SimpleObjectProperty<>();
+			Executors.newSingleThreadExecutor().execute(() -> {
+				String hash = HashGen.hashMD5(email);
+				String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
+				if (hash.equals("d41d8cd98f00b204e9800998ecf8427e")) {
+					url = "/icons/default_user.png";
+					log.trace("Email hash is empty. URL = default image");
 				}
-
-			} catch (IOException e) {
-				log.error("Could not pull Gravatar or local picture, " + e);
-			}
+				Image img = new Image(url, 40, 40, true, false, false);
+				log.trace("Trying to load image from gravatar!");
+				if (img.isError()) {
+					log.debug("Error in image. Loading default image.");
+					img = new Image("/icons/default_user.png", 40, 40, true, false, false);
+				}
+				userImage.set(img);
+			});
 		}
-		return userPicture;
-	}
-
-	public String getPicturePath() {
-		return ("https://www.gravatar.com/avatar/" + HashGen.hashMD5(email) + ".jpg");
+		log.trace("userImage loaded for " + userID);
+		return userImage;
 	}
 
 	/**

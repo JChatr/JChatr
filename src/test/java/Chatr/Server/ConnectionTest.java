@@ -1,6 +1,7 @@
 package Chatr.Server;
 
 import Chatr.Client.Connection;
+import Chatr.Helper.Enums.ContentType;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -170,15 +171,15 @@ public class ConnectionTest {
 		List<Message> messages = new ArrayList<>();
 		Message m1 = null, m2 = null, m3 = null, m4 = null, m5 = null;
 		try {
-			m1 = new Message(u1.getUserID(), "test1");
+			m1 = new Message(u1.getUserID(), "test1", ContentType.TEXT);
 			Thread.sleep(2);
-			m2 = new Message(u1.getUserID(), "test1.5");
+			m2 = new Message(u1.getUserID(), "test1.5", ContentType.TEXT);
 			Thread.sleep(2);
-			m3 = new Message(u1.getUserID(), "test2");
+			m3 = new Message(u1.getUserID(), "test2", ContentType.TEXT);
 			Thread.sleep(2);
-			m4 = new Message(u2.getUserID(), "test3");
+			m4 = new Message(u2.getUserID(), "test3", ContentType.TEXT);
 			Thread.sleep(2);
-			m5 = new Message(u2.getUserID(), "test4");
+			m5 = new Message(u2.getUserID(), "test4", ContentType.TEXT);
 		} catch (InterruptedException e) {
 		}
 		messages.add(m3);
@@ -199,7 +200,7 @@ public class ConnectionTest {
 		User u1 = new User("addMessage"),
 				u2 = new User("addMessage2");
 		Chat c = Chat.newConversation(u1, u2);
-		Message m1 = new Message(u1.getUserID(), "testtesttesttesttesttesttesttesttesttest");
+		Message m1 = new Message(u1.getUserID(), "testtesttesttesttesttesttesttesttesttest", ContentType.TEXT);
 
 		Connection.createConversation(c.getID().get(), c.getMemberIDs());
 		boolean posted = Connection.addMessage(c.getID().get(), m1);

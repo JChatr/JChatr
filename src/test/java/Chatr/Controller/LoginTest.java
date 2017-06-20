@@ -36,12 +36,12 @@ public class LoginTest {
 
 	@Test
 	public void loginValidUser() {
-		User l = Login.loginUser("@aMerkel", "42IsNotTheSolution");
+		User l = Login.loginUser("@aMerkel", "12345");
 		System.out.println("login merkel");
 		User ref = new User("@aMerkel")
 				.setUserName("Angela Merkel")
-				.setEmail("angela@merkel.de")
-				.setPassword(HashGen.hashMD5("42IsNotTheSolution"));
+				.setEmail("kasanloe@web.de")
+				.setPassword(HashGen.hashMD5("12345"));
 		assertEquals(ref, l);
 	}
 

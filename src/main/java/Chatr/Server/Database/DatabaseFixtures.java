@@ -1,5 +1,6 @@
 package Chatr.Server.Database;
 
+import Chatr.Helper.Enums.ContentType;
 import Chatr.Helper.HashGen;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -42,9 +43,9 @@ class DatabaseFixtures {
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "hi there"));
+		db.addMessage(conID, new Message(u1.getUserID(), "hi there", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u2.getUserID(), "let's build a wall"));
+		db.addMessage(conID, new Message(u2.getUserID(), "let's build a wall", ContentType.TEXT));
 	}
 
 	/**
@@ -62,7 +63,7 @@ class DatabaseFixtures {
 				.setPassword(HashGen.hashPW("godSaveTheQueen"));
 		User u2 = new User("@aMerkel")
 				.setUserName("Angela Merkel")
-				.setEmail("angela@merkel.de")
+				.setEmail("kasanloe@web.de")
 				.setPassword(HashGen.hashPW("12345"));
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
@@ -76,11 +77,13 @@ class DatabaseFixtures {
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all"));
+		db.addMessage(conID, new Message(u1.getUserID(), "this is a random message with no content at all", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u2.getUserID(), "another random message"));
+		db.addMessage(conID, new Message(u2.getUserID(), "another random message", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!"));
+		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!", ContentType.TEXT));
+		Thread.sleep(2);
+		db.addMessage(conID, new Message(u3.getUserID(), "https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded", ContentType.GIF));
 	}
 
 	/**
@@ -102,18 +105,18 @@ class DatabaseFixtures {
 		User u1 = db.readUser("@aMerkel");
 		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
-		db.addMessage(conID, new Message(u1.getUserID(), "hey there"));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "whats up?"));
+		db.addMessage(conID, new Message(u1.getUserID(), "https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2", ContentType.GIF));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "I am posting as Angela Merkel"));
+		db.addMessage(conID, new Message(u1.getUserID(), "Goot idea! We germans know hau to buld a Wall!", ContentType.TEXT));
 	}
 
 
 	private static User addMaroko() {
-		User maroko96 = new User("@maroko96");
-		maroko96.setUserName("Matthias");
-		maroko96.setEmail("maroko96@web.de");
+		User maroko96 = new User("@maroko96")
+				.setUserName("Matthias Koch")
+				.setEmail("maroko96@web.de")
+				.setPassword(HashGen.hashPW("12345"));
 		return maroko96;
 	}
 }
