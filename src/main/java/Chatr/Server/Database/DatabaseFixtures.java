@@ -62,8 +62,8 @@ class DatabaseFixtures {
 				.setPassword(HashGen.hashPW("godSaveTheQueen"));
 		User u2 = new User("@aMerkel")
 				.setUserName("Angela Merkel")
-				.setEmail("angela@merkel.de")
-				.setPassword(HashGen.hashPW("42IsNotTheSolution"));
+				.setEmail("kasanloe@web.de")
+				.setPassword(HashGen.hashPW("schland"));
 		String conID = "6078090697890";
 		uIDs.add(u1.getUserID());
 		uIDs.add(u2.getUserID());
@@ -72,6 +72,10 @@ class DatabaseFixtures {
 		User u3 = addMaroko();
 		uIDs.add(u3.getUserID());
 		db.addUser(u3);
+
+		User u4= addHawk();
+		uIDs.add(u4.getUserID());
+		db.addUser(u4);
 
 		db.addUser(u1);
 		db.addUser(u2);
@@ -114,7 +118,17 @@ class DatabaseFixtures {
 		User maroko96 = new User("@maroko96");
 		maroko96.setUserName("Matthias");
 		maroko96.setEmail("maroko96@web.de");
+		maroko96.setPassword(HashGen.hashPW("password"));
 		return maroko96;
+	}
+
+	private static User addHawk() {
+		User hawk = new User("@herrhawk")
+				.setUserName("Simon Haag")
+				.setEmail("haagsimon@outlook.de")
+				.setPassword(HashGen.hashPW("123passwort"));
+		return hawk;
+
 	}
 }
 

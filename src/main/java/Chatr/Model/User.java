@@ -60,6 +60,8 @@ public class User {
 		return userName;
 	}
 
+	public String getEmail(){ return email;}
+
 
 	public BufferedImage getPicture() {
 		if (userPicture == null) {

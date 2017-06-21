@@ -3,6 +3,7 @@ package Chatr.Server;
 import Chatr.Helper.Enums.Request;
 import Chatr.Model.Chat;
 import Chatr.Model.User;
+import Chatr.Server.Database.Database;
 
 import java.util.Collection;
 import java.util.Set;
@@ -27,6 +28,10 @@ public class HandlerFactory {
                 return new UserHandler();
             }
 
+            case USERS:{
+                return new UserHandler();
+            }
+
             case CONNECT: {
                 return new ConnectHandler();
             }
@@ -47,20 +52,23 @@ public class HandlerFactory {
         @Override
         protected Collection<Transmission> process(Transmission request) {
 
-            Set<Chat> c = database.readUserConversations(request.getLocalUserID());
-            responses.add(request.setChats(c));
-            return responses;
+
+            Set<Chat> chats = super.database.readUserConversations(request.getLocalUserID());
+            super.responses.add(request.setChats(chats));
+
+            return super.responses;
         }
     }
 
     private static class MessageHandler extends Handler {
+
         @Override
         protected Collection<Transmission> process(Transmission request) {
-            senderID = request.getLocalUserID();
+            super.senderID = request.getLocalUserID();
             switch (request.getCRUD()) {
                 case CREATE: {
-                    database.updateMessage(request.getConversationID(), request.getMessage());
-                    Set<User> members = database.findConversationUsers(request.getConversationID());
+                    super.database.updateMessage(request.getConversationID(), request.getMessage());
+                    Set<User> members = super.database.findConversationUsers(request.getConversationID());
                     for (User member : members) {
                         if (!member.equals(senderID)) {
                             try {
@@ -74,8 +82,8 @@ public class HandlerFactory {
                     break;
                 }
                 case DELETE:{
-                    database.deleteMessage(request.getConversationID(), request.getMessage().getTime());
-                    Set<User> members = database.findConversationUsers(request.getConversationID());
+                    super.database.deleteMessage(request.getConversationID(), request.getMessage().getTime());
+                    Set<User> members = super.database.findConversationUsers(request.getConversationID());
                     for (User member : members) {
                         if (!member.equals(senderID)) {
                             try {
@@ -91,7 +99,7 @@ public class HandlerFactory {
                 }
             }
 
-            return responses;
+            return super.responses;
 
         }
     }
@@ -99,13 +107,13 @@ public class HandlerFactory {
     private static class ConversationHandler extends Handler {
         @Override
         protected Collection<Transmission> process(Transmission request) {
-            senderID = request.getLocalUserID();
+            super.senderID = request.getLocalUserID();
             switch (request.getCRUD()) {
                 case CREATE: {
-                    database.addConversation(request.getConversationID(),
+                    super.database.addConversation(request.getConversationID(),
                             request.getUserIDs());
                     for (String member : request.getUserIDs()) {
-                        if (!member.equals(senderID)) {
+                        if (!member.equals(super.senderID)) {
                             try {
                                 Transmission response = (Transmission) request.clone();
                                 super.responses.add(response.setLocalUserID(member));
@@ -116,9 +124,9 @@ public class HandlerFactory {
                     break;
                 }
                 case UPDATE: {
-                    database.updateConversationUsers(request.getConversationID(), request.getUserIDs());
+                    super.database.updateConversationUsers(request.getConversationID(), request.getUserIDs());
                     for (String member : request.getUserIDs()) {
-                        if (!member.equals(senderID)) {
+                        if (!member.equals(super.senderID)) {
                             try {
                                 Transmission response = (Transmission) request.clone();
                                 super.responses.add(response.setLocalUserID(member));
@@ -129,10 +137,10 @@ public class HandlerFactory {
                     break;
                 }
                 case DELETE:{
-                    Set<User> members =database.findConversationUsers(request.getConversationID());
-                    database.deleteConversation(request.getConversationID());
+                    Set<User> members = super.database.findConversationUsers(request.getConversationID());
+                    super.database.deleteConversation(request.getConversationID());
                     for (User member : members) {
-                        if (!member.equals(senderID)) {
+                        if (!member.equals(super.senderID)) {
                             try {
                                 Transmission response = (Transmission) request.clone();
                                 super.responses.add(response.setLocalUserID(member.getUserID()));
@@ -146,41 +154,50 @@ public class HandlerFactory {
                 }
 
             }
-            return responses;
+            return super.responses;
         }
     }
 
     private static class UserHandler extends Handler {
         @Override
         protected Collection<Transmission> process(Transmission request) {
-            senderID=request.getLocalUserID();
-            switch (request.getCRUD()) {
-                case CREATE:
-                    break;
-                case READ: {
-                    User user = database.readUser(request.getUserID());
-                    responses.add(request.reset().setUser(user));
-                    break;
-                }
-                case UPDATE: {
-                    database.updateUser(request.getUser());
+            super.senderID=request.getLocalUserID();
+            switch (request.getRequestType()) {
+                case USER:{
+                    switch (request.getCRUD()) {
+                        case CREATE:
+                            break;
+                        case READ: {
+                            User user = super.database.readUser(request.getUserID());
+                            super.responses.add(request.reset().setUser(user));
+                            break;
+                        }
+                        case UPDATE: {
+                            super.database.updateUser(request.getUser());
 
-                    for (User user: database.readUsers()) {
-                        if(!user.getUserID().equals(senderID)){
-                            try {
-                                Transmission response = (Transmission) request.clone();
-                                super.responses.add(response.setLocalUserID(user.getUserID()));
-                            } catch (CloneNotSupportedException e) {
+                            for (User user : super.database.readUsers()) {
+                                if (!user.getUserID().equals(super.senderID)) {
+                                    try {
+                                        Transmission response = (Transmission) request.clone();
+                                        super.responses.add(response.setLocalUserID(user.getUserID()));
+                                    } catch (CloneNotSupportedException e) {
+                                    }
+                                }
                             }
+                        }
+                        case DELETE: {
+                            super.database.deleteUser(request.getUserID());
+                            super.responses.add(request);
                         }
                     }
                 }
-                case DELETE:{
-                    database.deleteUser(request.getUserID());
-                    responses.add(request);
+
+                case USERS:{
+                    Set<User> users = super.database.readUsers();
+                    super.responses.add(request.setUsers(users));
                 }
             }
-            return responses;
+            return super.responses;
         }
     }
 
@@ -195,11 +212,11 @@ public class HandlerFactory {
 
             switch (request.getCRUD()) {
                 case READ: {
-                    User user = database.readUser(request.getUserID());
+                    User user = super.database.readUser(request.getUserID());
                     return request.setUser(user);
                 }
                 case CREATE: {
-                    boolean status = database.addUser(request.getUser());
+                    boolean status = super.database.addUser(request.getUser());
                     return request.setStatus(status);
                 }
                 default:

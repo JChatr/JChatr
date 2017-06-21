@@ -11,15 +11,12 @@ import java.util.List;
  */
 public abstract class Handler {
     protected Database database;
-
-    protected Transmission request;
     protected List<Transmission> responses= new LinkedList<>();
 
     protected String senderID;
 
-
     Handler(){
-        this.database =Database.getCachedDatabase();
+        database=Database.getCachedDatabase();
     }
 
     protected abstract Collection<Transmission> process(Transmission request);

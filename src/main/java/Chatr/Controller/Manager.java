@@ -28,9 +28,9 @@ import java.util.concurrent.Executors;
  */
 public class Manager {
 	public static ObjectProperty<User> localUser;
-	public static ListProperty<Chat> userChats;
-	private static ListProperty<User> users;
-	private static ObjectProperty<Chat> currentChat;
+	static ListProperty<Chat> userChats;
+	static ListProperty<User> users;
+	static ObjectProperty<Chat> currentChat;
 
 	private static Logger log = LogManager.getLogger(Manager.class);
 
@@ -115,47 +115,18 @@ public class Manager {
 		currentChat = new SimpleObjectProperty<>();
 	}
 
-	protected static void initialPull(){
+	public static void initialPull(){
+
+
 		Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
 		readChats.forEach(readChat -> {
 			if (!userChats.contains(readChat)) {
 				userChats.add(readChat);
 			}
 		});
-	}
 
-	protected static void startUpdateLoop() {
-		/*userChats.addListener((ListChangeListener<Chat>) c -> {
-			c.next();
-			c.getAddedSubList().forEach(chat ->
-					UpdateService.schedule(chat.getMessages(), messages -> {
-						Long newestMessage = messages.isEmpty() ? 0 :
-								messages.get(messages.size() - 1).getTime();
-						String chatID = chat.getID().get();
-						List<Message> newMessages = connection.readNewMessages(chatID, newestMessage);
-						messages.addAll(newMessages);
-						return messages;
-					})
-			);
-		});
-		UpdateService.schedule(userChats, userChats -> {
-			Set<Chat> readChats = connection.readAllConversations(localUser.get().getUserID());
-			readChats.forEach(readChat -> {
-				if (!userChats.contains(readChat)) {
-					userChats.add(readChat);
-				}
-			});
-			return userChats;
-		});
-		UpdateService.schedule(users, users -> {
-			Set<User> user = connection.readUsers();
-			user.forEach(readUserLogin -> {
-				if (!users.contains(readUserLogin)) {
-					users.add(readUserLogin);
-				}
-			});
-			return users;
-		});*/
+		Set<User> userSet = Connection.readUsers();
+		users.addAll(userSet);
 	}
 
 	private static Chat resolveChatID(String chatID) {

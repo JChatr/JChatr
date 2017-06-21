@@ -1,11 +1,15 @@
 package Chatr.Client;
 
+import Chatr.Controller.HandlerClient;
+import Chatr.Controller.HandlerFactoryClient;
 import Chatr.Controller.Manager;
 import Chatr.Helper.CONFIG;
+import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.JSONTransformer;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
+import Chatr.Server.Handler;
 import Chatr.Server.Transmission;
 import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
@@ -49,47 +53,36 @@ public final class Client {
 					log.info("Message received: "+ tin.toString());
 					switch (tin.getRequestType()) {
 						case MESSAGE:
-							switch(tin.getCRUD()){
-								case CREATE:{
-									Platform.runLater(()->
-									Manager.userChats.forEach(chat->{
-										if(chat.getID().get().equals(tin.getConversationID())){
-											chat.addMessage(tin.getMessage());
-										}
-									})
-									);
-								}
-									break;
-								case READ:
-									for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-										l.notify(new ConnectionEvent(this,tin));
-									break;
-								case UPDATE:
+							if(tin.getCRUD()== Crud.READ){
+								for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
+									l.notify(new ConnectionEvent(this,tin));
+							}
+							else{
+								HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
+								handlerClient.processClient(tin);
 							}
 							break;
+
 						case CONNECT:
 							for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
 								l.notify(new ConnectionEvent(this,tin));
 							break;
-						case CONVERSATION:
-							switch (tin.getCRUD()) {
-								case CREATE:
-									//request.setConversationID(ID).setUserIDs((Set<String>) data);
-									break;
-								case READ:
-									break;
-								case UPDATE:
-									//request.setConversationID(ID).setUserIDs((Set<String>) data);
-									break;
-								case DELETE:
-									//request.setConversationID(ID);
-									break;
-							}
+
+						case CONVERSATION:{
+							HandlerClient handlerClient= HandlerFactoryClient.getInstance(tin.getRequestType());
+							handlerClient.processClient(tin);
+						}
 							break;
+
+						case USER:
+							HandlerClient handlerClient= HandlerFactoryClient.getInstance(tin.getRequestType());
+							handlerClient.processClient(tin);
+
 						case LOGIN:
 								for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
 									l.notify(new ConnectionEvent(this,tin));
 							break;
+
 						case USERS:
 							for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
 								l.notify(new ConnectionEvent(this,tin));

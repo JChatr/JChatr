@@ -19,6 +19,7 @@ public final class Connection{
 
 	private static final Client client =new Client();
 
+
 	/**
 	 * creates a new conversation on the server and adds the specified users
 	 *
@@ -26,15 +27,14 @@ public final class Connection{
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, Set<String> userIDs) {
+	public static void createConversation(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
-	 * TODO: change the method of getting new conversations. Really dirty right now
-	 * read all conversations for that user
+	 * Read all conversations for that user
+	 * (Waits for server response)
 	 *
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
@@ -43,8 +43,7 @@ public final class Connection{
 		Transmission request = build(CONNECT, READ, userID, null);
 		TransmissionListener conversationListener= new TransmissionListener(Thread.currentThread());
 		client.addListener(conversationListener);
-		String json =JSONTransformer.toJSON(request);
-		client.socketClient.send(json);
+		sendJSON(request);
 		try{
 			Thread.sleep(2000);
 		}
@@ -62,20 +61,18 @@ public final class Connection{
 	 * @param conversationID ID of the conversation to delete
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteConversation(String conversationID) {
+	public static void deleteConversation(String conversationID) {
 		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
 	}
 
-	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+	public static void updateConversationUsers(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
 	 * read new messages from the specified conversation
+	 * (Waits for server response)
 	 *
 	 * @param conversationID ID of the conversation to forceUpdate
 	 * @param newest         newest message in the local copy of the conversation
@@ -85,8 +82,7 @@ public final class Connection{
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
 		TransmissionListener messageListener= new TransmissionListener(Thread.currentThread());
 		client.addListener(messageListener);
-		String json= JSONTransformer.toJSON(request);
-		client.socketClient.send(json);
+		sendJSON(request);
 		try{
 			Thread.sleep(2000);
 		}
@@ -106,8 +102,7 @@ public final class Connection{
 	 */
 	public static void addMessage(String conversationID, Message message) {
 		Transmission request = build(MESSAGE, CREATE, conversationID, message);
-		String json= JSONTransformer.toJSON(request);
-		client.socketClient.send(json);
+		sendJSON(request);
 
 	}
 
@@ -119,15 +114,15 @@ public final class Connection{
 	 * @param userData the new Users data
 	 * @return if the operation was successful
 	 */
-	public static boolean createUserLogin(String userID, User userData) {
+	public static void createUserLogin(String userID, User userData) {
 		Transmission request = build(LOGIN, CREATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
 	 * read the User with the specified ID from the server
 	 * returns an empty user if there is no user with that ID
+	 * (Waits for server response)
 	 *
 	 * @param userID ID of the User to fetch
 	 * @return User Object from the server
@@ -151,6 +146,7 @@ public final class Connection{
 
 	/**
 	 * gets all users known to the user
+	 * (Waits for server response)
 	 *
 	 * @return all users known to the server
 	 */
@@ -178,10 +174,9 @@ public final class Connection{
 	 * @param userData new data of the user
 	 * @return if the operation was successful
 	 */
-	public static boolean updateUser(String userID, User userData) {
+	public static void updateUser(String userID, User userData) {
 		Transmission request = build(USER, UPDATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
@@ -190,10 +185,9 @@ public final class Connection{
 	 * @param userID ID of the user
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteUser(String userID) {
+	public static void deleteUser(String userID) {
 		Transmission request = build(USER, DELETE, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -239,6 +233,11 @@ public final class Connection{
 				request.setUserID(ID);
 		}
 		return request;
+	}
+
+	private static void sendJSON(Transmission t){
+		String json =JSONTransformer.toJSON(t);
+		client.socketClient.send(json);
 	}
 
 	static class TransmissionListener implements ConnectionListener{
