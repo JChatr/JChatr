@@ -2,42 +2,65 @@ package Chatr.Server;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.Enums.ContentType;
+import Chatr.Controller.Manager;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
+import Chatr.Server.Database.Database;
+import javafx.application.Platform;
 import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+import java.net.UnknownHostException;
 import java.util.*;
 
 import static org.junit.Assert.*;
 
 public class ConnectionTest {
 
-
 	/**
 	 * guarantees that the server is started when a test is run
 	 */
-	@Before
-	public void before() {
-		new Thread(new Server()).start();
+	private static Server s;
+	private static Database d;
+	@BeforeClass
+	public static void before() {
+		try {
+			s = new Server(3456);
+			s.start();
+
+			d = Database.getCachedDatabase();
+		}
+		catch (UnknownHostException e){
+		}
+
+
 	}
 
 	@Test
 	public void createValidConversation() {
-		User u1 = new User("createValidConversation"),
-				u2 = new User("createValidConversation2");
-		Set<User> users = new HashSet<>();
-		users.add(u1);
-		users.add(u2);
-		Chat c = Chat.preConfigServer("asihdfakslöf#", u1.getUserID(), users, new LinkedList<>());
-		boolean status = Connection.createConversation(c.getID().get(),
+
+		Set<User> users = d.readUsers();
+
+		Chat c = Chat.preConfigServer("ValidConversationTest", "@aMerkel", users, new LinkedList<>());
+		Connection.createConversation(c.getID().get(),
 				c.getMemberIDs());
-		assertTrue(status);
+
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		Set<User> userInDB =d.findConversationUsers("ValidConversationTest");
+
+		assertTrue(userInDB.equals(users));
+
 	}
 
-	@Test
-	public void createIdenticalConversations() {
+	@Ignore
+	/*public void createIdenticalConversations() {
 		User u1 = new User("createIdenticalConversations");
 		Chat c = Chat.newConversation(u1, new User("createIdenticalConversations2"));
 		Set<Chat> localC = new HashSet<>();
@@ -52,7 +75,7 @@ public class ConnectionTest {
 
 		assertFalse(status);
 		assertEquals(localC, Connection.readAllConversations(u1.getUserID()));
-	}
+	}*/
 
 	@Test
 	public void readAllConversationsSingle() {
@@ -108,16 +131,17 @@ public class ConnectionTest {
 			localc.add(Chat.newConversation(u2, u1));
 			Thread.sleep(2);
 			localc.add(Chat.newConversation(u2, u1));
+			Thread.sleep(3000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		localc.forEach(c -> Connection.createConversation(c.getID().get(), c.getMemberIDs()));
 
-		assertEquals(localc, Connection.readAllConversations(u1.getUserID()));
+
+		assertEquals(localc, d.readUserConversations(u1.getUserID()));
 	}
 
-	@Test
-	public void deleteConversationValid() {
+
+	/*public void deleteConversationValid() {
 		User u1 = new User("deleteConversationValid"),
 				u2 = new User("deleteConversationValid2");
 		Chat c = Chat.newConversation(u1, u2);
@@ -127,16 +151,16 @@ public class ConnectionTest {
 
 		assertTrue(deleted);
 		assertTrue(Connection.readAllConversations(u1.getUserID()).isEmpty());
-	}
+	}*/
 
-	@Test
-	public void deleteConversationInvalid() {
+
+/*	public void deleteConversationInvalid() {
 		boolean deleted = Connection.deleteConversation("042b9135b65cc71d9c94df01add70cbf");
 		assertFalse(deleted);
-	}
+	}*/
 
-	@Test
-	public void updateConversationUsersValid() {
+
+	/*public void updateConversationUsersValid() {
 		User u1 = new User("updateConversationUsersValid"),
 				u2 = new User("updateConversationUsersValid2"),
 				u3 = new User("updateConversationUsersValid3"),
@@ -150,10 +174,10 @@ public class ConnectionTest {
 		assertTrue(updated);
 		assertFalse(Connection.readAllConversations(u3.getUserID()).isEmpty());
 		assertFalse(Connection.readAllConversations(u4.getUserID()).isEmpty());
-	}
+	}*/
 
-	@Test
-	public void updateConversationUsersInvalid() {
+
+	/*public void updateConversationUsersInvalid() {
 		User u1 = new User("updateConversationUsersInvalid"),
 				u2 = new User("updateConversationUsersInvalid2");
 		Set<String> uIDs = new HashSet<>();
@@ -162,11 +186,11 @@ public class ConnectionTest {
 		boolean updated = Connection.updateConversationUsers("this is an nonexistent ID", uIDs);
 		assertFalse(updated);
 	}
-
-	@Test
+*/
+	@Ignore
 	public void readNewMessagesValid() {
-		User u1 = Connection.readUser("@aMerkel"),
-				u2 = Connection.readUser("@dTrump");
+		User u1 = Connection.readUserLogin("@aMerkel"),
+				u2 = Connection.readUserLogin("@dTrump");
 		Chat c = Chat.newConversation(u1, new User("readNewMessagesValid"));
 		List<Message> messages = new ArrayList<>();
 		Message m1 = null, m2 = null, m3 = null, m4 = null, m5 = null;
@@ -196,90 +220,41 @@ public class ConnectionTest {
 	}
 
 	@Test
-	public void addMessage() {
-		User u1 = new User("addMessage"),
-				u2 = new User("addMessage2");
-		Chat c = Chat.newConversation(u1, u2);
-		Message m1 = new Message(u1.getUserID(), "testtesttesttesttesttesttesttesttesttest", ContentType.TEXT);
-
-		Connection.createConversation(c.getID().get(), c.getMemberIDs());
-		boolean posted = Connection.addMessage(c.getID().get(), m1);
-		assertTrue(posted);
-	}
-
-
-	@Test
-	public void createUser() {
-		User u3 = new User("@createUser");
-		boolean created = Connection.createUser(u3.getUserID(), u3);
-		assertTrue(created);
-	}
-
-	@Test
 	public void readUser() {
 		User u3 = new User("93049q34522332");
-		Connection.createUser(u3.getUserID(), u3);
-		assertEquals(u3, Connection.readUser(u3.getUserID()));
+		Connection.createUserLogin(u3.getUserID(), u3);
+		assertEquals(u3, Connection.readUserLogin(u3.getUserID()));
 	}
 
-	@Test
-	public void readUsers() {
-		User u3 = new User("93049q345");
-		User u4 = new User("4563563546");
-		User u5 = new User("sdgsdfgsdfgdfg");
-		User u6 = new User("dgzujfhkhik");
-		User u7 = new User("slkdkjsdkgfm");
-		User u8 = new User("siortuwoepit");
-		User u9 = new User("oe4u5we4u5w4o5");
 
 
-		Connection.createUser(u3.getUserID(), u3);
-		Connection.createUser(u4.getUserID(), u4);
-		Connection.createUser(u5.getUserID(), u5);
-		Connection.createUser(u6.getUserID(), u6);
-		Connection.createUser(u7.getUserID(), u7);
-		Connection.createUser(u8.getUserID(), u8);
-		Connection.createUser(u9.getUserID(), u9);
-
-		assertTrue(Connection.readUsers().contains(u3));
-		assertTrue(Connection.readUsers().contains(u4));
-		assertTrue(Connection.readUsers().contains(u5));
-		assertTrue(Connection.readUsers().contains(u6));
-		assertTrue(Connection.readUsers().contains(u7));
-		assertTrue(Connection.readUsers().contains(u8));
-		assertTrue(Connection.readUsers().contains(u9));
-	}
-
-	@Test
+	/*@Test
 	public void updateUserValid() {
 		User u3 = new User("sekfjselöfs");
-		Connection.createUser(u3.getUserID(), u3);
+		Connection.createUserLogin(u3.getUserID(), u3);
 		u3.setUserName("Donald Trump");
 		boolean updated = Connection.updateUser(u3.getUserID(), u3);
 		assertTrue(updated);
-	}
+	}*/
 
-	@Test
+	/*@Test
 	public void updateUserInvalid() {
 		User u3 = new User("sekfjselöfs");
 		u3.setUserName("Donald Trump");
 		boolean updated = Connection.updateUser(u3.getUserID(), u3);
 		assertFalse(updated);
-	}
+	}*/
 
 	@Test
 	public void deleteUserValid() {
-		User u3 = new User("sekfjselöfs");
-		boolean created = Connection.createUser(u3.getUserID(), u3);
-		boolean deleted = Connection.deleteUser(u3.getUserID());
-		assertTrue(created && deleted);
+
 	}
 
-	@Test
+	/*@Test
 	public void deleteUserInvalid() {
 		User u3 = new User("Vladimir Putin");
 		boolean deleted = Connection.deleteUser(u3.getUserID());
 		assertFalse(deleted);
-	}
+	}*/
 
 }

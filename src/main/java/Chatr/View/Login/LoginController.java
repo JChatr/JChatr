@@ -175,7 +175,7 @@ public class LoginController extends Loader implements Initializable {
 			Login.registerUser(userID, email, userName, password);
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
-			Manager.startUpdateLoop();
+			//Manager.startUpdateLoop();
 			changeScene();
 		} else {
 			if (errorMessagesValidation.getUserIdErrorMessage() != null) {
@@ -224,7 +224,7 @@ public class LoginController extends Loader implements Initializable {
 		try {
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
-			Manager.startUpdateLoop();
+			Manager.initialPull();
 			changeScene();
 		} catch (UserIDException e) {
 			userIdLabel.setVisible(true);

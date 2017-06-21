@@ -74,6 +74,10 @@ class DatabaseFixtures {
 		uIDs.add(u3.getUserID());
 		db.addUser(u3);
 
+		User u4= addHawk();
+		uIDs.add(u4.getUserID());
+		db.addUser(u4);
+
 		db.addUser(u1);
 		db.addUser(u2);
 		db.addConversation(conID, uIDs);
@@ -118,6 +122,15 @@ class DatabaseFixtures {
 				.setEmail("maroko96@web.de")
 				.setPassword(HashGen.hashPW("12345"));
 		return maroko96;
+	}
+
+	private static User addHawk() {
+		User hawk = new User("@herrhawk")
+				.setUserName("Simon Haag")
+				.setEmail("haagsimon@outlook.de")
+				.setPassword(HashGen.hashPW("123passwort"));
+		return hawk;
+
 	}
 }
 

@@ -2,6 +2,7 @@ package Chatr.Model;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.Enums.ContentType;
+import Chatr.Controller.Manager;
 import Chatr.Helper.HashGen;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -67,7 +68,12 @@ public class Chat {
 		Message message = new Message(localUser, content, contentType);
 		messages.add(message);
 		Connection.addMessage(conversationID.get(), message);
+
 		return message;
+	}
+
+	public void addMessage(Message message){
+		messages.add(message);
 	}
 
 
