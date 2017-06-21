@@ -69,6 +69,7 @@ public class Chat {
 		messages.add(message);
 		Connection.addMessage(conversationID.get(), message);
 
+		return message;
 	}
 
 	public void addMessage(Message message){
