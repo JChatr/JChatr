@@ -58,6 +58,8 @@ public class User {
 		return userName;
 	}
 
+	public String getEmail(){ return email;}
+
 
 	/**
 	 * This method is used to load the user image from gravatar.

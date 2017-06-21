@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author mk285, mf140
  */
-public class Login {
+public class Login{
 
 
 	private static Logger log = LogManager.getLogger(Login.class);
@@ -29,8 +29,8 @@ public class Login {
 	 */
 	public static User loginUser(String userID, String password) {
 		validateUser(userID, password);
-		User user = Connection.readUser(userID);
-		if (user == null ) {
+		User user = Connection.readUserLogin(userID);
+		if (user == null) {
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
@@ -56,7 +56,7 @@ public class Login {
 		user.setUserName(userName);
 		user.setEmail(eMail);
 		user.setPassword(HashGen.hashPW(password));
-		Connection.createUser(userID, user);
+		Connection.createUserLogin(userID, user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
 		return user;
 	}
@@ -178,7 +178,7 @@ public class Login {
 	 */
 	private static boolean validateUniqueID(String userID) throws UserIDException {
 		User user;
-		if ((user = Connection.readUser(userID)) != null) {
+		if ((user = Connection.readUserLogin(userID)) != null) {
 			log.trace(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
 			String errorMessage = "UserId is already in use.";
 			log.error(errorMessage, userID);
@@ -219,6 +219,7 @@ public class Login {
 			throw new EmailException(errorMessage);
 		}
 	}
+
 }
 
 

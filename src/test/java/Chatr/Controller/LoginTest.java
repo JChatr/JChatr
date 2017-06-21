@@ -7,7 +7,10 @@ import Chatr.Model.Exceptions.UserIDException;
 import Chatr.Model.User;
 import Chatr.Server.Server;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.net.UnknownHostException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -17,9 +20,19 @@ public class LoginTest {
 	/**
 	 * guarantees the server is started for every test
 	 */
-	@Before
-	public void start() {
-		new Thread(new Server()).start();
+	@BeforeClass
+	public static void start() {
+
+		try{
+			Server s= new Server(3456);
+			s.start();
+
+			Thread.sleep(500);
+
+		}
+		catch(UnknownHostException|InterruptedException e){
+			e.printStackTrace();
+		}
 	}
 
 

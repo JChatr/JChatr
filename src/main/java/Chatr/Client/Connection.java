@@ -2,10 +2,12 @@ package Chatr.Client;
 
 import Chatr.Helper.Enums.Crud;
 import Chatr.Helper.Enums.Request;
+import Chatr.Helper.JSONTransformer;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Transmission;
+import org.java_websocket.client.WebSocketClient;
 
 import java.util.List;
 import java.util.Set;
@@ -13,10 +15,10 @@ import java.util.Set;
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
-public class Connection {
+public final class Connection{
 
-	private Connection() {
-	}
+	private static final Client client =new Client();
+
 
 	/**
 	 * creates a new conversation on the server and adds the specified users
@@ -25,23 +27,32 @@ public class Connection {
 	 * @param userIDs        users to add to the conversation
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, Set<String> userIDs) {
+	public static void createConversation(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
-	 * TODO: change the method of getting new conversations. Really dirty right now
-	 * read all conversations for that user
+	 * Read all conversations for that user
+	 * (Waits for server response)
 	 *
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
 	public static Set<Chat> readAllConversations(String userID) {
-		Transmission request = build(CONVERSATION, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getChats();
+		Transmission request = build(CONNECT, READ, userID, null);
+		TransmissionListener conversationListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(conversationListener);
+		sendJSON(request);
+		try{
+			Thread.sleep(2000);
+		}
+		catch(InterruptedException e){
+			client.removeListener(conversationListener);
+			return conversationListener.getResponse().getChats();
+		}
+
+		return null;
 	}
 
 	/**
@@ -50,20 +61,18 @@ public class Connection {
 	 * @param conversationID ID of the conversation to delete
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteConversation(String conversationID) {
+	public static void deleteConversation(String conversationID) {
 		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
 	}
 
-	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+	public static void updateConversationUsers(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
 	 * read new messages from the specified conversation
+	 * (Waits for server response)
 	 *
 	 * @param conversationID ID of the conversation to forceUpdate
 	 * @param newest         newest message in the local copy of the conversation
@@ -71,8 +80,17 @@ public class Connection {
 	 */
 	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		Transmission response = new Client().get(request);
-		return response.getMessages();
+		TransmissionListener messageListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(messageListener);
+		sendJSON(request);
+		try{
+			Thread.sleep(2000);
+		}
+		catch(InterruptedException e){
+			client.removeListener(messageListener);
+			return messageListener.getResponse().getMessages();
+		}
+		return null;
 	}
 
 	/**
@@ -82,10 +100,10 @@ public class Connection {
 	 * @param message        Message to get
 	 * @return if the operation was successful
 	 */
-	public static boolean addMessage(String conversationID, Message message) {
+	public static void addMessage(String conversationID, Message message) {
 		Transmission request = build(MESSAGE, CREATE, conversationID, message);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
+
 	}
 
 
@@ -96,34 +114,57 @@ public class Connection {
 	 * @param userData the new Users data
 	 * @return if the operation was successful
 	 */
-	public static boolean createUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+	public static void createUserLogin(String userID, User userData) {
+		Transmission request = build(LOGIN, CREATE, userID, userData);
+		sendJSON(request);
 	}
 
 	/**
 	 * read the User with the specified ID from the server
 	 * returns an empty user if there is no user with that ID
+	 * (Waits for server response)
 	 *
 	 * @param userID ID of the User to fetch
 	 * @return User Object from the server
 	 */
-	public static User readUser(String userID) {
-		Transmission request = build(USER, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getUser();
+	public static User readUserLogin(String userID) {
+		Transmission request = build(LOGIN, READ, userID, null);
+		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(userListener);
+		String json =JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try {
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e){
+			client.removeListener(userListener);
+			return userListener.getResponse().getUser();
+
+		}
+		return null;
 	}
 
 	/**
 	 * gets all users known to the user
+	 * (Waits for server response)
 	 *
 	 * @return all users known to the server
 	 */
 	public static Set<User> readUsers() {
 		Transmission request = build(USERS, READ, null, null);
-		Transmission response = new Client().get(request);
-		return response.getUsers();
+		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		client.addListener(userListener);
+		String json =JSONTransformer.toJSON(request);
+		client.socketClient.send(json);
+		try {
+			Thread.sleep(2000);
+		}
+		catch (InterruptedException e){
+			client.removeListener(userListener);
+			return userListener.getResponse().getUsers();
+
+		}
+		return null;
 	}
 
 	/**
@@ -133,10 +174,9 @@ public class Connection {
 	 * @param userData new data of the user
 	 * @return if the operation was successful
 	 */
-	public static boolean updateUser(String userID, User userData) {
+	public static void updateUser(String userID, User userData) {
 		Transmission request = build(USER, UPDATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	/**
@@ -145,10 +185,9 @@ public class Connection {
 	 * @param userID ID of the user
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteUser(String userID) {
+	public static void deleteUser(String userID) {
 		Transmission request = build(USER, DELETE, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+		sendJSON(request);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -187,7 +226,38 @@ public class Connection {
 			case USERS:
 				request.setUserID(ID);
 				break;
+			case LOGIN:
+				request.setUserID(ID).setUser((User) data);
+				break;
+			case CONNECT:
+				request.setUserID(ID);
 		}
 		return request;
 	}
+
+	private static void sendJSON(Transmission t){
+		String json =JSONTransformer.toJSON(t);
+		client.socketClient.send(json);
+	}
+
+	static class TransmissionListener implements ConnectionListener{
+		Thread thread;
+		Transmission response;
+
+		TransmissionListener(Thread currentThread){
+			this.thread= currentThread;
+		}
+		@Override
+		public void notify(ConnectionEvent e) {
+			response= e.getTransmission();
+
+			thread.interrupt();
+		}
+
+		public Transmission getResponse(){
+			return response;
+		}
+	}
+
+
 }
