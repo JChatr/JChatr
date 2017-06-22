@@ -5,6 +5,7 @@ import Chatr.Helper.DateFormatter;
 import Chatr.Helper.ImageLoader;
 import Chatr.Model.Message;
 import Chatr.View.Loader;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -16,6 +17,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * renders the Message items in the current Chat box
@@ -37,6 +41,8 @@ class GIFCellController extends Loader {
     private ImageView userThumbnail;
     @FXML
     private ImageView gifIV;
+
+    private Executor pool = Executors.newFixedThreadPool(4);
 
     private final static int MAX_WIDTH = 600;
     private final static int MIN_WIDTH = 50;
@@ -61,10 +67,17 @@ class GIFCellController extends Loader {
         userThumbnail.setManaged(false);
         userName.setText(message.getSender());
         timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
-        Image img = ImageLoader.loadImageNoData(message.getContent());
-        gifIV.setFitWidth(img.getWidth());
-        gifIV.setFitHeight(img.getHeight());
-        gifIV.imageProperty().set(img);
+        gifIV.setFitWidth(message.getWidth());
+        gifIV.setFitHeight(message.getHigth());
+        pool.execute(()->{
+            Image img = ImageLoader.loadImageNoData(message.getContent());
+            Platform.runLater(()->{
+
+                gifIV.imageProperty().set(img);
+            });
+        });
+
+
         if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
             userThumbnail.setManaged(true);
             displayUserThumbnail(message.getSender());

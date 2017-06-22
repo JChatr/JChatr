@@ -72,6 +72,17 @@ public class Chat {
 		return message;
 	}
 
+	public Message newGIFMessage(String content, ContentType contentType,double width, double hight){
+		Message message= new Message(localUser, content, contentType);
+		message.setWidth(width);
+		message.setHigth(hight);
+
+		messages.add(message);
+		Connection.addMessage(conversationID.get(), message);
+
+		return message;
+	}
+
 	public void addMessage(Message message){
 		messages.add(message);
 	}

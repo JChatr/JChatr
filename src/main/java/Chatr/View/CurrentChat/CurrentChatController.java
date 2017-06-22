@@ -156,7 +156,7 @@ public class CurrentChatController extends Loader {
 			gifIV.setFitWidth(gifSize[i]);
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
 			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
-			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId()));
+			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId(), gifIV.getFitWidth(), gifIV.getFitHeight()));
 			gifPane.getChildren().add(gifIV);
 			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
@@ -223,8 +223,8 @@ public class CurrentChatController extends Loader {
 	 * Sends the gif to the chat
 	 * @param url Giphy url
 	 */
-	private void sendGIF(String url){
-		Manager.addMessage(url, ContentType.GIF);
+	private void sendGIF(String url, double width, double higth){
+		Manager.addGifMessage(url, ContentType.GIF, width, higth);
 		log.debug("GIF send: " + url);
 	}
 

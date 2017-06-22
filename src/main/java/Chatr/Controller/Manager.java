@@ -48,6 +48,10 @@ public class Manager {
 		return currentChat.get().newMessage(content, contentType);
 	}
 
+	public static Message addGifMessage(String content, ContentType contentType, double width, double higth){
+		return currentChat.get().newGIFMessage(content, contentType, width, higth);
+	}
+
 	public static ObjectProperty<Chat> getCurrentChat() {
 		return currentChat;
 	}

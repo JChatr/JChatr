@@ -9,6 +9,8 @@ public class Message {
 	private String content;
 	private boolean isEmpty = false;
 	private ContentType contentType;
+	private double width;
+	private double higth;
 	// timestamp is always guaranteed to be set
 	private final Long timestamp = System.currentTimeMillis();
 
@@ -42,6 +44,14 @@ public class Message {
 	public ContentType getContentType(){
 		return this.contentType;
 	}
+
+	public double getWidth(){return width;}
+
+	public double getHigth(){return higth;}
+
+	public void setWidth(double width){this.width = width;}
+
+	public void setHigth(double higth){this.higth = higth;}
 
 	// make debug printing easier
 	@Override
