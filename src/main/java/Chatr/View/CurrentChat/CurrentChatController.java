@@ -20,6 +20,8 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.awt.geom.Arc2D;
+
 
 public class CurrentChatController extends Loader {
 	private static Logger log = LogManager.getLogger(CurrentChatController.class);
@@ -152,11 +154,12 @@ public class CurrentChatController extends Loader {
 		}
 		for (int i = 0; i < feedSize; i++){
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
+			GiphyImage gifRev= gifFeed.getDataList().get(i).getImages().getFixedHeight();
 			ImageView gifIV = new ImageView();
 			gifIV.setFitWidth(gifSize[i]);
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
 			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
-			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId(), gifIV.getFitWidth(), gifIV.getFitHeight()));
+			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId(), Double.parseDouble(gifRev.getWidth()), Double.parseDouble(gifRev.getWidth())));
 			gifPane.getChildren().add(gifIV);
 			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
