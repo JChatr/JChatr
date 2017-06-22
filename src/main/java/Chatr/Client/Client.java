@@ -32,16 +32,13 @@ import java.util.function.Function;
  */
 public final class Client {
 
-	private EventListenerList listeners= new EventListenerList();
+	private EventListenerList listeners = new EventListenerList();
 	private Logger log = LogManager.getLogger(Client.class);
 	WebSocketClient socketClient;
 
-
-
 	public Client() {
-
 		try {
-			WebSocketClient webSocketClient= new WebSocketClient(new URI(CONFIG.SERVER_ADDRESS),new Draft_17()) {
+			WebSocketClient webSocketClient = new WebSocketClient(new URI(CONFIG.SERVER_ADDRESS), new Draft_17()) {
 				@Override
 				public void onOpen(ServerHandshake serverHandshake) {
 					log.info("Client open connection");
@@ -50,79 +47,63 @@ public final class Client {
 				@Override
 				public void onMessage(String s) {
 					Transmission tin = JSONTransformer.fromJSON(s, Transmission.class);
-					log.info("Message received: "+ tin.toString());
+					log.info("Message received: " + tin.toString());
 					switch (tin.getRequestType()) {
 						case MESSAGE:
-							if(tin.getCRUD()== Crud.READ){
-								for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-									l.notify(new ConnectionEvent(this,tin));
-							}
-							else{
+							if (tin.getCRUD() == Crud.READ) {
+								for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
+									l.notify(new ConnectionEvent(this, tin));
+							} else {
 								HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
 								handlerClient.processClient(tin);
 							}
 							break;
-
 						case CONNECT:
-							for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-								l.notify(new ConnectionEvent(this,tin));
+							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
+								l.notify(new ConnectionEvent(this, tin));
 							break;
 
-						case CONVERSATION:{
-							HandlerClient handlerClient= HandlerFactoryClient.getInstance(tin.getRequestType());
+						case CONVERSATION: {
+							HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
 							handlerClient.processClient(tin);
 						}
-							break;
-
+						break;
 						case USER:
-							HandlerClient handlerClient= HandlerFactoryClient.getInstance(tin.getRequestType());
+							HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
 							handlerClient.processClient(tin);
-
 						case LOGIN:
-								for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-									l.notify(new ConnectionEvent(this,tin));
+							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
+								l.notify(new ConnectionEvent(this, tin));
 							break;
-
 						case USERS:
-							for(ConnectionListener l: listeners.getListeners(ConnectionListener.class))
-								l.notify(new ConnectionEvent(this,tin));
+							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
+								l.notify(new ConnectionEvent(this, tin));
 							break;
 					}
-
 				}
 
 				@Override
 				public void onClose(int i, String s, boolean b) {
-
 				}
 
 				@Override
 				public void onError(Exception e) {
-					log.error("Problem with client: "+e);
+					log.error("Problem with client: ", e);
 				}
 			};
 
-			socketClient= webSocketClient;
-
-
+			socketClient = webSocketClient;
 			socketClient.connect();
+		} catch (URISyntaxException e) {
+			log.error("Invalid URI: " + CONFIG.SERVER_ADDRESS);
 		}
-
-		catch (URISyntaxException e){
-			log.error("Invalid URI: "+ CONFIG.SERVER_ADDRESS);
-		}
-
 	}
 
-	public void addListener(ConnectionListener listener){
+	public void addListener(ConnectionListener listener) {
 		listeners.add(ConnectionListener.class, listener);
 	}
 
-	public void removeListener(ConnectionListener listener){
+	public void removeListener(ConnectionListener listener) {
 		listeners.remove(ConnectionListener.class, listener);
-	}
-
-	Transmission get(Transmission t){
-		return null;
 	}
 }

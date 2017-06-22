@@ -144,7 +144,7 @@
                   </HBox>
                   <VBox fx:id="signInLoginButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" onKeyPressed="#onLoginButtonClick" text="Login">
+                        <Button fx:id="loginButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
                            <VBox.margin>
                               <Insets left="148.0" />
                            </VBox.margin>

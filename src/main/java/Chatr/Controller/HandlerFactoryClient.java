@@ -16,105 +16,98 @@ import java.util.function.Predicate;
  */
 public class HandlerFactoryClient {
 
-    public static HandlerClient getInstance(Request requestType){
-        switch (requestType){
-            case MESSAGE:
-                return new MessageHandler(Manager.userChats);
-
-            case CONVERSATION:
-                return new ConversationHandler(Manager.userChats);
-
-            case USER:
-                return new UserHandler(Manager.users);
-
-        }
-
-        return null;
-    }
+	public static HandlerClient getInstance(Request requestType) {
+		switch (requestType) {
+			case MESSAGE:
+				return new MessageHandler(Manager.userChats);
+			case CONVERSATION:
+				return new ConversationHandler(Manager.userChats);
+			case USER:
+				return new UserHandler(Manager.users);
+			default:
+				return null;
+		}
+	}
 
 
-    private static class MessageHandler extends HandlerClient{
+	private static class MessageHandler extends HandlerClient {
 
-        MessageHandler(ListProperty<Chat> userchats){
-                super.userChats= userchats;
-        }
+		MessageHandler(ListProperty<Chat> userchats) {
+			super.userChats = userchats;
+		}
 
-        @Override
-        public void processClient(Transmission t) {
-            switch (t.getCRUD()){
-                case CREATE: {
-                    Platform.runLater(()->{
-                        super.userChats.forEach(
-                                chat -> {
-                                    if (chat.getID().get().equals(t.getConversationID())) {
-                                        chat.addMessage(t.getMessage());
-                                    }
-                                }
-                        );
-                    });
+		@Override
+		public void processClient(Transmission t) {
+			switch (t.getCRUD()) {
+				case CREATE: {
+					Platform.runLater(() -> {
+						super.userChats.forEach(
+								chat -> {
+									if (chat.getID().get().equals(t.getConversationID())) {
+										chat.addMessage(t.getMessage());
+									}
+								}
+						);
+					});
+					break;
+				}
+				case UPDATE: {
+					//No clear implementation of Update
+				}
+			}
+		}
+	}
 
-                    break;
-                }
+	private static class ConversationHandler extends HandlerClient {
+		ConversationHandler(ListProperty<Chat> userchats) {
+			super.userChats = userchats;
+		}
 
-                case UPDATE:{
-                    //No clear implementation of Update
-                }
-            }
-        }
+		@Override
+		public void processClient(Transmission t) {
+			switch (t.getCRUD()) {
+				case CREATE: {
+					super.userChats.add(t.getChat());
+				}
+				break;
+				case UPDATE: {
+					//No clear implementation of Update
+				}
+				break;
+				case DELETE: {
+					super.userChats.removeIf(p -> p.getID().get().equals(t.getConversationID()));
+				}
+				break;
+			}
+		}
+	}
 
-    }
+	private static class UserHandler extends HandlerClient {
+		UserHandler(ListProperty<User> users) {
+			super.users = users;
+		}
 
-    private static  class ConversationHandler extends HandlerClient{
-        ConversationHandler(ListProperty<Chat> userchats){
-            super.userChats = userchats;
-        }
-        @Override
-        public void processClient(Transmission t) {
-            switch (t.getCRUD()){
-                case CREATE: {
-                    super.userChats.add(t.getChat());
-                }
-                break;
+		@Override
+		public void processClient(Transmission t) {
+			switch (t.getCRUD()) {
+				case CREATE:
+					//See LOGIN in Client
+					break;
+				case READ:
+					//No clear implementation of READ
+					break;
 
-                case UPDATE: {
-                    //No clear implementation of Update
-                }
-                break;
-
-                case DELETE: {
-                    super.userChats.removeIf(p -> p.getID().get().equals(t.getConversationID()));
-                }
-                break;
-            }
-        }
-    }
-
-    private static class UserHandler extends HandlerClient{
-        UserHandler(ListProperty<User> users){
-            super.users= users;
-        }
-        @Override
-        public void processClient(Transmission t) {
-            switch (t.getCRUD()){
-                case CREATE:
-                    //See LOGIN in Client
-                    break;
-                case READ:
-                    //No clear implementation of READ
-                    break;
-
-                case UPDATE:{
-                    super.users.forEach(user -> {
-                        if(user.getUserID()==t.getUserID()){
-                            User u= t.getUser();
-                            user.setUserName(u.getUserName()).setEmail(u.getEmail());
-                        }
-
-                    });
-                }
-            }
-        }
-    }
+				case UPDATE: {
+					super.users.forEach(user -> {
+						if (user.getUserID() == t.getUserID()) {
+							User u = t.getUser();
+							user.setUserName(u.getUserName()).setEmail(u.getEmail());
+						}
+					});
+				}
+			}
+		}
+	}
 }
 
 

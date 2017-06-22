@@ -15,11 +15,9 @@ import java.util.Set;
 import static Chatr.Helper.Enums.Crud.*;
 import static Chatr.Helper.Enums.Request.*;
 
-public final class Connection{
+public final class Connection {
 
-	private static final Client client =new Client();
-
-
+	private static final Client client = new Client();
 	/**
 	 * creates a new conversation on the server and adds the specified users
 	 *
@@ -41,17 +39,15 @@ public final class Connection{
 	 */
 	public static Set<Chat> readAllConversations(String userID) {
 		Transmission request = build(CONNECT, READ, userID, null);
-		TransmissionListener conversationListener= new TransmissionListener(Thread.currentThread());
+		TransmissionListener conversationListener = new TransmissionListener(Thread.currentThread());
 		client.addListener(conversationListener);
 		sendJSON(request);
-		try{
+		try {
 			Thread.sleep(2000);
-		}
-		catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			client.removeListener(conversationListener);
 			return conversationListener.getResponse().getChats();
 		}
-
 		return null;
 	}
 
@@ -80,13 +76,12 @@ public final class Connection{
 	 */
 	public static List<Message> readNewMessages(String conversationID, Long newest) {
 		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		TransmissionListener messageListener= new TransmissionListener(Thread.currentThread());
+		TransmissionListener messageListener = new TransmissionListener(Thread.currentThread());
 		client.addListener(messageListener);
 		sendJSON(request);
-		try{
+		try {
 			Thread.sleep(2000);
-		}
-		catch(InterruptedException e){
+		} catch (InterruptedException e) {
 			client.removeListener(messageListener);
 			return messageListener.getResponse().getMessages();
 		}
@@ -103,9 +98,7 @@ public final class Connection{
 	public static void addMessage(String conversationID, Message message) {
 		Transmission request = build(MESSAGE, CREATE, conversationID, message);
 		sendJSON(request);
-
 	}
-
 
 	/**
 	 * creates a new user on the server
@@ -129,17 +122,15 @@ public final class Connection{
 	 */
 	public static User readUserLogin(String userID) {
 		Transmission request = build(LOGIN, READ, userID, null);
-		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		TransmissionListener userListener = new TransmissionListener(Thread.currentThread());
 		client.addListener(userListener);
-		String json =JSONTransformer.toJSON(request);
+		String json = JSONTransformer.toJSON(request);
 		client.socketClient.send(json);
 		try {
 			Thread.sleep(2000);
-		}
-		catch (InterruptedException e){
+		} catch (InterruptedException e) {
 			client.removeListener(userListener);
 			return userListener.getResponse().getUser();
-
 		}
 		return null;
 	}
@@ -152,17 +143,15 @@ public final class Connection{
 	 */
 	public static Set<User> readUsers() {
 		Transmission request = build(USERS, READ, null, null);
-		TransmissionListener userListener= new TransmissionListener(Thread.currentThread());
+		TransmissionListener userListener = new TransmissionListener(Thread.currentThread());
 		client.addListener(userListener);
-		String json =JSONTransformer.toJSON(request);
+		String json = JSONTransformer.toJSON(request);
 		client.socketClient.send(json);
 		try {
 			Thread.sleep(2000);
-		}
-		catch (InterruptedException e){
+		} catch (InterruptedException e) {
 			client.removeListener(userListener);
 			return userListener.getResponse().getUsers();
-
 		}
 		return null;
 	}
@@ -195,7 +184,7 @@ public final class Connection{
 		Transmission request = new Transmission(type, operation);
 		switch (type) {
 			case MESSAGE:
-				switch(operation){
+				switch (operation) {
 					case CREATE:
 						request.setConversationID(ID).setMessage((Message) data);
 						break;
@@ -235,26 +224,25 @@ public final class Connection{
 		return request;
 	}
 
-	private static void sendJSON(Transmission t){
-		String json =JSONTransformer.toJSON(t);
+	private static void sendJSON(Transmission t) {
+		String json = JSONTransformer.toJSON(t);
 		client.socketClient.send(json);
 	}
 
-	static class TransmissionListener implements ConnectionListener{
+	static class TransmissionListener implements ConnectionListener {
 		Thread thread;
 		Transmission response;
 
-		TransmissionListener(Thread currentThread){
-			this.thread= currentThread;
+		TransmissionListener(Thread currentThread) {
+			this.thread = currentThread;
 		}
+
 		@Override
 		public void notify(ConnectionEvent e) {
-			response= e.getTransmission();
-
+			response = e.getTransmission();
 			thread.interrupt();
 		}
-
-		public Transmission getResponse(){
+		public Transmission getResponse() {
 			return response;
 		}
 	}

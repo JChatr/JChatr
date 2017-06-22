@@ -4,26 +4,18 @@ package Chatr.Controller;
 import Chatr.Client.Connection;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Enums.ContentType;
-import Chatr.Helper.UpdateService;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
-import Chatr.Server.Server;
 import Chatr.View.JavaFX;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javafx.scene.image.Image;
 
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.net.UnknownHostException;
-import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executors;
 
 /**
  * starts the app
@@ -108,8 +100,6 @@ public class Manager {
 	}
 
 	public static void initialPull(){
-
-
 		Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
 		readChats.forEach(readChat -> {
 			if (!userChats.contains(readChat)) {
