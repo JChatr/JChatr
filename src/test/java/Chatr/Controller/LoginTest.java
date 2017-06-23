@@ -6,17 +6,19 @@ import Chatr.Model.ErrorMessagesValidation;
 import Chatr.Model.Exceptions.UserIDException;
 import Chatr.Model.User;
 import Chatr.Server.Server;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class LoginTest {
-
+	private static Server se;
 	/**
 	 * guarantees the server is started for every test
 	 */
@@ -24,8 +26,8 @@ public class LoginTest {
 	public static void start() {
 
 		try{
-			Server s= new Server(3456);
-			s.start();
+			se= new Server(3456);
+			se.start();
 
 			Thread.sleep(500);
 
@@ -118,6 +120,17 @@ public class LoginTest {
 			ref.setErrorexisting(true);
 			ref.setErrormessages(errormessages);
 			assertEquals(ref,errorMessagesValidation);
+	}
+
+	@AfterClass
+	public static void end(){
+		try {
+			se.stop();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 

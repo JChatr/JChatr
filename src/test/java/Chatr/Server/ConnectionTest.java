@@ -8,11 +8,9 @@ import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Database.Database;
 import javafx.application.Platform;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.*;
 
@@ -25,6 +23,7 @@ public class ConnectionTest {
 	 */
 	private static Server s;
 	private static Database d;
+
 	@BeforeClass
 	public static void before() {
 		try {
@@ -32,8 +31,11 @@ public class ConnectionTest {
 			s.start();
 
 			d = Database.getCachedDatabase();
+			Thread.sleep(1000);
+
 		}
-		catch (UnknownHostException e){
+		catch(UnknownHostException|InterruptedException e){
+			e.printStackTrace();
 		}
 
 
@@ -256,5 +258,16 @@ public class ConnectionTest {
 		boolean deleted = Connection.deleteUser(u3.getUserID());
 		assertFalse(deleted);
 	}*/
+
+	@AfterClass
+	public static void after(){
+		try {
+			s.stop();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 
 }
