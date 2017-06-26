@@ -21,12 +21,11 @@ public class Connection {
 	/**
 	 * creates a new conversation on the server and adds the specified users
 	 *
-	 * @param conversationID ID of the new conversation
-	 * @param userIDs        users to add to the conversation
+	 * @param chat Chat to create on the server
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, Set<String> userIDs) {
-		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
+	public static boolean createChat(Chat chat) {
+		Transmission request = build(CONVERSATION, CREATE, null, chat);
 		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
@@ -38,7 +37,7 @@ public class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static Set<Chat> readAllConversations(String userID) {
+	public static Set<Chat> readAllUserChats(String userID) {
 		Transmission request = build(CONVERSATION, READ, userID, null);
 		Transmission response = new Client().get(request);
 		return response.getChats();
@@ -50,13 +49,13 @@ public class Connection {
 	 * @param conversationID ID of the conversation to delete
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteConversation(String conversationID) {
+	public static boolean deleteChat(String conversationID) {
 		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
 		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
 
-	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
+	public static boolean updateChatUsers(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
 		Transmission response = new Client().get(request);
 		return response.getStatus();
@@ -92,12 +91,11 @@ public class Connection {
 	/**
 	 * creates a new user on the server
 	 *
-	 * @param userID   ID of the User to create
-	 * @param userData the new Users data
+	 * @param user the new Users data
 	 * @return if the operation was successful
 	 */
-	public static boolean createUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
+	public static boolean createUser(User user) {
+		Transmission request = build(USER, CREATE, user.getUserID(), user);
 		Transmission response = new Client().get(request);
 		return response.getStatus();
 	}
@@ -168,7 +166,7 @@ public class Connection {
 			case CONVERSATION:
 				switch (operation) {
 					case CREATE:
-						request.setConversationID(ID).setUserIDs((Set<String>) data);
+						request.setChat((Chat) data);
 						break;
 					case READ:
 						request.setUserID(ID);

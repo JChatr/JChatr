@@ -15,10 +15,8 @@ public class Message {
 
 	public Message(String sender, String content) {
 		this.sender = sender;
-
 		this.content = content;
 	}
-
 
 	public String getContent() {
 		return this.content;

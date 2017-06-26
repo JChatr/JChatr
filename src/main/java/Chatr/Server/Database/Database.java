@@ -37,7 +37,7 @@ public class Database {
 	public static Database getCachedDatabase() {
 		if (instance == null) {
 			instance = new Database();
-			DatabaseFixtures.generate(instance);
+//			DatabaseFixtures.generate(instance);
 		}
 		return instance;
 	}
@@ -118,14 +118,22 @@ public class Database {
 	 * @return if the insertion was successful
 	 */
 	public boolean addChat(Chat chat) {
-		String chatID = chat.getID().get();
+		String chatID = chat.getID();
 		String chatName = chat.getName().get();
 		Set<String> memberIDs = chat.getMemberIDs();
 		boolean success;
 		linkConversation(chatID, memberIDs);
 		success = chats.putIfAbsent(chatID, new LinkedHashMap<>()) == null;
 		success &= chatMetadata.putIfAbsent(chatID, new LinkedList<>()) == null;
-		chatMetadata.get(chatID).set(0, chatName);
+
+		// forces metadata to be overwritten instead of appended
+		List<String> metadata = chatMetadata.get(chatID);
+		try {
+			metadata.get(0);
+			metadata.set(0, chatName);
+		} catch (IndexOutOfBoundsException e) {
+			metadata.add(0, chatName);
+		}
 		return success;
 	}
 
@@ -139,7 +147,7 @@ public class Database {
 	// TODO: Validate
 	public boolean updateChatUsers(String chatID, Set<String> userIDs) {
 		if (chats.get(chatID) == null ||
-				findConversationUsers(chatID).equals(userIDs)) return false;
+				getChatMembers(chatID).equals(userIDs)) return false;
 		unlinkChat(chatID);
 		return linkConversation(chatID, userIDs);
 	}
@@ -152,7 +160,7 @@ public class Database {
 	 * @return the assembled conversation
 	 */
 	public Chat readChat(String chatID, String userID) {
-		Set<User> members = findConversationUsers(chatID);
+		Set<User> members = getChatMembers(chatID);
 		List<String> metadata = chatMetadata.get(chatID);
 		String chatName = metadata.get(0);
 		return Chat.preConfigServer(chatName, chatID, userID,
@@ -251,7 +259,6 @@ public class Database {
 		}
 	}
 
-
 	/**
 	 * links a conversation to all given useIDs
 	 *
@@ -266,7 +273,6 @@ public class Database {
 		}
 		return status;
 	}
-
 
 	/**
 	 * breaks all links for that ID
@@ -286,7 +292,7 @@ public class Database {
 	 * @param conversationID ID to search for
 	 * @return found users matching that conversationID
 	 */
-	private Set<User> findConversationUsers(String conversationID) {
+	private Set<User> getChatMembers(String conversationID) {
 		Set<User> linkedUsers = new HashSet<>();
 		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
 			for (String conversation : link.getValue()) {
@@ -314,30 +320,27 @@ public class Database {
 		return out;
 	}
 
-	public void print() {
-		log.debug("USERS:");
-		users.forEach((id, u) -> log.debug("  - " + u));
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("USERS:\n");
+		users.forEach((id, u) -> sb.append("  - ").append(u).append("\n"));
 
-		log.debug("LINKS:");
-		links.forEach((id, l) -> log.debug("  - " + id + ":" + l));
+		sb.append("LINKS:\n");
+		links.forEach((id, l) -> sb.append("  - ").append(id).append(":").append(l).append("\n"));
 
-		log.debug("CHAT MESSAGES:");
+		sb.append("CHAT MESSAGES:\n");
 		for (Map.Entry<String, Map<Long, Message>> c : chats.entrySet()) {
-			log.debug("  - " + c.getKey());
+			sb.append("  - ").append(c.getKey()).append("\n");
 			for (Message m : c.getValue().values()) {
-				log.debug("    - " + m);
+				sb.append("    - ").append(m).append("\n");
 			}
 		}
-		log.debug("CHAT METADATA:");
+		sb.append("CHAT METADATA:\n");
 		for (Map.Entry<String, List<String>> e : chatMetadata.entrySet()) {
-			log.debug("  - " + e.getKey());
-			for (String s : e.getValue()) {
-				log.debug("    - " + e);
-			}
+			sb.append("  - ").append(e.getKey()).append(": ");
+			sb.append(e.getValue()).append("\n");
 		}
-	}
-
-	enum ChatMetadata {
-		NAME(0)
+		return sb.toString();
 	}
 }

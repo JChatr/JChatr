@@ -88,7 +88,7 @@ public class Manager {
 
 	public static String getUserImagePath(String userID) {
 		for (User u : users) {
-			if (u.equals(new User(userID))) {
+			if (u.getUserID().equals(userID)) {
 				return u.getPicturePath();
 			}
 		}
@@ -97,7 +97,7 @@ public class Manager {
 
 	public static BufferedImage getUserImage(String userID) {
 		for (User u : users) {
-			if (u.equals(new User(userID))) {
+			if (u.getUserID().equals(userID)) {
 				return u.getPicture();
 			}
 		}
@@ -127,7 +127,7 @@ public class Manager {
 					UpdateService.schedule(chat.getMessages(), messages -> {
 						Long newestMessage = messages.isEmpty() ? 0 :
 								messages.get(messages.size() - 1).getTime();
-						String chatID = chat.getID().get();
+						String chatID = chat.getID();
 						List<Message> newMessages = Connection.readNewMessages(chatID, newestMessage);
 						messages.addAll(newMessages);
 						return messages;
@@ -135,7 +135,7 @@ public class Manager {
 			);
 		});
 		UpdateService.schedule(userChats, userChats -> {
-			Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
+			Set<Chat> readChats = Connection.readAllUserChats(localUser.get().getUserID());
 			readChats.forEach(readChat -> {
 				if (!userChats.contains(readChat)) {
 					userChats.add(readChat);
@@ -156,7 +156,7 @@ public class Manager {
 
 	private static Chat resolveChatID(String chatID) {
 		for (Chat c : userChats) {
-			if (c.getID().get().equals(chatID)) return c;
+			if (c.getID().equals(chatID)) return c;
 		}
 		throw new IllegalStateException("Chat ID could not be resolved");
 	}

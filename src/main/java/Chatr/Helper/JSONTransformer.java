@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
 
+import java.awt.image.BufferedImage;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +19,9 @@ public class JSONTransformer {
 			.coreBuilder()
 			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
 			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
+			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(BufferedImage.class))
+			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(BufferedImage.class))
+
 			.create();
 
 	/**
@@ -75,7 +79,7 @@ public class JSONTransformer {
 	private static class UserDefinedExclusionStrategy implements ExclusionStrategy {
 		private Class<?> excludedClass;
 
-		private UserDefinedExclusionStrategy(Class<Image> excludedClass) {
+		private UserDefinedExclusionStrategy(Class<?> excludedClass) {
 			this.excludedClass = excludedClass;
 		}
 

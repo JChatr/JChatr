@@ -81,7 +81,7 @@ public class ChatListController extends Loader {
 	 */
 	private void switchChat(Chat chat) {
 		Manager.setCurrentChat(chat);
-		currentChat.switchChat(chat.getID().get());
+		currentChat.switchChat(chat.getID());
 		log.debug("switched to Chat: " + chat);
 	}
 

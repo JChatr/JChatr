@@ -20,16 +20,16 @@ public class Chat {
 	private ListProperty<User> members;
 	private ListProperty<Message> messages;
 	private String localUserID;
-	private static Logger log = LogManager.getLogger(Chat.class);
+	private transient static Logger log = LogManager.getLogger(Chat.class);
 
-	private Chat(String chatName, User localUserID, Collection<User> otherUsers) {
+	private Chat(String chatName, User localUser, Collection<User> otherUsers) {
 		initProperties();
-		this.members.add(localUserID);
+		this.members.add(localUser);
 		this.members.addAll(otherUsers);
-		this.localUserID = localUserID.getUserID();
+		this.localUserID = localUser.getUserID();
 		chatID.set(HashGen.getID(false));
 		this.chatName.set(chatName);
-		Connection.createConversation(chatID.get(), this.getMemberIDs());
+		Connection.createChat(this);
 		log.info("New Chat created " + this);
 	}
 
@@ -82,7 +82,7 @@ public class Chat {
 
 	public void addMember(User member) {
 		members.add(member);
-		Connection.updateConversationUsers(chatID.get(), getMemberIDs());
+		Connection.updateChatUsers(chatID.get(), getMemberIDs());
 	}
 
 	public Chat setLocalUserID(String userID) {
@@ -90,8 +90,8 @@ public class Chat {
 		return this;
 	}
 
-	public StringProperty getID() {
-		return this.chatID;
+	public String getID() {
+		return this.chatID.get();
 	}
 
 	public StringProperty getName() {
@@ -104,9 +104,13 @@ public class Chat {
 
 	@Override
 	public boolean equals(Object o) {
-		return o != null &&
-				getClass().equals(o.getClass()) &&
-				Objects.equals(chatID.get(), o.toString());
+		if (o == null) return false;
+		if (!(o instanceof Chat)) return false;
+		Chat c = (Chat) o;
+		return Objects.equals(chatName.get(), c.getName().get()) &&
+				Objects.equals(chatID.get(), c.getID()) &&
+				Objects.equals(members, c.getMembers()) &&
+				Objects.equals(messages, c.getMessages());
 	}
 
 	@Override
@@ -116,6 +120,6 @@ public class Chat {
 
 	@Override
 	public String toString() {
-		return this.chatID.get();
+		return String.format("ID: %s Name: %s Members: %s", chatID.get(), chatName.get(), members.get().toString());
 	}
 }

@@ -44,11 +44,8 @@ public class Login {
 		validateUser(userID, eMail, password);
 		validateUniqueID(userID);
 
-		User user = new User(userID);
-		user.setUserName(userName);
-		user.setEmail(eMail);
-		user.setPassword(HashGen.hashPW(password));
-		Connection.createUser(userID, user);
+		User user = new User(userID, userName, eMail, HashGen.hashPW(password));
+		Connection.createUser( user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
 		Manager.setLocalUser(user);
 		Manager.startUpdateLoop();

@@ -26,6 +26,8 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -50,6 +52,10 @@ public class NewChatController extends Loader {
 	private AnchorPane parentNode;
 	private static Logger log = LogManager.getLogger(NewChatController.class);
 
+	/**
+	 * loads the FXML and injects itself into the passed parent node
+	 * @param parentNode node insert the new Chat view below
+	 */
 	public NewChatController(AnchorPane parentNode) {
 		this.parentNode = parentNode;
 		super.load(this);
@@ -64,10 +70,9 @@ public class NewChatController extends Loader {
 		UsersMultipleSelections();
 	}
 
-	public void setParent(AnchorPane parentNode) {
-		this.parentNode = parentNode;
-	}
-
+	/**
+	 * links display properties to Manager properties to guarantee up to date information
+	 */
 	private void linkProperties() {
 		namePanel.managedProperty().bind(namePanel.visibleProperty());
 		usersPanel.managedProperty().bind(usersPanel.visibleProperty());
@@ -76,6 +81,10 @@ public class NewChatController extends Loader {
 		));
 	}
 
+	/**
+	 * switches between the two panels
+	 * @param forward weather to switch forward or not
+	 */
 	private void switchPanels(boolean forward) {
 		namePanel.setVisible(forward);
 		usersPanel.setVisible(!forward);
@@ -113,8 +122,8 @@ public class NewChatController extends Loader {
 	/**
 	 * clones the given Mouse Event to simulate a pressed modifier key
 	 *
-	 * @param event
-	 * @return
+	 * @param event input event
+	 * @return cloned event
 	 */
 	private MouseEvent cloneMouseEvent(MouseEvent event) {
 		switch (Toolkit.getToolkit().getPlatformShortcutKey()) {
@@ -215,25 +224,37 @@ public class NewChatController extends Loader {
 		}
 	}
 
+	/**
+	 * passes all info to create a chat on to the createChat Method
+	 */
 	@FXML
-	private void onNextButtonClick() {
+	private void onCreateButtonClick() {
 		ObservableList<User> users = this.users.getSelectionModel().getSelectedItems();
 		createChat(chatNameField.getText(), users);
 		onCancelButtonClick();
 	}
 
+	/**
+	 * closes the chat selection window
+	 */
 	@FXML
 	private void onCancelButtonClick() {
 		parentNode.getChildren().remove(parent);
 	}
 
+	/**
+	 * switches back to the user selection panel
+	 */
 	@FXML
 	private void onBackButtonClick() {
 		switchPanels(false);
 	}
 
+	/**
+	 * switch to name selection if required
+	 */
 	@FXML
-	private void onCreateButtonClick() {
+	private void onNextButtonClick() {
 		ObservableList<User> users = this.users.getSelectionModel().getSelectedItems();
 		if (users.size() == 1) {
 			createChat(users.get(0).getUserName(), users);
@@ -243,12 +264,18 @@ public class NewChatController extends Loader {
 		}
 	}
 
-
-	private void createChat(String chatName, ObservableList<User> users) {
+	/**
+	 * add the user defined chat to the data Model
+	 *
+	 * @param chatName Chat's name
+	 * @param users    joined Users
+	 * @return if the chat creation was successful
+	 */
+	private boolean createChat(String chatName, Collection<User> users) {
 		Chat chat = Chat.newChat(
 				chatName,
 				Manager.getLocalUser().get(),
-				users);
-		Manager.getUserChats().add(chat);
+				new ArrayList<>(users));
+		return Manager.getUserChats().add(chat);
 	}
 }

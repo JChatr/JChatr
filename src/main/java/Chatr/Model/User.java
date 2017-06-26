@@ -33,23 +33,17 @@ public class User {
 	 *
 	 * @param userName The name of the user.
 	 */
-	public User(String userName) {
+	public User(String userID, String userName, String email, String password) {
 		this.userName = userName;
-		this.userID = userName;
-		email = "";
-		status = Status.ONLINE;
-		password = "";
+		this.userID = userID;
+		this.email = email;
+		this.status = Status.ONLINE;
+		this.password = HashGen.hashPW(password);
 	}
 
 	public String getPassword() {
 		return password;
 	}
-
-	public User setPassword(String password) {
-		this.password = password;
-		return this;
-	}
-
 
 	/**
 	 * This method is used to get the user name.
@@ -97,6 +91,10 @@ public class User {
 		return this;
 	}
 
+	public String getEmail() {
+		return this.email;
+	}
+
 	/**
 	 * This method is used to get the user ID.
 	 *
@@ -105,12 +103,6 @@ public class User {
 	public String getUserID() {
 		return userID;
 	}
-
-	public User setEmail(String email) {
-		this.email = email.toLowerCase();
-		return this;
-	}
-
 
 	public Status getStatus() {
 		return status;
@@ -121,7 +113,6 @@ public class User {
 		return this;
 	}
 
-
 	@Override
 	public String toString() {
 		return userID;
@@ -129,10 +120,8 @@ public class User {
 
 	@Override
 	public boolean equals(Object o) {
-		if (o == null) {
-			return false;
-		}
-		return Objects.equals(userID, o.toString());
+		return !(o == null || !(o instanceof User)) &&
+				Objects.equals(userID, o.toString());
 	}
 
 	@Override

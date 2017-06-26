@@ -76,8 +76,7 @@ public class MessageHandler {
 				case CONVERSATION:
 					switch (request.getCRUD()) {
 						case CREATE: {
-							boolean status = database.addChat(request.getConversationID(),
-									request.getUserIDs());
+							boolean status = database.addChat(request.getChat());
 							responses.add(request.reset().setStatus(status));
 							break;
 						}

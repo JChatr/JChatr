@@ -1,17 +1,6 @@
 package Chatr.Server;
 
-import Chatr.Client.Connection;
-import Chatr.Model.User;
-import Chatr.Helper.Terminal;
-import Chatr.Controller.Login;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.util.Scanner;
 
 import static org.junit.Assert.assertEquals;
 
@@ -75,17 +64,5 @@ public class LoginTest {
 	}
 	*/
 
-	/**
-	 * change the input stream after the Terminal scanner has been created
-	 * @param is Input Stream to replace STDIN with
-	 */
-	private void setTerminalInput(InputStream is) {
-		try {
-			Field scanner = Terminal.class.getDeclaredField("scan");
-			scanner.setAccessible(true);
-			scanner.set(null, new Scanner(is));
-		} catch (NoSuchFieldException | IllegalAccessException e) {
-		}
-	}
 }
 

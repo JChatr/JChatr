@@ -16,7 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<GridPane fx:id="parent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<GridPane fx:id="parent" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1">
     <columnConstraints>
         <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" />
         <ColumnConstraints hgrow="SOMETIMES" minWidth="0.0" />
@@ -50,8 +50,8 @@
                         <Insets />
                     </GridPane.margin>
                 </JFXTextField>
-                <JFXButton fx:id="cancelButton" onAction="#onCancelButtonClick" text="CANCEL" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
-                <JFXButton fx:id="nextButton" onAction="#onNextButtonClick" text="NEXT" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <JFXButton fx:id="backButton" onAction="#onBackButtonClick" text="BACK" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
+                <JFXButton fx:id="createButton" onAction="#onCreateButtonClick" text="CREATE" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets left="10.0" />
                     </GridPane.margin>
@@ -83,8 +83,8 @@
                 <ListView fx:id="users" prefWidth="200.0" styleClass="selector" VBox.vgrow="SOMETIMES" />
                 <HBox alignment="TOP_RIGHT" VBox.vgrow="NEVER">
                     <children>
-                        <JFXButton fx:id="backButton" onAction="#onBackButtonClick" text="BACK" />
-                        <JFXButton fx:id="createButton" onAction="#onCreateButtonClick" text="CREATE" />
+                        <JFXButton fx:id="cancelButton" onAction="#onCancelButtonClick" text="CANCEL" />
+                        <JFXButton fx:id="nextButton" onAction="#onNextButtonClick" text="NEXT" />
                     </children>
                 </HBox>
             </children>
