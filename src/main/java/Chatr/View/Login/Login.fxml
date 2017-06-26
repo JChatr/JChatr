@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
@@ -136,11 +137,18 @@
                   </HBox>
                   <VBox fx:id="signInLoginButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="loginButton" maxWidth="165.0" mnemonicParsing="false" onAction="#onLoginButtonClick" text="Login">
+                        <JFXRippler>
+                           <control>
+                              <Button fx:id="loginButton" maxWidth="165.0" mnemonicParsing="false" onAction="#onLoginButtonClick" onMouseClicked="#onLoginButtonClick" text="Login">
+                               <VBox.margin>
+                                   <Insets left="150.0" />
+                               </VBox.margin>
+                              </Button>
+                           </control>
                            <VBox.margin>
-                              <Insets left="150.0" />
+                              <Insets left="50.0" />
                            </VBox.margin>
-                        </Button>
+                        </JFXRippler>
                         <HBox onMouseClicked="#onSignInButtonClick" prefHeight="100.0" prefWidth="200.0" styleClass="buttomMessage">
                            <children>
                               <Label text="New to Chatr?">
@@ -171,11 +179,18 @@
                   </VBox>
                   <VBox fx:id="registerButtonBox" prefHeight="200.0" prefWidth="100.0">
                      <children>
-                        <Button fx:id="registerButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" text="Register">
+                        <JFXRippler>
+                           <control>
+                              <Button fx:id="registerButton" maxWidth="169.0" mnemonicParsing="false" onAction="#onRegisterButtonClick" onMouseClicked="#onRegisterButtonClick" text="Register">
+                                 <VBox.margin>
+                                    <Insets left="148.0" />
+                                 </VBox.margin>
+                               </Button>
+                           </control>
                            <VBox.margin>
-                              <Insets left="148.0" />
+                              <Insets left="50.0" />
                            </VBox.margin>
-                        </Button>
+                        </JFXRippler>
                         <HBox onMouseClicked="#backButtonPressed" prefHeight="100.0" prefWidth="200.0" styleClass="buttomMessage">
                            <children>
                               <Label text="Already signed in?">

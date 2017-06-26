@@ -8,8 +8,8 @@
 
 .button{
     -fx-font-size: 14;
-    -fx-background-radius: 4;
-    -fx-border-radius: 4;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
     -fx-pref-height: 30;
     -fx-min-width: 30;
     -fx-background-color: -fx-white;
@@ -21,7 +21,7 @@
 }
 
 .button:focused{
-    -fx-effect: dropshadow(gaussian, #b4d1f3, 3, 3, 0, 0);
+    -fx-effect: dropshadow(gaussian, #b4d1f3, 0, 0, 0, 0);
 }
 
 *:focused, *:selected {
@@ -39,11 +39,12 @@
     -fx-background-image: url("/icons/emojiSmall.png");
 }
 
-.img-button:hover {
+.img-button:hover{
     -fx-opacity: 0.9;
 }
 
 .img-button:selected, .img-button:focused {
+    -fx-focus-color: transparent;
 }
 
 .scroll-bar {
@@ -69,8 +70,13 @@
 
 .text-field{
     -fx-font-size: 14;
-    -fx-background-radius: 4;
-    -fx-border-radius: 4;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
     -fx-background-color: -fx-white;
     -fx-border-color: #cccccc;
+}
+
+.border{
+    -fx-border-color: lightgrey;
+    -fx-border-width: 1px;
 }

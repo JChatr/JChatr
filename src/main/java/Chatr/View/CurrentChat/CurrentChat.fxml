@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -21,9 +22,9 @@
 
 <HBox id="hBoxPane" stylesheets="@CurrentChat.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.CurrentChat.CurrentChatController">
     <children>
-        <VBox id="vBoxChatWindow" fx:id="chatBox" HBox.hgrow="ALWAYS">
+        <VBox id="vBoxChatWindow" fx:id="chatBox" styleClass="border" HBox.hgrow="ALWAYS">
             <children>
-                <AnchorPane>
+                <AnchorPane id="curentChatHeader" fx:id="chatHeader" prefHeight="50.0" styleClass="border">
                     <children>
                         <VBox spacing="5.0" AnchorPane.leftAnchor="0.0">
                             <children>
@@ -45,10 +46,15 @@
                                 </Label>
                             </children>
                         </VBox>
-                        <Button id="chatInfoButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="img-button" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <font>
-                        <Font size="11.0" />
-                     </font></Button>
+                  <JFXRippler maskType="CIRCLE" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <control>
+                           <Button id="chatInfoButton" fx:id="chatInfoButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="img-button" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+                        <font>
+                           <Font size="11.0" />
+                        </font>
+                        </Button>
+                     </control>
+                  </JFXRippler>
                     </children>
                     <VBox.margin>
                         <Insets />
@@ -59,7 +65,22 @@
                         <Insets />
                     </VBox.margin>
                 </ListView>
-                <HBox alignment="BOTTOM_CENTER">
+            <GridPane fx:id="startMessage" VBox.vgrow="ALWAYS">
+              <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints minWidth="10.0" prefWidth="239.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <Label alignment="CENTER" contentDisplay="CENTER" text="Select a conversation to start chatting." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+               </children>
+            </GridPane>
+                <HBox fx:id="bottomHBox" alignment="BOTTOM_CENTER">
                     <children>
                         <TextArea fx:id="textInput" focusTraversable="false" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" prefHeight="40.0" promptText="Write a Message..." wrapText="true" HBox.hgrow="ALWAYS">
                             <HBox.margin>
@@ -69,22 +90,30 @@
                                 <Font size="11.0" />
                             </font>
                         </TextArea>
-                        <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" minHeight="-Infinity" minWidth="75.0" mnemonicParsing="false" onAction="#onEmojiButtonClick" prefWidth="30.0" styleClass="img-button" textOverrun="CLIP" HBox.hgrow="NEVER">
-                            <HBox.margin>
-                                <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
-                            </HBox.margin>
-                            <font>
-                                <Font size="11.0" />
-                            </font>
-                        </Button>
-                        <Button id="sendButton" fx:id="sendButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minHeight="-Infinity" minWidth="75.0" mnemonicParsing="false" onAction="#onSendButtonClick" prefWidth="30.0" styleClass="img-button" text="Send" HBox.hgrow="NEVER">
-                            <HBox.margin>
-                                <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
-                            </HBox.margin>
-                            <font>
-                                <Font size="11.0" />
-                            </font>
-                        </Button>
+                  <JFXRippler maskType="CIRCLE">
+                     <control>
+                           <Button fx:id="emojiButton" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" minHeight="-Infinity" minWidth="75.0" mnemonicParsing="false" onAction="#onEmojiButtonClick" onMouseClicked="#onEmojiButtonClick" prefWidth="30.0" styleClass="img-button" textOverrun="CLIP" HBox.hgrow="NEVER">
+                               <HBox.margin>
+                                   <Insets bottom="10.0" left="5.0" right="5.0" top="10.0" />
+                               </HBox.margin>
+                               <font>
+                                   <Font size="11.0" />
+                               </font>
+                           </Button>
+                     </control>
+                  </JFXRippler>
+                  <JFXRippler maskType="CIRCLE" onMouseClicked="#onSendButtonClick">
+                     <control>
+                           <Button id="sendButton" fx:id="sendButton" contentDisplay="GRAPHIC_ONLY" graphicTextGap="0.0" minHeight="-Infinity" minWidth="75.0" mnemonicParsing="false" onAction="#onSendButtonClick" prefWidth="30.0" styleClass="img-button" text="Send" HBox.hgrow="NEVER">
+                               <HBox.margin>
+                                   <Insets bottom="10.0" left="5.0" right="10.0" top="10.0" />
+                               </HBox.margin>
+                               <font>
+                                   <Font size="11.0" />
+                               </font>
+                           </Button>
+                     </control>
+                  </JFXRippler>
                     </children>
                 </HBox>
             </children>

@@ -9,11 +9,20 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 
 public class CurrentChatController extends Loader {
 	@FXML
 	private ListView<Message> currentMessages;
+	@FXML
+	private AnchorPane chatHeader;
+	@FXML
+	private GridPane startMessage;
+	@FXML
+	private HBox bottomHBox;
 	@FXML
 	private Label currentChatName;
 	@FXML
@@ -29,6 +38,8 @@ public class CurrentChatController extends Loader {
 	@FXML
 	private VBox chatBox;
 
+
+
 	private String chatID;
 	private boolean sidebarVisible;
 	private Node test;
@@ -41,6 +52,18 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
+		bindings();
+		chatHeader.setVisible(false);
+		currentMessages.setVisible(false);
+		bottomHBox.setVisible(false);
+		startMessage.setVisible(true);
+	}
+
+	private void bindings(){
+		chatHeader.managedProperty().bind(chatHeader.visibleProperty());
+		currentMessages.managedProperty().bind(currentMessages.visibleProperty());
+		startMessage.managedProperty().bind(startMessage.visibleProperty());
+		bottomHBox.managedProperty().bind(bottomHBox.visibleProperty());
 	}
 
 	private void addListeners() {
@@ -75,6 +98,11 @@ public class CurrentChatController extends Loader {
 		currentChatUsers.textProperty().set("");
 		textInput.clear();
 		chatID = "";
+		chatHeader.setVisible(true);
+		currentMessages.setVisible(true);
+		bottomHBox.setVisible(true);
+		startMessage.setVisible(false);
+
 	}
 
 	/**
@@ -108,4 +136,6 @@ public class CurrentChatController extends Loader {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
 	}
+
+
 }

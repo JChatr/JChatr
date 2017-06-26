@@ -6,6 +6,8 @@ import Chatr.Model.ErrorMessagesValidation;
 import Chatr.Model.Exceptions.*;
 import Chatr.Model.User;
 import Chatr.View.ChatList.ChatListController;
+import Chatr.View.CurrentChat.MessageCell.MessageCell;
+import Chatr.View.JavaFX;
 import Chatr.View.Loader;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -18,7 +20,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import sun.plugin2.message.JavaScriptBaseMessage;
 
+import javax.swing.text.View;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -225,6 +229,7 @@ public class LoginController extends Loader implements Initializable {
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
 			Manager.startUpdateLoop();
+			JavaFX.primaryStage.setTitle("Chatr - " + user.getUserName());
 			changeScene();
 		} catch (UserIDException e) {
 			userIdLabel.setVisible(true);

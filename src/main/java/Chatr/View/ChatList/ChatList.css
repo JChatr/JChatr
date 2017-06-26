@@ -18,7 +18,26 @@
 }
 
 .split-pane-divider {
-    -fx-padding: 1px;
+    -fx-padding: 0px;
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 }
+
+#newChatImageButton{
+    -fx-image: url("/icons/pencil.png");
+}
+
+#vBoxSearchNewChat, #vBoxSearchNewChat:focused, #vBoxSearchNewChat:selected{
+
+    -fx-background-color: -fx-white;
+}
+
+#chatListView, #chatListView:focused, #chatListView:selected{
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+#vBoxSearchNewChat, #vBoxSearchNewChat:focused, #vBoxSearchNewChat:selected{
+    -fx-border-width: 0px;
+}
+

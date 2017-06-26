@@ -76,11 +76,14 @@
 
 #vBoxChatWindow, #hBoxPane{
     -fx-background-color: -fx-white;
+    -fx-border-width: 0px;
 }
 
 #chatInfoButton{
     -fx-background-image: url("/icons/info.png");
 }
+
+
 /*.list-cell:filled:selected:focused, .list-cell:filled:selected {*/
 /*-fx-background-color: transparent;*/
 /*}*/

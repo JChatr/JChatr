@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class JavaFX extends Application {
-	private Stage primaryStage;
+	public static Stage primaryStage;
 	private AnchorPane rootLayout;
 	private AnchorPane currentChat;
 	private Logger log = LogManager.getLogger(JavaFX.class);
@@ -41,5 +41,9 @@ public class JavaFX extends Application {
 				getClass().getResource("/css/chatr.css").toExternalForm()
 		);
 		primaryStage.setScene(scene);
+	}
+
+	public void setStageTitle(String s){
+		this.primaryStage.setTitle(s);
 	}
 }
