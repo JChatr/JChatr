@@ -9,6 +9,8 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 public class ImageLoader {
     private static Logger log = LogManager.getLogger(ImageLoader.class);
@@ -37,8 +39,11 @@ public class ImageLoader {
      */
     public static ObjectProperty<Image> loadImageOP(String urlStr, int width, int height, boolean preserveRatio, boolean smooth){
         ObjectProperty<Image> objImg = new SimpleObjectProperty<>();
-        Image img = httpsLoad(urlStr, width, height, preserveRatio, smooth);
+        Image img = new Image("/icons/gifsep.png", width, height, false, false);
         objImg.set(img);
+        Executors.newSingleThreadExecutor().execute(() -> {
+            objImg.set(httpsLoad(urlStr, width, height, preserveRatio, smooth));
+        });
         return objImg;
     }
 

@@ -83,7 +83,7 @@ class DatabaseFixtures {
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u3.getUserID(), "Ich heiße Matthias!", ContentType.TEXT));
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u3.getUserID(), "https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded", ContentType.GIF));
+		db.addMessage(conID, new Message(u3.getUserID(), "https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded", ContentType.GIF, 356, 200, null));
 	}
 
 	/**
@@ -106,7 +106,7 @@ class DatabaseFixtures {
 		String conID = "Financial POWER";
 		db.addConversation(conID, uIDs);
 		Thread.sleep(2);
-		db.addMessage(conID, new Message(u1.getUserID(), "https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2", ContentType.GIF));
+		db.addMessage(conID, new Message(u1.getUserID(), "https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2", ContentType.GIF, 365, 200, null));
 		Thread.sleep(2);
 		db.addMessage(conID, new Message(u1.getUserID(), "Goot idea! We germans know hau to buld a Wall!", ContentType.TEXT));
 	}
