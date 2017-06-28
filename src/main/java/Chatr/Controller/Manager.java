@@ -36,12 +36,16 @@ public class Manager {
 	}
 
 
-	public static Message addMessage(String content, ContentType contentType) {
-		return currentChat.get().newMessage(content, contentType);
+	public static void addMessage(String content, ContentType contentType) {
+		currentChat.get().addMessage(content, contentType);
 	}
 
 	public static ObjectProperty<Chat> getCurrentChat() {
 		return currentChat;
+	}
+
+	public static void setCurrentChat(Chat chat) {
+		currentChat.setValue(chat);
 	}
 
 	public static ObservableList<User> getUsers() {
@@ -54,6 +58,10 @@ public class Manager {
 
 	public static StringProperty getLocalUserName() {
 		return new SimpleStringProperty(localUser.get().getUserName());
+	}
+
+	public static ObjectProperty<User> getLocalUser() {
+		return localUser;
 	}
 
 	public static String getLocalUserID() {
@@ -78,16 +86,12 @@ public class Manager {
 
 	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
-			if (u.equals(new User(userID))) {
+			if (u.getUserID().equals(userID)) {
 				log.trace("(getUserImage) User found!" + u.getUserID());
 				return u.getImage();
 			}
 		}
-			return localUser.get().getImage();
-	}
-
-		public static void setCurrentChat(Chat chat) {
-		currentChat.setValue(chat);
+		return localUser.get().getImage();
 	}
 
 	private static void initialize() {
@@ -99,12 +103,11 @@ public class Manager {
 		currentChat = new SimpleObjectProperty<>();
 	}
 
-	public static void initialPull(){
-		Set<Chat> readChats = Connection.readAllConversations(localUser.get().getUserID());
+
+	public static void initialPull() {
+		Set<Chat> readChats = Connection.readAllUserChats(localUser.get().getUserID());
 		readChats.forEach(readChat -> {
-			if (!userChats.contains(readChat)) {
-				userChats.add(readChat);
-			}
+			if (!userChats.contains(readChat)) userChats.add(readChat);
 		});
 
 		Set<User> userSet = Connection.readUsers();
@@ -113,7 +116,7 @@ public class Manager {
 
 	private static Chat resolveChatID(String chatID) {
 		for (Chat c : userChats) {
-			if (c.getID().get().equals(chatID)) return c;
+			if (c.getID().equals(chatID)) return c;
 		}
 		throw new IllegalStateException("Chat ID could not be resolved");
 	}

@@ -5,12 +5,12 @@ import Chatr.Helper.Enums.ContentType;
 import java.util.Objects;
 
 public class Message {
+	// timestamp is always guaranteed to be set
+	private final Long timestamp = System.currentTimeMillis();
 	private String sender;
 	private String content;
 	private boolean isEmpty = false;
 	private ContentType contentType;
-	// timestamp is always guaranteed to be set
-	private final Long timestamp = System.currentTimeMillis();
 
 	public Message() {
 		isEmpty = true;
@@ -21,7 +21,6 @@ public class Message {
 		this.content = content;
 		this.contentType = contentType;
 	}
-
 
 	public String getContent() {
 		return this.content;
@@ -39,7 +38,7 @@ public class Message {
 		return isEmpty;
 	}
 
-	public ContentType getContentType(){
+	public ContentType getContentType() {
 		return this.contentType;
 	}
 

@@ -1,0 +1,8 @@
+.label-bg {
+    -fx-background-color: -fx-light-grey;
+    -fx-background-radius: 30px;
+}
+
+.circular-img {
+    -fx-border-radius: 20px;
+}

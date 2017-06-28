@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class LoginController extends Loader implements Initializable {
 
+	private static Logger log = LogManager.getLogger(LoginController.class);
 	@FXML
 	private TextField userId;
 	@FXML
@@ -50,9 +51,6 @@ public class LoginController extends Loader implements Initializable {
 	private Label eMailLabel;
 	@FXML
 	private Label usernameLabel;
-
-	private static Logger log = LogManager.getLogger(LoginController.class);
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {

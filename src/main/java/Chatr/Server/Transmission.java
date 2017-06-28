@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * Transmission wrapper used  as a datastore in client / server communication
  */
-public class Transmission implements Cloneable{
+public class Transmission implements Cloneable {
 	private Request type;
 	private Crud crud;
 	private String localUserID;
@@ -37,7 +37,7 @@ public class Transmission implements Cloneable{
 		this.type = type;
 		this.crud = crud;
 		this.localUserID = (Manager.localUser == null) ? "042b9135b65cc71d9c94df01add70cbf" :
-				Manager.getLocalUserID();
+				Manager.getLocalUser().get().getUserID();
 	}
 
 	public Request getRequestType() {
@@ -66,7 +66,7 @@ public class Transmission implements Cloneable{
 		return this;
 	}
 
-	public String getConversationID() {
+	public String getChatID() {
 		return this.conversationID;
 	}
 
@@ -147,12 +147,12 @@ public class Transmission implements Cloneable{
 		return this;
 	}
 
-	public String getLocalUserID(){
+	public String getLocalUserID() {
 		return this.localUserID;
 	}
 
-	public Transmission setLocalUserID(String userID){
-		this.localUserID= userID;
+	public Transmission setLocalUserID(String userID) {
+		this.localUserID = userID;
 		return this;
 	}
 
@@ -173,8 +173,12 @@ public class Transmission implements Cloneable{
 	}
 
 	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	protected Transmission clone() {
+		try {
+			return (Transmission) super.clone();
+		} catch (CloneNotSupportedException e) {
+		}
+		return null;
 	}
 
 	@Override

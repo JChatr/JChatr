@@ -1,5 +1,5 @@
 .muted {
-    -fx-text-fill: rgba(0,0,0,0.6);
+    -fx-text-fill: rgba(0, 0, 0, 0.6);
 }
 
 .title {
@@ -12,6 +12,7 @@
     -fx-text-fill: #e8e8e8;
     -fx-font-weight: bold;
 }
+
 * {
     -fx-font-smoothing-type: lcd !important;
 }

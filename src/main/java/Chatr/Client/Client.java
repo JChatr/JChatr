@@ -32,9 +32,9 @@ import java.util.function.Function;
  */
 public final class Client {
 
+	WebSocketClient socketClient;
 	private EventListenerList listeners = new EventListenerList();
 	private Logger log = LogManager.getLogger(Client.class);
-	WebSocketClient socketClient;
 
 	public Client() {
 		try {

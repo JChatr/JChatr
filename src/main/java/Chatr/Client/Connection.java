@@ -18,15 +18,15 @@ import static Chatr.Helper.Enums.Request.*;
 public final class Connection {
 
 	private static final Client client = new Client();
+
 	/**
 	 * creates a new conversation on the server and adds the specified users
 	 *
-	 * @param conversationID ID of the new conversation
-	 * @param userIDs        users to add to the conversation
+	 * @param chat Chat to create on the server
 	 * @return if the operation was successful
 	 */
-	public static void createConversation(String conversationID, Set<String> userIDs) {
-		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
+	public static void createChat(Chat chat) {
+		Transmission request = build(CONVERSATION, CREATE, chat.getID(), chat);
 		sendJSON(request);
 	}
 
@@ -37,7 +37,7 @@ public final class Connection {
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static Set<Chat> readAllConversations(String userID) {
+	public static Set<Chat> readAllUserChats(String userID) {
 		Transmission request = build(CONNECT, READ, userID, null);
 		TransmissionListener conversationListener = new TransmissionListener(Thread.currentThread());
 		client.addListener(conversationListener);
@@ -57,11 +57,11 @@ public final class Connection {
 	 * @param conversationID ID of the conversation to delete
 	 * @return if the operation was successful
 	 */
-	public static void deleteConversation(String conversationID) {
+	public static void deleteChat(String conversationID) {
 		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
 	}
 
-	public static void updateConversationUsers(String conversationID, Set<String> userIDs) {
+	public static void updateChatUsers(String conversationID, Set<String> userIDs) {
 		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
 		sendJSON(request);
 	}
@@ -103,12 +103,11 @@ public final class Connection {
 	/**
 	 * creates a new user on the server
 	 *
-	 * @param userID   ID of the User to create
-	 * @param userData the new Users data
+	 * @param user the new Users data
 	 * @return if the operation was successful
 	 */
-	public static void createUserLogin(String userID, User userData) {
-		Transmission request = build(LOGIN, CREATE, userID, userData);
+	public static void createUser(User user) {
+		Transmission request = build(LOGIN, CREATE, user.getUserID(), user);
 		sendJSON(request);
 	}
 
@@ -196,7 +195,7 @@ public final class Connection {
 			case CONVERSATION:
 				switch (operation) {
 					case CREATE:
-						request.setConversationID(ID).setUserIDs((Set<String>) data);
+						request.setChat((Chat) data);
 						break;
 					case READ:
 						request.setUserID(ID);
@@ -242,10 +241,9 @@ public final class Connection {
 			response = e.getTransmission();
 			thread.interrupt();
 		}
+
 		public Transmission getResponse() {
 			return response;
 		}
 	}
-
-
 }

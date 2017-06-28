@@ -21,129 +21,128 @@ import org.apache.logging.log4j.Logger;
  * renders the Message items in the current Chat box
  */
 class GIFCellController extends Loader {
-    @FXML
-    private HBox parent;
-    @FXML
-    private Label userName;
-    @FXML
-    private GridPane gifBox;
-    @FXML
-    private Label timestamp;
-    @FXML
-    private Pane spacer;
-    @FXML
-    private Pane background;
-    @FXML
-    private ImageView userThumbnail;
-    @FXML
-    private ImageView gifIV;
+	private final static int MAX_WIDTH = 600;
+	private final static int MIN_WIDTH = 50;
+	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
+	private final static int WIDTH_PADDING = 20;
+	private static int MIN_HEIGHT = 40;
+	private static Logger log = LogManager.getLogger(GIFCellController.class);
+	@FXML
+	private HBox parent;
+	@FXML
+	private Label userName;
+	@FXML
+	private GridPane gifBox;
+	@FXML
+	private Label timestamp;
+	@FXML
+	private Pane spacer;
+	@FXML
+	private Pane background;
+	@FXML
+	private ImageView userThumbnail;
+	@FXML
+	private ImageView gifIV;
 
-    private final static int MAX_WIDTH = 600;
-    private final static int MIN_WIDTH = 50;
-    private final static int MAX_HEIGHT = Integer.MAX_VALUE;
-    private  static int MIN_HEIGHT = 40;
-    private final static int WIDTH_PADDING = 20;
+	GIFCellController() {
+		load(this);
+		linkProperties();
+		addListeners();
+	}
 
-    private static Logger log = LogManager.getLogger(GIFCellController.class);
+	/**
+	 * Same as setInfo in MessageCellCOntroller
+	 *
+	 * @param message The message
+	 */
+	public void setInfo(Message message) {
+		resetData();
+		userThumbnail.setManaged(false);
+		userName.setText(message.getSender());
+		timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
+		Image img = ImageLoader.loadImageNoData(message.getContent());
+		gifIV.setFitWidth(img.getWidth());
+		gifIV.setFitHeight(img.getHeight());
+		gifIV.imageProperty().set(img);
+		if (!Manager.getLocalUserID().equals(message.getSender())) {
+			userThumbnail.setManaged(true);
+			displayUserThumbnail(message.getSender());
+			alignLeft();
+		}
+	}
 
-    GIFCellController() {
-        load(this);
-        linkProperties();
-        addListeners();
-    }
+	@Override
+	public Parent getView() {
+		return parent;
+	}
 
-    /**
-     * Same as setInfo in MessageCellCOntroller
-     * @param message The message
-     */
-    public void setInfo(Message message) {
-        resetData();
-        userThumbnail.setManaged(false);
-        userName.setText(message.getSender());
-        timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
-        Image img = ImageLoader.loadImageNoData(message.getContent());
-        gifIV.setFitWidth(img.getWidth());
-        gifIV.setFitHeight(img.getHeight());
-        gifIV.imageProperty().set(img);
-        if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
-            userThumbnail.setManaged(true);
-            displayUserThumbnail(message.getSender());
-            alignLeft();
-        }
-    }
+	/**
+	 * resets all internal data to allow for object reuse
+	 */
+	private void resetData() {
+		userName.setText("");
+		gifIV.imageProperty().unbind();
+		gifIV.setImage(null);
+		timestamp.setText("");
+		userName.setText("");
+		alignRight();
+		userThumbnail.imageProperty().unbind();
+		userThumbnail.setImage(null);
+		gifBox.setPrefWidth(MIN_WIDTH);
+		gifBox.setMaxWidth(MAX_WIDTH);
+		parent.setPrefHeight(MIN_HEIGHT);
+		parent.setMaxHeight(MAX_HEIGHT);
+	}
 
-    @Override
-    public Parent getView() {
-        return parent;
-    }
+	/**
+	 * aligns the message to the Right and changes the CSS appropriately
+	 */
+	private void alignLeft() {
+		spacer.toFront();
+		userName.setVisible(true);
+		userThumbnail.toBack();
+		gifIV.setId("text-left");
+		userName.setId("name-background");
+		timestamp.setId("timestamp-background");
+		timestamp.toFront();
+		userName.toFront();
+	}
 
-    /**
-     * resets all internal data to allow for object reuse
-     */
-    private void resetData() {
-        userName.setText("");
-        gifIV.imageProperty().unbind();
-        gifIV.setImage(null);
-        timestamp.setText("");
-        userName.setText("");
-        alignRight();
-        userThumbnail.imageProperty().unbind();
-        userThumbnail.setImage(null);
-        gifBox.setPrefWidth(MIN_WIDTH);
-        gifBox.setMaxWidth(MAX_WIDTH);
-        parent.setPrefHeight(MIN_HEIGHT);
-        parent.setMaxHeight(MAX_HEIGHT);
-    }
+	/**
+	 * aligns the message to the Left and changes the CSS appropriately
+	 */
+	private void alignRight() {
+		spacer.toBack();
+		userName.setVisible(false);
+		userThumbnail.toFront();
+		gifIV.setId("text-right");
+		userName.setId("text-right");
+	}
 
-    /**
-     * aligns the message to the Right and changes the CSS appropriately
-     */
-    private void alignLeft() {
-        spacer.toFront();
-        userName.setVisible(true);
-        userThumbnail.toBack();
-        gifIV.setId("text-left");
-        userName.setId("name-background");
-        timestamp.setId("timestamp-background");
-        timestamp.toFront();
-        userName.toFront();
-    }
+	/**
+	 * adjusts cell size to match the image in the imageview
+	 */
+	private void addListeners() {
+		// gets called when the image is updated
+		//see message cell
+		gifIV.imageProperty().addListener(((observable, oldValue, newValue) -> {
+			double width = gifIV.getLayoutBounds().getWidth();
+			gifIV.setFitWidth(width);
+			gifBox.setPrefWidth(width);
+			gifBox.setMaxWidth(width);
+			double height = gifIV.getLayoutBounds().getHeight();
+			height += 15;
+			parent.setPrefHeight(height);
+		}));
+	}
 
-    /**
-     * aligns the message to the Left and changes the CSS appropriately
-     */
-    private void alignRight() {
-        spacer.toBack();
-        userName.setVisible(false);
-        userThumbnail.toFront();
-        gifIV.setId("text-right");
-        userName.setId("text-right");
-    }
+	private void linkProperties() {
+		userName.managedProperty().bind(userName.visibleProperty());
+	}
 
-    /**
-     * adjusts cell size to match the image in the imageview
-     */
-    private void addListeners() {
-        // gets called when the image is updated
-        //see message cell
-        gifIV.imageProperty().addListener(((observable, oldValue, newValue) -> {
-            double width = gifIV.getLayoutBounds().getWidth();
-            gifIV.setFitWidth(width);
-            gifBox.setPrefWidth(width);
-            gifBox.setMaxWidth(width);
-            double height = gifIV.getLayoutBounds().getHeight();
-            height += 15;
-            parent.setPrefHeight(height);
-        }));
-    }
-
-    private void linkProperties(){
-        userName.managedProperty().bind(userName.visibleProperty());
-    }
-
-    private void displayUserThumbnail(String sender) {
-        userThumbnail.imageProperty().unbind();
-        userThumbnail.setImage(null);
-        userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
-    }
+	private void displayUserThumbnail(String sender) {
+		userThumbnail.imageProperty().unbind();
+		userThumbnail.setImage(null);
+		userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
+	}
 }

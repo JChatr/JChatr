@@ -48,7 +48,7 @@ public class JavaFX extends Application {
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
 		scene.getStylesheets().addAll(
-				getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
+//				getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
 				getClass().getResource("/css/chatr.css").toExternalForm()
 		);
 		primaryStage.setScene(scene);

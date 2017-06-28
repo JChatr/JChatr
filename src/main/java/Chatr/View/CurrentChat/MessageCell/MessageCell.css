@@ -3,6 +3,7 @@
     /*-fx-border-radius: 18px;*/
     -fx-background-radius: 18px;
 }
+
 #text-right {
     -fx-text-fill: #ffffff;
 }
@@ -16,12 +17,12 @@
     -fx-text-fill: #000000;
 }
 
-#name-background{
+#name-background {
     -fx-text-fill: #ffffff;
     -fx-background-color: #444444;
 }
 
-#timestamp-background{
+#timestamp-background {
     -fx-text-fill: #ffffff;
     -fx-background-color: #444444;
 }

@@ -62,7 +62,7 @@ public class UpdateService {
 	 * submits the jobs and executes them on a separate thread. The result of the function gets
 	 * passed to the JavaFX Thread via Platform.runLater()
 	 *
-	 * @param property property to write the changes of the update to
+	 * @param property       property to write the changes of the update to
 	 * @param updateFunction function to update given property
 	 */
 	@SuppressWarnings("unchecked")

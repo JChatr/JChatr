@@ -2,18 +2,11 @@ package Chatr.Controller;
 
 import Chatr.Helper.Enums.Request;
 import Chatr.Model.Chat;
-import Chatr.Model.Message;
 import Chatr.Model.User;
 import Chatr.Server.Transmission;
 import javafx.application.Platform;
 import javafx.beans.property.ListProperty;
 
-import java.util.Set;
-import java.util.function.Predicate;
-
-/**
- * Created by haags on 19.06.17.
- */
 public class HandlerFactoryClient {
 
 	public static HandlerClient getInstance(Request requestType) {
@@ -43,7 +36,7 @@ public class HandlerFactoryClient {
 					Platform.runLater(() -> {
 						super.userChats.forEach(
 								chat -> {
-									if (chat.getID().get().equals(t.getConversationID())) {
+									if (chat.getID().equals(t.getChatID())) {
 										chat.addMessage(t.getMessage());
 									}
 								}
@@ -68,16 +61,16 @@ public class HandlerFactoryClient {
 			switch (t.getCRUD()) {
 				case CREATE: {
 					super.userChats.add(t.getChat());
+					break;
 				}
-				break;
 				case UPDATE: {
 					//No clear implementation of Update
+					break;
 				}
-				break;
 				case DELETE: {
-					super.userChats.removeIf(p -> p.getID().get().equals(t.getConversationID()));
+					super.userChats.removeIf(p -> p.equals(t.getChat()));
+					break;
 				}
-				break;
 			}
 		}
 	}
@@ -96,14 +89,11 @@ public class HandlerFactoryClient {
 				case READ:
 					//No clear implementation of READ
 					break;
-
 				case UPDATE: {
-					super.users.forEach(user -> {
-						if (user.getUserID() == t.getUserID()) {
-							User u = t.getUser();
-							user.setUserName(u.getUserName()).setEmail(u.getEmail());
-						}
-					});
+					for (int i = 0; i < super.users.size(); i++) {
+						User user = super.users.get(i);
+						if (user.equals(t.getUser())) super.users.set(i, t.getUser());
+					}
 				}
 			}
 		}

@@ -22,6 +22,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * Multithreaded server, spawns a new Thread for every connection
  */
 public class Server extends WebSocketServer {
+	public static Logger log = LogManager.getLogger(Server.class);
+	private Map<String, InetSocketAddress> socketIDLink = new ConcurrentHashMap<>();
+	public Server(int port) throws UnknownHostException {
+		super(new InetSocketAddress(port));
+
+	}
+
 	static public void main(String args[]) {
 		try {
 			WebSocketImpl.DEBUG = false;
@@ -39,14 +46,6 @@ public class Server extends WebSocketServer {
 		} catch (InterruptedException | IOException e) {
 			log.error(e);
 		}
-	}
-
-	private Map<String, InetSocketAddress> socketIDLink = new ConcurrentHashMap<>();
-	public static Logger log = LogManager.getLogger(Server.class);
-
-	public Server(int port) throws UnknownHostException {
-		super(new InetSocketAddress(port));
-
 	}
 
 	@Override

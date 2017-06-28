@@ -1,0 +1,11 @@
+#selected {
+    -fx-text-fill: -fx-accent !important;
+}
+
+.userName {
+    -fx-font-weight: bold;
+}
+
+.timestamp {
+    -fx-text-fill: -fx-dark-grey;
+}

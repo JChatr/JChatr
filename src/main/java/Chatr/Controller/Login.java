@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  *
  * @author mk285, mf140
  */
-public class Login{
+public class Login {
 
 
 	private static Logger log = LogManager.getLogger(Login.class);
@@ -35,7 +35,7 @@ public class Login{
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
 		}
-		if(!HashGen.checkPW(password, user.getPassword())){
+		if (!HashGen.checkPW(password, user.getPassword())) {
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
@@ -52,11 +52,11 @@ public class Login{
 	 * @return Returns a new object of user
 	 */
 	public static User registerUser(String userID, String eMail, String userName, String password) {
-		User user = new User(userID);
-		user.setUserName(userName);
-		user.setEmail(eMail);
-		user.setPassword(HashGen.hashPW(password));
-		Connection.createUserLogin(userID, user);
+		validateUser(userID, eMail, password, userName);
+		validateUniqueID(userID);
+
+		User user = new User(userID, userName, eMail, HashGen.hashPW(password));
+		Connection.createUser(user);
 		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
 		return user;
 	}

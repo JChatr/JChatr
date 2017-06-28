@@ -11,8 +11,6 @@ import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
-import javafx.geometry.Orientation;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
@@ -23,8 +21,6 @@ import org.apache.logging.log4j.Logger;
 
 public class CurrentChatController extends Loader {
 	private static Logger log = LogManager.getLogger(CurrentChatController.class);
-
-
 	@FXML
 	private ListView<Message> currentMessages;
 	@FXML
@@ -55,11 +51,8 @@ public class CurrentChatController extends Loader {
 	private TextField gifText;
 	@FXML
 	private ScrollPane gifScroll;
-
-
 	private String chatID;
 	private boolean sidebarVisible;
-	private Node test;
 
 	/**
 	 * init UI links to Manager class and set up event Methods
@@ -91,58 +84,59 @@ public class CurrentChatController extends Loader {
 		//Changes view when tabs are pressed
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
-					if(newValue.getId().equals("gifTab")){
-						showGIFs("", 25,0, false);
-					} else if(newValue.getId().equals("emojiTab")){
+					if (newValue.getId().equals("gifTab")) {
+						showGIFs("", 25, 0, false);
+					} else if (newValue.getId().equals("emojiTab")) {
 						gifPane.getChildren().clear();
-					} else if(newValue.getId().equals("stickerTab")){
+					} else if (newValue.getId().equals("stickerTab")) {
 						gifPane.getChildren().clear();
 					} else {
 						gifPane.getChildren().clear();
 					}
-		});
+				});
 	}
 
 	/**
 	 * Searches GIFs on giphy and displays them
+	 *
 	 * @param searchstring Search gifs with this string, if empty diaplays trending gifs
-	 * @param limit Limits how many gifs are shown
-	 * @param offset Offset from the giflist
-	 * @param moreBtn Boolean if the more Gifs button shall be shown or not
+	 * @param limit        Limits how many gifs are shown
+	 * @param offset       Offset from the giflist
+	 * @param moreBtn      Boolean if the more Gifs button shall be shown or not
 	 */
-	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn){
+	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn) {
 		SearchFeed gifFeed = GIFLoader.getGIFUrl(searchstring, limit, offset);
 		log.trace("GIF feed size: " + gifFeed.getDataList().size() + " Limit: " + limit + " Offset: " + offset);
 		int feedSize = gifFeed.getDataList().size();
-		if(feedSize==0){
+		if (feedSize == 0) {
 			return;
 		}
 		int gifSize[] = new int[feedSize];
-		for(int i = 0; i < feedSize; i++){
+		for (int i = 0; i < feedSize; i++) {
 			gifSize[i] = Integer.valueOf(gifFeed.getDataList().get(i).getImages().getFixedHeightSmall().getWidth());
 		}
 		int maxSize = (int) gifScroll.getWidth();
 		int sizeSum = 0;
 		int indexSum = 0;
-		for(int i = 0; i < feedSize; i++){
-			maxSize -=  (2*gifPane.getHgap());
+		for (int i = 0; i < feedSize; i++) {
+			maxSize -= (2 * gifPane.getHgap());
 			indexSum++;
 			sizeSum += gifSize[i];
-			if(sizeSum > maxSize){
-				int runter = sizeSum-maxSize;
-				int hoch = maxSize-(sizeSum-gifSize[i]);
-				if(hoch < runter){
+			if (sizeSum > maxSize) {
+				int runter = sizeSum - maxSize;
+				int hoch = maxSize - (sizeSum - gifSize[i]);
+				if (hoch < runter) {
 					sizeSum -= gifSize[i];
-					double scale = (double)sizeSum/maxSize;
+					double scale = (double) sizeSum / maxSize;
 					i--;
 					indexSum--;
-					for(int u = 0; u < indexSum; u++){
-						gifSize[i-u] = (int) (gifSize[i-u]/scale);
+					for (int u = 0; u < indexSum; u++) {
+						gifSize[i - u] = (int) (gifSize[i - u] / scale);
 					}
-				}else{
-					double scale = (double)sizeSum/maxSize;
-					for(int u = 0; u < indexSum; u++){
-						gifSize[i-u] = (int) (gifSize[i-u]/scale);
+				} else {
+					double scale = (double) sizeSum / maxSize;
+					for (int u = 0; u < indexSum; u++) {
+						gifSize[i - u] = (int) (gifSize[i - u] / scale);
 					}
 				}
 				indexSum = 0;
@@ -150,7 +144,7 @@ public class CurrentChatController extends Loader {
 				maxSize = (int) gifScroll.getWidth();
 			}
 		}
-		for (int i = 0; i < feedSize; i++){
+		for (int i = 0; i < feedSize; i++) {
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
 			gifIV.setFitWidth(gifSize[i]);
@@ -166,7 +160,7 @@ public class CurrentChatController extends Loader {
 		Button moreGif = new Button("more GIfs");
 		moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
 		gifPane.getChildren().add(sep);
-		if(moreBtn || (feedSize%25==0)){
+		if (moreBtn || (feedSize % 25 == 0)) {
 			gifPane.getChildren().add(moreGif);
 		}
 	}
@@ -205,25 +199,27 @@ public class CurrentChatController extends Loader {
 
 	/**
 	 * Loads and displays more gifs
+	 *
 	 * @param searchstring Search query for the gif search
-	 * @param limit Limit the returned gifs
-	 * @param button The more Gifs button
+	 * @param limit        Limit the returned gifs
+	 * @param button       The more Gifs button
 	 */
-	private void moreGIFs(String searchstring, int limit, Object button){
-		if(limit<100){
+	private void moreGIFs(String searchstring, int limit, Object button) {
+		if (limit < 100) {
 			limit = limit + 25;
 			gifPane.getChildren().remove(button);
-			showGIFs(searchstring, limit, (limit-25), true);
-		}else{
+			showGIFs(searchstring, limit, (limit - 25), true);
+		} else {
 			gifPane.getChildren().remove(button);
 		}
 	}
 
 	/**
 	 * Sends the gif to the chat
+	 *
 	 * @param url Giphy url
 	 */
-	private void sendGIF(String url){
+	private void sendGIF(String url) {
 		Manager.addMessage(url, ContentType.GIF);
 		log.debug("GIF send: " + url);
 	}
@@ -250,7 +246,7 @@ public class CurrentChatController extends Loader {
 	 * Method to be executed when the gif search button is clicked
 	 */
 	@FXML
-	private void onGIFButtonClick(){
+	private void onGIFButtonClick() {
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
 		showGIFs(gifSearch, 25, 0, true);

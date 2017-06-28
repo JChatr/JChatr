@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
@@ -16,9 +17,7 @@ import java.util.concurrent.Executors;
  * @author mk285
  */
 public class User {
-
 	private String userName;
-	//private String userID = HashGen.getID(false);
 	private String userID;
 	private ObjectProperty<Image> userImage;
 	private String email;
@@ -31,23 +30,17 @@ public class User {
 	 *
 	 * @param userName The name of the user.
 	 */
-	public User(String userName) {
+	public User(String userID, String userName, String email, String password) {
 		this.userName = userName;
-		this.userID = userName;
-		email = "";
-		status = Status.ONLINE;
-		password = "";
+		this.userID = userID;
+		this.email = email;
+		this.status = Status.ONLINE;
+		this.password = HashGen.hashPW(password);
 	}
 
 	public String getPassword() {
 		return password;
 	}
-
-	public User setPassword(String password) {
-		this.password = password;
-		return this;
-	}
-
 
 	/**
 	 * This method is used to get the user name.
@@ -56,37 +49,6 @@ public class User {
 	 */
 	public String getUserName() {
 		return userName;
-	}
-
-	public String getEmail(){ return email;}
-
-
-	/**
-	 * This method is used to load the user image from gravatar.
-	 * @return Returns user image if cached. If not, tries to load a gravatar image or returns a default image.
-	 */
-	public ObjectProperty<Image> getImage() {
-		if(userImage == null){
-			log.trace("UserImage is null");
-			userImage = new SimpleObjectProperty<>();
-			Executors.newSingleThreadExecutor().execute(() -> {
-				String hash = HashGen.hashMD5(email);
-				String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
-				if (hash.equals("d41d8cd98f00b204e9800998ecf8427e")) {
-					url = "/icons/default_user.png";
-					log.trace("Email hash is empty. URL = default image");
-				}
-				Image img = new Image(url, 40, 40, true, false, false);
-				log.trace("Trying to load image from gravatar!");
-				if (img.isError()) {
-					log.debug("Error in image. Loading default image.");
-					img = new Image("/icons/default_user.png", 40, 40, true, false, false);
-				}
-				userImage.set(img);
-			});
-		}
-		log.trace("userImage loaded for " + userID);
-		return userImage;
 	}
 
 	/**
@@ -100,6 +62,38 @@ public class User {
 	}
 
 	/**
+	 * This method is used to load the user image from gravatar.
+	 *
+	 * @return Returns user image if cached. If not, tries to load a gravatar image or returns a default image.
+	 */
+	public ObjectProperty<Image> getImage() {
+		if (userImage != null) return userImage;
+		log.trace("UserImage is null");
+		userImage = new SimpleObjectProperty<>();
+		Executors.newSingleThreadExecutor().execute(() -> {
+			String hash = HashGen.hashMD5(email);
+			String url = "https://www.gravatar.com/avatar/" + hash + ".jpg?s=40&d=404";
+			if (hash.equals("d41d8cd98f00b204e9800998ecf8427e")) {
+				url = "/icons/default_user.png";
+				log.trace("Email hash is empty. URL = default image");
+			}
+			Image img = new Image(url, 40, 40, true, false, false);
+			log.trace("Trying to load image from gravatar!");
+			if (img.isError()) {
+				log.debug("Error in image. Loading default image.");
+				img = new Image("/icons/default_user.png", 40, 40, true, false, false);
+			}
+			userImage.set(img);
+		});
+		log.trace("userImage loaded for " + userID);
+		return userImage;
+	}
+
+	public String getEmail() {
+		return this.email;
+	}
+
+	/**
 	 * This method is used to get the user ID.
 	 *
 	 * @return Returns the user ID.
@@ -107,12 +101,6 @@ public class User {
 	public String getUserID() {
 		return userID;
 	}
-
-	public User setEmail(String email) {
-		this.email = email.toLowerCase();
-		return this;
-	}
-
 
 	public Status getStatus() {
 		return status;
@@ -123,7 +111,6 @@ public class User {
 		return this;
 	}
 
-
 	@Override
 	public String toString() {
 		return userID;
@@ -131,7 +118,8 @@ public class User {
 
 	@Override
 	public boolean equals(Object o) {
-		return Objects.equals(userID, o.toString());
+		return !(o == null || !(o instanceof User)) &&
+				Objects.equals(userID, o.toString());
 	}
 
 	@Override

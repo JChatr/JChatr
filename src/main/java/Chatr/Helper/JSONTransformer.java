@@ -5,10 +5,10 @@ import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
 import javafx.scene.image.Image;
 import org.hildan.fxgson.FxGson;
-import javafx.beans.property.ObjectProperty;
-import java.lang.reflect.Type;
+
 import java.util.ArrayList;
 import java.util.List;
+
 
 /**
  * uses GSON Library to serialize / deserialize Objects to from JSON
@@ -18,8 +18,6 @@ public class JSONTransformer {
 			.coreBuilder()
 			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
 			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(Image.class))
-			.addSerializationExclusionStrategy(new UserDefinedExclusionStrategy(ObjectProperty.class))
-			.addDeserializationExclusionStrategy(new UserDefinedExclusionStrategy(ObjectProperty.class))
 			.create();
 
 	/**
@@ -54,6 +52,7 @@ public class JSONTransformer {
 	 * @param <T>  target return type of the Object
 	 * @return Object representation of the JSON String
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T fromJSON(String json, Class<? extends Object> type) {
 		return (T) parser.fromJson(json, type);
 	}

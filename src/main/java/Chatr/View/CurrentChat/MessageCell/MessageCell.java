@@ -19,7 +19,7 @@ public class MessageCell extends ListCell<Message> {
 			setGraphic(null);
 			return;
 		}
-		switch(item.getContentType()){
+		switch (item.getContentType()) {
 			case TEXT:
 				mp.setInfo(item);
 				setGraphic(mp.getView());

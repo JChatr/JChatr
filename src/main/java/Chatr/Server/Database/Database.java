@@ -13,18 +13,30 @@ import java.util.concurrent.ConcurrentHashMap;
  * Database abstraction layer implementing the singleton pattern
  */
 public class Database {
+	private static Database instance;
 	// USERID | USER_OBJ
-	// ConcurrenHashMap
+	// ConcurrentHashMap
 	private Map<String, User> users;
-	// USERID | CONV_LIST
+	// USERID | CHAT_LIST
 	// ConcurrentHashMap -> HashSet
 	private Map<String, Set<String>> links;
-	// CONV_ID | MESSAGE_TS | MESSAGE
+	// CHAT_ID | MESSAGE_TS | MESSAGE
 	// ConcurrentHashMap -> LinkedHashMap
-	private Map<String, Map<Long, Message>> conversations;
+	private Map<String, Map<Long, Message>> chats;
+	// CHAT_ID | CHAT_NAME | TBD
+	private Map<String, List<String>> chatMetadata;
+	// ConcurrentHashMap -> LinkedList
 	private Logger log = LogManager.getLogger(Database.class);
 
-	private static Database instance;
+	/**
+	 * provides concurrency support
+	 */
+	private Database() {
+		this.users = new ConcurrentHashMap<>();
+		this.links = new ConcurrentHashMap<>();
+		this.chats = new ConcurrentHashMap<>();
+		this.chatMetadata = new ConcurrentHashMap<>();
+	}
 
 	/**
 	 * enforces the singleton pattern
@@ -38,16 +50,6 @@ public class Database {
 		}
 		return instance;
 	}
-
-	/**
-	 * provides concurrency support
-	 */
-	private Database() {
-		this.users = new ConcurrentHashMap<>();
-		this.links = new ConcurrentHashMap<>();
-		this.conversations = new ConcurrentHashMap<>();
-	}
-
 
 	/**
 	 * adds a User to the users Table
@@ -70,23 +72,11 @@ public class Database {
 	}
 
 	/**
-	 * x
 	 * read the users from the users table
 	 *
 	 * @return the found user object if contained in the table
 	 */
 	public Set<User> readUsers() {
-		Set<User> users = new HashSet<>();
-		this.users.forEach((uID, user) -> users.add(user));
-		return users;
-	}
-
-	/**
-	 * read the user from the users table
-	 *
-	 * @return the found user object if contained in the table
-	 */
-	public Set<User> readUser() {
 		Set<User> users = new HashSet<>();
 		this.users.forEach((uID, user) -> users.add(user));
 		return users;
@@ -122,59 +112,83 @@ public class Database {
 	/**
 	 * adds a conversation to the database and links it to it's members
 	 *
-	 * @param conversationID conversation data to add
+	 * @param chat chat data to add
 	 * @return if the insertion was successful
 	 */
-	public boolean addConversation(String conversationID, Set<String> userIDs) {
-		linkConversation(conversationID, userIDs);
-		return conversations.putIfAbsent(conversationID, new LinkedHashMap<>()) == null;
+	public boolean addChat(Chat chat) {
+		String chatID = chat.getID();
+		String chatName = chat.getName().get();
+		Set<String> memberIDs = chat.getMemberIDs();
+		boolean success;
+		linkConversation(chatID, memberIDs);
+		success = chats.putIfAbsent(chatID, new LinkedHashMap<>()) == null;
+		success &= chatMetadata.putIfAbsent(chatID, new LinkedList<>()) == null;
+
+		// forces metadata to be overwritten instead of appended
+		List<String> metadata = chatMetadata.get(chatID);
+		try {
+			metadata.get(0);
+			metadata.set(0, chatName);
+		} catch (IndexOutOfBoundsException e) {
+			metadata.add(0, chatName);
+		}
+		return success;
 	}
 
-	public boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
-		if (conversations.get(conversationID) == null ||
-				findConversationUsers(conversationID).equals(userIDs)) return false;
-		unLinkConversation(conversationID);
-		return linkConversation(conversationID, userIDs);
+	/**
+	 * update the users for a given chat
+	 *
+	 * @param chatID  ID to update for
+	 * @param userIDs new chat Users
+	 * @return if the update was successful
+	 */
+	// TODO: Validate
+	public boolean updateChatUsers(String chatID, Set<String> userIDs) {
+		if (chats.get(chatID) == null ||
+				getChatMembers(chatID).equals(userIDs)) return false;
+		unlinkChat(chatID);
+		return linkConversation(chatID, userIDs);
 	}
 
 	/**
 	 * reads and assembles a conversation from the database
 	 *
-	 * @param conversationID conversationID to read at
+	 * @param chatID conversationID to read at
+	 * @param userID local user on the target client
 	 * @return the assembled conversation
 	 */
-	public Chat readConversation(String conversationID, String userID) {
-		Set<User> members = findConversationUsers(conversationID);
-		Chat build = Chat.preConfigServer(conversationID, userID,
-				members, (LinkedList<Message>) readNewerMessages(conversationID, 0L));
-		return build;
+	public Chat readChat(String chatID, String userID) {
+		Set<User> members = getChatMembers(chatID);
+		List<String> metadata = chatMetadata.get(chatID);
+		String chatName = metadata.get(0);
+		return Chat.preConfigServer(chatName, chatID, userID,
+				members, readNewerMessages(chatID, 0L));
 	}
 
 	/**
-	 * reads all conversations for that user
+	 * reads all chats for that user
 	 *
-	 * @param userID ID to read & assemble forl.forEach(c -> System.out.println(c)
-	 * @return List of conversations for that user
+	 * @param userID ID to read & assemble for
+	 * @return List of chats for that user
 	 */
-	public Set<Chat> readUserConversations(String userID) {
-		Set<Chat> userConv = new HashSet<>();
-		for (String conversationID : links.getOrDefault(userID, new HashSet<>())) {
-			Chat c = readConversation(conversationID, userID);
-			c.setLocalUser(userID);
-			userConv.add(c);
+	public Set<Chat> readAllChats(String userID) {
+		Set<Chat> userChats = new HashSet<>();
+		for (String chatID : links.getOrDefault(userID, new HashSet<>())) {
+			Chat c = readChat(chatID, userID);
+			userChats.add(c);
 		}
-		return userConv;
+		return userChats;
 	}
 
 	/**
-	 * deltes a conversation from the datatbase
+	 * deltes a conversation from the DB
 	 *
-	 * @param conversationID ID to delte at
+	 * @param chatID ID to delete at
 	 * @return if the deletion was successful
 	 */
-	public boolean deleteConversation(String conversationID) {
-		unLinkConversation(conversationID);
-		return conversations.remove(conversationID) != null;
+	public boolean deleteChat(String chatID) {
+		unlinkChat(chatID);
+		return chats.remove(chatID) != null && chatMetadata.remove(chatID) != null;
 	}
 
 	/**
@@ -186,7 +200,7 @@ public class Database {
 	 */
 	public boolean addMessage(String conversationID, Message message) {
 		try {
-			return conversations.get(conversationID).put(message.getTime(), message) == null;
+			return chats.get(conversationID).put(message.getTime(), message) == null;
 		} catch (NullPointerException e) {
 			log.info(String.format("unable to add Message %s to conversation %s", message, conversationID));
 			log.info(e);
@@ -204,7 +218,7 @@ public class Database {
 	 */
 	public Message readMessage(String conversationID, Long timestamp) throws NoSuchElementException {
 		try {
-			return conversations.get(conversationID).get(timestamp);
+			return chats.get(conversationID).get(timestamp);
 		} catch (NullPointerException e) {
 			log.info(String.format("unable to find Message with %s in conversation %s", timestamp, conversationID), e);
 			throw new NoSuchElementException();
@@ -220,7 +234,7 @@ public class Database {
 	 */
 	public boolean updateMessage(String conversationID, Message message) {
 		try {
-			return conversations.get(conversationID).put(message.getTime(), message) != null;
+			return chats.get(conversationID).put(message.getTime(), message) != null;
 		} catch (NullPointerException e) {
 			log.info(String.format("unable to forceUpdate Message with %s in conversation %s", message, conversationID), e);
 			return false;
@@ -236,13 +250,12 @@ public class Database {
 	 */
 	public boolean deleteMessage(String conversationID, Long timestamp) {
 		try {
-			return conversations.get(conversationID).remove(timestamp) != null;
+			return chats.get(conversationID).remove(timestamp) != null;
 		} catch (NullPointerException e) {
 			log.info(String.format("unable to delete Message %s in conversation %s", timestamp, conversationID), e);
 			return false;
 		}
 	}
-
 
 	/**
 	 * links a conversation to all given useIDs
@@ -259,13 +272,12 @@ public class Database {
 		return status;
 	}
 
-
 	/**
 	 * breaks all links for that ID
 	 *
 	 * @param conversationID ID to break the links for
 	 */
-	private void unLinkConversation(final String conversationID) {
+	private void unlinkChat(final String conversationID) {
 		links.values().forEach(c -> {
 			c.remove(conversationID);
 			if (c.isEmpty()) links.values().remove(c);
@@ -278,7 +290,8 @@ public class Database {
 	 * @param conversationID ID to search for
 	 * @return found users matching that conversationID
 	 */
-	public Set<User> findConversationUsers(String conversationID) {
+
+	public Set<User> getChatMembers(String conversationID) {
 		Set<User> linkedUsers = new HashSet<>();
 		for (Map.Entry<String, Set<String>> link : links.entrySet()) {
 			for (String conversation : link.getValue()) {
@@ -298,7 +311,7 @@ public class Database {
 	 * @return all newer messages from that conversation
 	 */
 	public List<Message> readNewerMessages(String conversationID, Long timestamp) {
-		Map<Long, Message> messages = conversations.get(conversationID);
+		Map<Long, Message> messages = chats.get(conversationID);
 		List<Message> out = new LinkedList<>();
 		messages.forEach((ts, m) -> {
 			if (ts > timestamp) out.add(m);
@@ -306,19 +319,25 @@ public class Database {
 		return out;
 	}
 
-	public void print() {
-		System.out.println("USERS:");
-		users.forEach((id, u) -> System.out.println("  - " + u));
-
-		System.out.println("LINKS:");
-		links.forEach((id, l) -> System.out.println("  - " + id + ":" + l));
-
-		System.out.println("CONVERSATIONS:");
-		for (Map.Entry<String, Map<Long, Message>> c : conversations.entrySet()) {
-			System.out.println("  - " + c.getKey());
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("USERS:\n");
+		users.forEach((id, u) -> sb.append("  - ").append(u).append("\n"));
+		sb.append("LINKS:\n");
+		links.forEach((id, l) -> sb.append("  - ").append(id).append(":").append(l).append("\n"));
+		sb.append("CHAT MESSAGES:\n");
+		for (Map.Entry<String, Map<Long, Message>> c : chats.entrySet()) {
+			sb.append("  - ").append(c.getKey()).append("\n");
 			for (Message m : c.getValue().values()) {
-				System.out.println("    - " + m);
+				sb.append("    - ").append(m).append("\n");
 			}
 		}
+		sb.append("CHAT METADATA:\n");
+		for (Map.Entry<String, List<String>> e : chatMetadata.entrySet()) {
+			sb.append("  - ").append(e.getKey()).append(": ");
+			sb.append(e.getValue()).append("\n");
+		}
+		return sb.toString();
 	}
 }
