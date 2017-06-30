@@ -1,7 +1,7 @@
 package Chatr.View.CurrentChat;
 
 import Chatr.Controller.Manager;
-import Chatr.Helper.Enums.ContentType;
+import Chatr.Helper.Enums.MessageType;
 import Chatr.Helper.GIFLoader;
 import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
@@ -68,7 +68,7 @@ public class CurrentChatController extends Loader {
 	}
 
 	private void addListeners() {
-		// if \n in the text field send the message
+		// if \n in the text field sendAsync the message
 		textInput.textProperty().addListener((obs, oldText, newText) -> {
 			if (newText.contains("\n"))
 				onSendButtonClick();
@@ -220,18 +220,18 @@ public class CurrentChatController extends Loader {
 	 * @param url Giphy url
 	 */
 	private void sendGIF(String url) {
-		Manager.addMessage(url, ContentType.GIF);
-		log.debug("GIF send: " + url);
+		Manager.addMessage(url, MessageType.GIF);
+		log.debug("GIF sendAsync: " + url);
 	}
 
 	/**
-	 * Method to be executed when the send button is clicked
+	 * Method to be executed when the sendAsync button is clicked
 	 */
 	@FXML
 	private void onSendButtonClick() {
 		String userInput = textInput.getText();
 		if (!userInput.trim().isEmpty()) {
-			Manager.addMessage(userInput, ContentType.TEXT);
+			Manager.addMessage(userInput, MessageType.TEXT);
 			Platform.runLater(() -> textInput.clear());
 		}
 	}

@@ -1,8 +1,7 @@
 package Chatr.Model;
 
 import Chatr.Client.Connection;
-import Chatr.Helper.Enums.ContentType;
-import Chatr.Controller.Manager;
+import Chatr.Helper.Enums.MessageType;
 import Chatr.Helper.HashGen;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
@@ -26,10 +25,11 @@ public class Chat {
 
 	private Chat(String chatName, User localUser, Collection<User> otherUsers) {
 		initProperties();
-		this.members.add(localUser);
 		this.members.addAll(otherUsers);
-		this.localUserID = localUser.getUserID();
-		chatID.set(HashGen.getID(false));
+		if (!this.members.contains(localUser))
+			this.members.add(localUser);
+		this.localUserID = localUser.getID();
+		this.chatID.set(HashGen.getID(false));
 		this.chatName.set(chatName);
 		log.info("New Chat created " + this);
 	}
@@ -63,8 +63,8 @@ public class Chat {
 		this.messages = new SimpleListProperty<>(FXCollections.observableArrayList());
 	}
 
-	public void addMessage(String content, ContentType contentType) {
-		Message message = new Message(localUserID, content, contentType);
+	public void addMessage(String content, MessageType messageType) {
+		Message message = new Message(localUserID, content, messageType);
 		messages.add(message);
 		Connection.addMessage(chatID.get(), message);
 	}
@@ -79,13 +79,13 @@ public class Chat {
 
 	public Set<String> getMemberIDs() {
 		HashSet<String> out = new HashSet<>();
-		members.forEach(m -> out.add(m.getUserID()));
+		members.forEach(m -> out.add(m.getID()));
 		return out;
 	}
 
 	public void addMember(User member) {
 		members.add(member);
-		Connection.updateChatUsers(chatID.get(), getMemberIDs());
+		Connection.updateChat(this);
 	}
 
 	public Chat setLocalUserID(String userID) {
@@ -112,7 +112,9 @@ public class Chat {
 		Chat c = (Chat) o;
 		return Objects.equals(chatName.get(), c.getName().get()) &&
 				Objects.equals(chatID.get(), c.getID()) &&
-				Objects.equals(members, c.getMembers()) &&
+				// cheating but order does not matter in this case
+				// and sets cannot be used :(
+				members.size() == c.getMembers().size()&&
 				Objects.equals(messages, c.getMessages());
 	}
 
@@ -123,6 +125,6 @@ public class Chat {
 
 	@Override
 	public String toString() {
-		return String.format("ID: %s Name: %s Members: %s", chatID.get(), chatName.get(), members.get().toString());
+		return String.format("ID: %s, Name: %s, Members: %s", chatID.get(), chatName.get(), members.get().toString()) + messages.get() + localUserID;
 	}
 }

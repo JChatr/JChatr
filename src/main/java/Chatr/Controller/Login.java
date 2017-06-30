@@ -8,7 +8,6 @@ import Chatr.Model.ErrorMessagesValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,9 +54,9 @@ public class Login {
 		validateUser(userID, eMail, password, userName);
 		validateUniqueID(userID);
 
-		User user = new User(userID, userName, eMail, HashGen.hashPW(password));
+		User user = new User(userName, userID, eMail, HashGen.hashPW(password));
 		Connection.createUser(user);
-		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
+		log.info(String.format("registered User %s|%s", user.getID(), user.getUserName()));
 		return user;
 	}
 
@@ -179,7 +178,7 @@ public class Login {
 	private static boolean validateUniqueID(String userID) throws UserIDException {
 		User user;
 		if ((user = Connection.readUserLogin(userID)) != null) {
-			log.trace(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
+			log.trace(String.format("read User %s|%s from server", user.getID(), user.getUserName()));
 			String errorMessage = "UserId is already in use.";
 			log.error(errorMessage, userID);
 			throw new UserIDException(errorMessage);

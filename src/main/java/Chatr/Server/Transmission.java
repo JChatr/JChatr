@@ -3,7 +3,7 @@ package Chatr.Server;
 
 import Chatr.Controller.Manager;
 import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
+import Chatr.Helper.Enums.RequestType;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -16,7 +16,7 @@ import java.util.Set;
  * Transmission wrapper used  as a datastore in client / server communication
  */
 public class Transmission implements Cloneable {
-	private Request type;
+	private RequestType type;
 	private Crud crud;
 	private String localUserID;
 	private String conversationID;
@@ -33,14 +33,17 @@ public class Transmission implements Cloneable {
 	private byte[] img;
 	private byte[] voice;
 
-	public Transmission(Request type, Crud crud) {
+	public Transmission(RequestType type, Crud crud) {
 		this.type = type;
 		this.crud = crud;
-		this.localUserID = (Manager.localUser == null) ? "042b9135b65cc71d9c94df01add70cbf" :
-				Manager.getLocalUser().get().getUserID();
+		try {
+			this.localUserID = Manager.getLocalUser().get().getID();
+		} catch (NullPointerException e) {
+			this.localUserID = "DEFAULT042b9135b65cc71d9c94df01add70cbf";
+		}
 	}
 
-	public Request getRequestType() {
+	public RequestType getRequestType() {
 		return type;
 	}
 
@@ -70,7 +73,7 @@ public class Transmission implements Cloneable {
 		return this.conversationID;
 	}
 
-	public Transmission setConversationID(String conversationID) {
+	public Transmission setChatID(String conversationID) {
 		this.conversationID = conversationID;
 		return this;
 	}
@@ -191,9 +194,8 @@ public class Transmission implements Cloneable {
 				}
 			}
 		} catch (IllegalAccessException e) {
+			return sb.toString();
 		}
 		return sb.toString();
 	}
-
-
 }

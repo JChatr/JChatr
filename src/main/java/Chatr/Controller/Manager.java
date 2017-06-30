@@ -3,7 +3,7 @@ package Chatr.Controller;
 
 import Chatr.Client.Connection;
 import Chatr.Helper.CONFIG;
-import Chatr.Helper.Enums.ContentType;
+import Chatr.Helper.Enums.MessageType;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -21,10 +21,10 @@ import java.util.Set;
  * starts the app
  */
 public class Manager {
-	public static ObjectProperty<User> localUser;
-	static ListProperty<Chat> userChats;
-	static ListProperty<User> users;
-	static ObjectProperty<Chat> currentChat;
+	private static ObjectProperty<User> localUser;
+	private static ListProperty<Chat> userChats;
+	private static ListProperty<User> users;
+	private static ObjectProperty<Chat> currentChat;
 
 	private static Logger log = LogManager.getLogger(Manager.class);
 
@@ -36,8 +36,8 @@ public class Manager {
 	}
 
 
-	public static void addMessage(String content, ContentType contentType) {
-		currentChat.get().addMessage(content, contentType);
+	public static void addMessage(String content, MessageType messageType) {
+		currentChat.get().addMessage(content, messageType);
 	}
 
 	public static ObjectProperty<Chat> getCurrentChat() {
@@ -65,7 +65,7 @@ public class Manager {
 	}
 
 	public static String getLocalUserID() {
-		return localUser.get() == null ? null : localUser.get().getUserID();
+		return localUser.get() == null ? null : localUser.get().getID();
 	}
 
 	public static void setLocalUser(User user) {
@@ -86,8 +86,8 @@ public class Manager {
 
 	public static ObjectProperty<Image> getUserImage(String userID) {
 		for (User u : users) {
-			if (u.getUserID().equals(userID)) {
-				log.trace("(getUserImage) User found!" + u.getUserID());
+			if (u.getID().equals(userID)) {
+				log.trace("(getUserImage) User found!" + u.getID());
 				return u.getImage();
 			}
 		}
@@ -96,20 +96,17 @@ public class Manager {
 
 	private static void initialize() {
 		localUser = new SimpleObjectProperty<>();
-		ObservableList<Chat> chatSet = FXCollections.observableArrayList();
-		userChats = new SimpleListProperty<>(chatSet);
-		ObservableList<User> userSet = FXCollections.observableArrayList();
-		users = new SimpleListProperty<>(userSet);
+		userChats = new SimpleListProperty<>(FXCollections.observableArrayList());
+		users = new SimpleListProperty<>(FXCollections.observableArrayList());
 		currentChat = new SimpleObjectProperty<>();
 	}
 
 
 	public static void initialPull() {
-		Set<Chat> readChats = Connection.readAllUserChats(localUser.get().getUserID());
+		Set<Chat> readChats = Connection.readAllUserChats(localUser.get().getID());
 		readChats.forEach(readChat -> {
 			if (!userChats.contains(readChat)) userChats.add(readChat);
 		});
-
 		Set<User> userSet = Connection.readUsers();
 		users.addAll(userSet);
 	}

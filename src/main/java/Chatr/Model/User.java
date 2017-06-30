@@ -30,7 +30,7 @@ public class User {
 	 *
 	 * @param userName The name of the user.
 	 */
-	public User(String userID, String userName, String email, String password) {
+	public User(String userName, String userID, String email, String password) {
 		this.userName = userName;
 		this.userID = userID;
 		this.email = email;
@@ -98,7 +98,7 @@ public class User {
 	 *
 	 * @return Returns the user ID.
 	 */
-	public String getUserID() {
+	public String getID() {
 		return userID;
 	}
 

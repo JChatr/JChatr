@@ -43,7 +43,7 @@ public class Database {
 	 *
 	 * @return a globally unique instance of the Database object
 	 */
-	public static Database getCachedDatabase() {
+	public static Database getInstance() {
 		if (instance == null) {
 			instance = new Database();
 			DatabaseFixtures.generate(instance);
@@ -58,7 +58,7 @@ public class Database {
 	 * @return if the insertion was successful
 	 */
 	public boolean addUser(User user) {
-		return users.putIfAbsent(user.getUserID(), user) == null;
+		return users.putIfAbsent(user.getID(), user) == null;
 	}
 
 
@@ -82,20 +82,7 @@ public class Database {
 		return users;
 	}
 
-	/**
-	 * updates the data for the user in the table
-	 *
-	 * @param user user data to forceUpdate
-	 * @return if the forceUpdate was successful
-	 */
-	public boolean updateUser(User user) {
-		if (users.get(user.getUserID()) == null) {
-			return false;
-		} else {
-			users.put(user.getUserID(), user);
-			return true;
-		}
-	}
+
 
 	/**
 	 * deletes the user from the table
@@ -118,12 +105,15 @@ public class Database {
 	public boolean addChat(Chat chat) {
 		String chatID = chat.getID();
 		String chatName = chat.getName().get();
-		Set<String> memberIDs = chat.getMemberIDs();
 		boolean success;
-		linkConversation(chatID, memberIDs);
-		success = chats.putIfAbsent(chatID, new LinkedHashMap<>()) == null;
-		success &= chatMetadata.putIfAbsent(chatID, new LinkedList<>()) == null;
+		linkChat(chatID, chat.getMemberIDs());
 
+		success = chats.putIfAbsent(chatID, new LinkedHashMap<>()) == null;
+		Map<Long, Message> newMessages = new LinkedHashMap<>();
+		chat.getMessages().forEach(message -> newMessages.put(message.getTime(), message));
+		chats.get(chatID).putAll(newMessages);
+
+		success &= chatMetadata.putIfAbsent(chatID, new LinkedList<>()) == null;
 		// forces metadata to be overwritten instead of appended
 		List<String> metadata = chatMetadata.get(chatID);
 		try {
@@ -132,22 +122,33 @@ public class Database {
 		} catch (IndexOutOfBoundsException e) {
 			metadata.add(0, chatName);
 		}
+
+		chat.getMembers().forEach(user -> users.putIfAbsent(user.getID(), user));
 		return success;
 	}
 
 	/**
-	 * update the users for a given chat
+	 * update the data for a given chat
 	 *
-	 * @param chatID  ID to update for
-	 * @param userIDs new chat Users
+	 * @param chat existing chat to overwrite
 	 * @return if the update was successful
 	 */
-	// TODO: Validate
-	public boolean updateChatUsers(String chatID, Set<String> userIDs) {
-		if (chats.get(chatID) == null ||
-				getChatMembers(chatID).equals(userIDs)) return false;
-		unlinkChat(chatID);
-		return linkConversation(chatID, userIDs);
+	public boolean updateChat(Chat chat) {
+		String ID = chat.getID();
+		if (chats.get(ID) == null || chatMetadata.get(ID) == null)
+			return false;
+		unlinkChat(ID);
+
+		Map<Long, Message> newMessages = new LinkedHashMap<>();
+		chat.getMessages().forEach(message -> newMessages.put(message.getTime(), message));
+		boolean success = chats.replace(ID, newMessages) == null;
+
+		List<String> newChatMetadata = new LinkedList<>();
+		newChatMetadata.add(chat.getName().get());
+		success &= chatMetadata.replace(ID, newChatMetadata) == null;
+
+		chat.getMembers().forEach(user -> users.putIfAbsent(user.getID(), user));
+		return linkChat(ID, chat.getMemberIDs()) && success;
 	}
 
 	/**
@@ -263,7 +264,7 @@ public class Database {
 	 * @param userIDs        users to links to
 	 * @param conversationID ID to links
 	 */
-	private boolean linkConversation(String conversationID, Set<String> userIDs) {
+	private boolean linkChat(String conversationID, Set<String> userIDs) {
 		boolean status = false;
 		for (String userID : userIDs) {
 			status |= links.putIfAbsent(userID, new HashSet<>()) == null;
@@ -275,12 +276,12 @@ public class Database {
 	/**
 	 * breaks all links for that ID
 	 *
-	 * @param conversationID ID to break the links for
+	 * @param chatID ID to break the links for
 	 */
-	private void unlinkChat(final String conversationID) {
-		links.values().forEach(c -> {
-			c.remove(conversationID);
-			if (c.isEmpty()) links.values().remove(c);
+	private void unlinkChat(final String chatID) {
+		links.values().forEach(chatList -> {
+			chatList.remove(chatID);
+			if (chatList.isEmpty()) links.values().remove(chatList);
 		});
 	}
 

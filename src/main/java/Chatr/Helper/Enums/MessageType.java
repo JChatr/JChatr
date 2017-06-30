@@ -1,5 +1,5 @@
 package Chatr.Helper.Enums;
 
-public enum ContentType {
+public enum MessageType {
 	TEXT, GIF, IMAGE, EMOJI, STICKER
 }

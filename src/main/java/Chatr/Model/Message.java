@@ -1,6 +1,6 @@
 package Chatr.Model;
 
-import Chatr.Helper.Enums.ContentType;
+import Chatr.Helper.Enums.MessageType;
 
 import java.util.Objects;
 
@@ -10,16 +10,16 @@ public class Message {
 	private String sender;
 	private String content;
 	private boolean isEmpty = false;
-	private ContentType contentType;
+	private MessageType messageType;
 
 	public Message() {
 		isEmpty = true;
 	}
 
-	public Message(String sender, String content, ContentType contentType) {
+	public Message(String sender, String content, MessageType messageType) {
 		this.sender = sender;
 		this.content = content;
-		this.contentType = contentType;
+		this.messageType = messageType;
 	}
 
 	public String getContent() {
@@ -38,8 +38,8 @@ public class Message {
 		return isEmpty;
 	}
 
-	public ContentType getContentType() {
-		return this.contentType;
+	public MessageType getMessageType() {
+		return this.messageType;
 	}
 
 	// make debug printing easier

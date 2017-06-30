@@ -1,14 +1,14 @@
 package Chatr.Server.Database;
 
 
-import Chatr.Helper.Enums.ContentType;
+import Chatr.Helper.Enums.MessageType;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 class DatabaseFixtures {
 	/**
@@ -40,14 +40,14 @@ class DatabaseFixtures {
 		db.addUser(dTrump);
 		db.addChat(chat);
 		db.addMessage(chat.getID(), new Message(
-				jDoe.getUserID(),
+				jDoe.getID(),
 				"hi there",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				dTrump.getUserID(),
+				dTrump.getID(),
 				"let's build a wall",
-				ContentType.TEXT));
+				MessageType.TEXT));
 	}
 
 	/**
@@ -58,7 +58,6 @@ class DatabaseFixtures {
 	 */
 	private static void userSet2(Database db) throws InterruptedException {
 		LinkedList<Message> messages = new LinkedList<>();
-		Set<User> users = new HashSet<>();
 		User johnson = getJohnson();
 		User merkel = getMerkel();
 		//Profile Picture Test
@@ -66,36 +65,33 @@ class DatabaseFixtures {
 		db.addUser(johnson);
 		db.addUser(merkel);
 		db.addUser(maroko);
-		users.add(johnson);
-		users.add(merkel);
-		users.add(maroko);
 		User hawk = addHawk();
 		db.addUser(hawk);
 		Chat chat = Chat.preConfigServer(
 				"Brexit",
 				"6078090697890",
-				johnson.getUserID(),
-				users,
+				johnson.getID(),
+				new HashSet<>(Arrays.asList(johnson, merkel, maroko)),
 				messages);
 		db.addChat(chat);
 		db.addMessage(chat.getID(), new Message(
-				johnson.getUserID(),
+				johnson.getID(),
 				"this is a random message with no content at all",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				merkel.getID(),
 				"another random message",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				maroko.getUserID(),
+				maroko.getID(),
 				"Ich heiße Matthias!",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		db.addMessage(chat.getID(), new Message(
-				hawk.getUserID(),
+				hawk.getID(),
 				"https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded",
-				ContentType.GIF));
+				MessageType.GIF));
 	}
 
 	/**
@@ -120,29 +116,29 @@ class DatabaseFixtures {
 
 		db.addChat(chat);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				trump.getID(),
 				"hey there",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				merkel.getID(),
 				"whats up?",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				merkel.getID(),
 				"I am posting as Angela Merkel",
-				ContentType.TEXT));
+				MessageType.TEXT));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				trump.getID(),
 				"https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2",
-				ContentType.GIF));
+				MessageType.GIF));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
-				merkel.getUserID(),
+				merkel.getID(),
 				"Good idea! We germans know hau to build a Wall!",
-				ContentType.TEXT));
+				MessageType.TEXT));
 	}
 
 
@@ -182,8 +178,8 @@ class DatabaseFixtures {
 	}
 
 	private static User addHawk() {
-		return new User("@herrhawk",
-				"Simon Haag",
+		return new User("Simon Haag",
+				"@herrhawk",
 				"haagsimon@outlook.de",
 				"123passwort");
 	}

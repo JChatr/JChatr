@@ -3,31 +3,48 @@ package Chatr.Server;
 import Chatr.Model.User;
 import Chatr.Server.Database.Database;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class Handler {
-	protected Database database;
-	protected List<Transmission> responses = new LinkedList<>();
-	protected String senderID;
+	Database database;
+	List<Transmission> responses;
+	String senderID;
 
 	Handler() {
-		database = Database.getCachedDatabase();
+		this.database = Database.getInstance();
+		this.responses = new LinkedList<>();
 	}
 
+	/**
+	 * processes the incoming request and returns all responses to be sent out to the specified users
+	 *
+	 * @param request request to be processed
+	 * @return transmissions to be sent to users
+	 */
 	protected abstract Collection<Transmission> process(Transmission request);
 
-	protected void notify(final Transmission transmission, final Collection<User> users) {
-		users.forEach(user -> responses.add(
-				transmission.clone().setLocalUserID(user.getUserID()))
+	/**
+	 * sends the given transmission to the to Users
+	 *
+	 * @param transmission transmission to sendAsync
+	 * @param users        users to sendAsync to
+	 */
+	void notify(final Transmission transmission, final Collection<String> userIDs) {
+		userIDs.forEach(user -> notify(transmission, user));
+	}
+
+	/**
+	 * sends the transmission to the user
+	 *
+	 * @param transmission transmission to sendAsync
+	 * @param userID         user to sendAsync to
+	 */
+	void notify(final Transmission transmission, final String userID) {
+		responses.add(transmission.clone()
+				.setLocalUserID(userID)
 		);
-
-
-		List<String> names = Arrays.asList("1a", "2b", "3c", "4d", "5e");
-		names.stream()
-				.map(x -> x.toUpperCase())
-				.mapToInt(x -> x.pos(1))
-				.filter(x -> x < 5);
 	}
 }
-
 

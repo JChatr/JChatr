@@ -1,44 +1,33 @@
 package Chatr.Client;
 
-import Chatr.Controller.HandlerClient;
-import Chatr.Controller.HandlerFactoryClient;
-import Chatr.Controller.Manager;
 import Chatr.Helper.CONFIG;
 import Chatr.Helper.Enums.Crud;
+import Chatr.Helper.Enums.RequestType;
 import Chatr.Helper.JSONTransformer;
-import Chatr.Model.Chat;
-import Chatr.Model.Message;
-import Chatr.Model.User;
-import Chatr.Server.Handler;
 import Chatr.Server.Transmission;
-import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.drafts.Draft_17;
 import org.java_websocket.handshake.ServerHandshake;
 
-import javax.swing.event.EventListenerList;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.*;
-import java.util.*;
-import java.util.function.Function;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Connects to the server and sends / receives Requests
  */
-public final class Client {
-
-	WebSocketClient socketClient;
-	private EventListenerList listeners = new EventListenerList();
-	private Logger log = LogManager.getLogger(Client.class);
+public class Client {
+	private WebSocketClient socketClient;
+	private List<Listener> listeners = new ArrayList<>();
+	private static Logger log = LogManager.getLogger(Client.class);
 
 	public Client() {
 		try {
-			WebSocketClient webSocketClient = new WebSocketClient(new URI(CONFIG.SERVER_ADDRESS), new Draft_17()) {
+			socketClient = new WebSocketClient(new URI(CONFIG.SERVER_ADDRESS), new Draft_17()) {
 				@Override
 				public void onOpen(ServerHandshake serverHandshake) {
 					log.info("Client open connection");
@@ -46,64 +35,110 @@ public final class Client {
 
 				@Override
 				public void onMessage(String s) {
-					Transmission tin = JSONTransformer.fromJSON(s, Transmission.class);
-					log.info("Message received: " + tin.toString());
-					switch (tin.getRequestType()) {
-						case MESSAGE:
-							if (tin.getCRUD() == Crud.READ) {
-								for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
-									l.notify(new ConnectionEvent(this, tin));
-							} else {
-								HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
-								handlerClient.processClient(tin);
-							}
-							break;
-						case CONNECT:
-							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
-								l.notify(new ConnectionEvent(this, tin));
-							break;
+					final Transmission response = JSONTransformer.fromJSON(s, Transmission.class);
+					log.debug("Message received: " + response);
 
-						case CONVERSATION: {
-							HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
-							handlerClient.processClient(tin);
+					Iterator<Listener> it = listeners.iterator();
+					while (it.hasNext()) {
+						Listener listener = it.next();
+						if (listener.isListenerFor(response.getRequestType(), response.getCRUD())) {
+							listener.notify(response);
+							it.remove();
+							return;
 						}
-						break;
-						case USER:
-							HandlerClient handlerClient = HandlerFactoryClient.getInstance(tin.getRequestType());
-							handlerClient.processClient(tin);
-						case LOGIN:
-							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
-								l.notify(new ConnectionEvent(this, tin));
-							break;
-						case USERS:
-							for (ConnectionListener l : listeners.getListeners(ConnectionListener.class))
-								l.notify(new ConnectionEvent(this, tin));
-							break;
 					}
+					Handler handler = HandlerFactory.getInstance(response.getRequestType());
+					handler.process(response);
 				}
 
 				@Override
 				public void onClose(int i, String s, boolean b) {
+					log.info("Connection to server closed");
 				}
 
 				@Override
 				public void onError(Exception e) {
 					log.error("Problem with client: ", e);
 				}
-			};
 
-			socketClient = webSocketClient;
+			};
 			socketClient.connect();
 		} catch (URISyntaxException e) {
 			log.error("Invalid URI: " + CONFIG.SERVER_ADDRESS);
 		}
 	}
 
-	public void addListener(ConnectionListener listener) {
-		listeners.add(ConnectionListener.class, listener);
+	/**
+	 * sends the Transmission to the server asynchronously i.e. non blocking
+	 *
+	 * @param request Transmission to send
+	 */
+	public void sendAsync(Transmission request) {
+		socketClient.send(JSONTransformer.toJSON(request));
 	}
 
-	public void removeListener(ConnectionListener listener) {
-		listeners.remove(ConnectionListener.class, listener);
+	/**
+	 * sends the Transmission to the server synchronously i.e. blocking
+	 *
+	 * @param request Transmission to send
+	 * @return response from the server
+	 */
+	public Transmission send(Transmission request) {
+		Listener listener = new Listener(request, Thread.currentThread());
+		listeners.add(listener);
+		sendAsync(request);
+		try {
+			Thread.sleep(CONFIG.TIMEOUT);
+		} catch (InterruptedException e) {
+			return listener.get();
+		}
+		log.error("request timeout... retrying");
+		return send(request);
+	}
+
+	/**
+	 * Listens for a response of the given type. Notifies the given Thread
+	 */
+	private class Listener {
+		private Thread thread;
+		private Crud crud;
+		private RequestType type;
+		private Transmission response;
+
+		Listener(Transmission request, Thread currentThread) {
+			this.thread = currentThread;
+			this.crud = request.getCRUD();
+			this.type = request.getRequestType();
+		}
+
+		/**
+		 * check if this listener is for the given request Type
+		 *
+		 * @param type Request type of the incoming response
+		 * @param crud CRUD Type of the incoming response
+		 * @return if the Listener is waiting for this response
+		 */
+		public boolean isListenerFor(RequestType type, Crud crud) {
+			return this.type.equals(type) && this.crud.equals(crud);
+		}
+
+		/**
+		 * notifies the Thread of this listener that a response from the Server is available
+		 *
+		 * @param response response from the server
+		 */
+		public void notify(Transmission response) {
+			this.response = response;
+			thread.interrupt();
+		}
+
+		/**
+		 * gets the response from the server
+		 *
+		 * @return Response from the server
+		 */
+		Transmission get() {
+			return response;
+		}
 	}
 }
