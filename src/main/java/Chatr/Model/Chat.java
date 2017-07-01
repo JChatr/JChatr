@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -112,6 +113,13 @@ public class Chat {
 		Message message = new Message(localUserID, content, messageType);
 		messages.add(message);
 		Connection.addMessage(chatID.get(), message);
+	}
+
+	public Message addMessage(String content, MessageType messageType, int width, int height, Image gifImg) {
+		Message message = new Message(localUserID, content, messageType, width, height, gifImg);
+		messages.add(message);
+		Connection.addMessage(chatID.get(), message);
+		return message;
 	}
 
 	public void addMessage(Message message) {
