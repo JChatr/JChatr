@@ -134,7 +134,7 @@ public class ConnectionTest {
 	}
 
 	@Test
-	public void testReadUsers() {
+	public void testReadUskers() {
 		assertEquals(database.readUsers(), Connection.readUsers());
 	}
 

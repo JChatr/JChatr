@@ -96,15 +96,6 @@ public class Transmission implements Cloneable {
 		return this;
 	}
 
-	public Set<String> getUserIDs() {
-		return userIDs;
-	}
-
-	public Transmission setUserIDs(Set<String> userIDs) {
-		this.userIDs = userIDs;
-		return this;
-	}
-
 	public Boolean getStatus() {
 		return status;
 	}
@@ -180,8 +171,8 @@ public class Transmission implements Cloneable {
 		try {
 			return (Transmission) super.clone();
 		} catch (CloneNotSupportedException e) {
+			return null;
 		}
-		return null;
 	}
 
 	@Override

@@ -141,11 +141,11 @@ public class Database {
 
 		Map<Long, Message> newMessages = new LinkedHashMap<>();
 		chat.getMessages().forEach(message -> newMessages.put(message.getTime(), message));
-		boolean success = chats.replace(ID, newMessages) == null;
+		boolean success = chats.replace(ID, newMessages) != null;
 
 		List<String> newChatMetadata = new LinkedList<>();
 		newChatMetadata.add(chat.getName().get());
-		success &= chatMetadata.replace(ID, newChatMetadata) == null;
+		success &= chatMetadata.replace(ID, newChatMetadata) != null;
 
 		chat.getMembers().forEach(user -> users.putIfAbsent(user.getID(), user));
 		return linkChat(ID, chat.getMemberIDs()) && success;
@@ -229,15 +229,17 @@ public class Database {
 	/**
 	 * updates the data of a message in the table
 	 *
-	 * @param conversationID ID of the conversation to forceUpdate
+	 * @param chatID ID of the conversation to forceUpdate
 	 * @param message        message to forceUpdate the data for
 	 * @return if the forceUpdate was successful
 	 */
-	public boolean updateMessage(String conversationID, Message message) {
+	public boolean updateMessage(String chatID, Message message) {
 		try {
-			return chats.get(conversationID).put(message.getTime(), message) != null;
+			return chats.get(chatID)
+					.put(message.getTime(), message)
+					!= null;
 		} catch (NullPointerException e) {
-			log.info(String.format("unable to forceUpdate Message with %s in conversation %s", message, conversationID), e);
+			log.info(String.format("unable to forceUpdate Message with %s in chat %s", message, chatID), e);
 			return false;
 		}
 	}

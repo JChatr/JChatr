@@ -81,15 +81,19 @@ class HandlerFactory {
 				}
 				case UPDATE: {
 					boolean success = super.database.updateMessage(request.getChatID(), request.getMessage());
+					Set<User> members = super.database.getChatMembers(request.getChatID());
 					notify(request.reset()
 									.setStatus(success),
-							senderID);
+							members.stream()
+									.filter(user -> !user.getID().equals(senderID))
+									.map(User::getID)
+									.collect(Collectors.toList()));
 					break;
 				}
 				case DELETE: {
-					super.database.deleteMessage(request.getChatID(), request.getMessage().getTime());
+					boolean success = super.database.deleteMessage(request.getChatID(), request.getMessage().getTime());
 					Set<User> members = super.database.getChatMembers(request.getChatID());
-					notify(request,
+					notify(request.reset().setStatus(success),
 							members.stream()
 									.filter(user -> !user.getID().equals(senderID))
 									.map(User::getID)
@@ -143,8 +147,8 @@ class HandlerFactory {
 					break;
 				}
 				case DELETE: {
-					boolean success = super.database.deleteChat(request.getChatID());
 					Set<User> members = super.database.getChatMembers(request.getChatID());
+					boolean success = super.database.deleteChat(request.getChatID());
 					notify(request.reset().setStatus(success),
 							members.stream()
 									.filter(user -> !user.getID().equals(senderID))

@@ -27,7 +27,7 @@ public class JavaFX extends Application {
 
 	@Override
 	public void stop() throws Exception {
-		System.out.println("stopped");
+		log.info("closed the application");
 	}
 
 	@Override

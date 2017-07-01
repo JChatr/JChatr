@@ -13,8 +13,6 @@ public class UserCellSmallController extends Loader {
 	@FXML
 	private Label name;
 
-//	private User user;
-
 	public UserCellSmallController() {
 		load(this);
 	}
@@ -25,12 +23,13 @@ public class UserCellSmallController extends Loader {
 	}
 
 	public void setInfo(User user) {
-//		this.user = user;
-//		img.setImage(user.getPicture());
+		reset();
+		img.imageProperty().bind(user.getImage());
 		name.setText(user.getID());
 	}
 
 	private void reset() {
+		img.imageProperty().unbind();
 		img.setImage(null);
 		name.setText("");
 	}

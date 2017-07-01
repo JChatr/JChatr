@@ -1,6 +1,5 @@
 package Chatr.Server;
 
-import Chatr.Model.User;
 import Chatr.Server.Database.Database;
 
 import java.util.Collection;
@@ -29,7 +28,7 @@ public abstract class Handler {
 	 * sends the given transmission to the to Users
 	 *
 	 * @param transmission transmission to sendAsync
-	 * @param users        users to sendAsync to
+	 * @param userIDs      users to sendAsync to
 	 */
 	void notify(final Transmission transmission, final Collection<String> userIDs) {
 		userIDs.forEach(user -> notify(transmission, user));
@@ -39,7 +38,7 @@ public abstract class Handler {
 	 * sends the transmission to the user
 	 *
 	 * @param transmission transmission to sendAsync
-	 * @param userID         user to sendAsync to
+	 * @param userID       user to sendAsync to
 	 */
 	void notify(final Transmission transmission, final String userID) {
 		responses.add(transmission.clone()
