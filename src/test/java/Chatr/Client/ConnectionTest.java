@@ -39,7 +39,6 @@ public class ConnectionTest {
 		Chat chat = Chat.newChat("testCreateChat", u1, u2);
 		Connection.createUser(u1);
 		Connection.createUser(u2);
-		Connection.createChat(chat);
 		sleep(100);
 		assertEquals(chat, database.readChat(chat.getID(), u1.getID()));
 	}
@@ -65,7 +64,6 @@ public class ConnectionTest {
 		Connection.createUser(u1);
 		Connection.createUser(u2);
 		Connection.createUser(u3);
-		Connection.createChat(chat);
 		chat.addMessage(new Message(u1.getID(), "skdlfkjasdöfasdjfkjasdjgkhadhkjfgaeiu", MessageType.TEXT));
 		chat.addMember(u3);
 		sleep(100);
@@ -79,7 +77,6 @@ public class ConnectionTest {
 		Chat chat = Chat.newChat("testDeleteChat", u1, u2);
 		Connection.createUser(u1);
 		Connection.createUser(u2);
-		Connection.createChat(chat);
 		sleep(100);
 		assertEquals(chat, database.readChat(chat.getID(), u2.getID()));
 		Connection.deleteChat(chat.getID());
@@ -95,7 +92,6 @@ public class ConnectionTest {
 		Chat chat = Chat.newChat("testDeleteChat", u1, u2);
 		Connection.createUser(u1);
 		Connection.createUser(u2);
-		Connection.createChat(chat);
 		chat.addMessage("skldfkjsdf", MessageType.TEXT);
 		sleep(2);
 		chat.addMessage("123123", MessageType.TEXT);
@@ -113,7 +109,6 @@ public class ConnectionTest {
 		User trump = database.readUser("@dTrump");
 		Chat chat = Chat.newChat("testAddMessage", merkel, trump);
 		Message message = new Message(merkel.getID(), "testAddMessage", MessageType.TEXT);
-		Connection.createChat(chat);
 		Connection.addMessage(chat.getID(), message);
 		sleep(100);
 		assertEquals(message, database.readMessage(chat.getID(), message.getTime()));

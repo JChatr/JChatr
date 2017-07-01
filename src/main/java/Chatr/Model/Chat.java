@@ -43,12 +43,57 @@ public class Chat {
 		this.messages.addAll(messages);
 	}
 
+	/**
+	 * Creates new chat and sends it to the server
+	 * @param chatName
+	 * @param localUser
+	 * @param otherUsers
+	 * @return Returns new Chat with the given parameters
+	 */
 	public static Chat newChat(String chatName, User localUser, User... otherUsers) {
-		return new Chat(chatName, localUser, Arrays.asList(otherUsers));
+		Chat c = new Chat(chatName, localUser, Arrays.asList(otherUsers));
+		Connection.createChat(c);
+		return c;
 	}
 
+	/**
+	 * Creates new chat and sends it to the server
+	 * @param chatName
+	 * @param localUser
+	 * @param otherUsers
+	 * @return Returns new Chat with the given parameters
+	 */
 	public static Chat newChat(String chatName, User localUser, Collection<User> otherUsers) {
+
+		Chat c = new Chat(chatName, localUser, otherUsers);
+		Connection.createChat(c);
+		return c;
+
+	}
+
+	/**
+	 * Creates new chat without sending it to the server
+	 * (Used in DatabaseFixtures)
+	 * @param chatName
+	 * @param localUser
+	 * @param otherUsers
+	 * @return
+	 */
+	public static Chat newChatDB(String chatName, User localUser, Collection<User> otherUsers){
+
 		return new Chat(chatName, localUser, otherUsers);
+	}
+
+	/**
+	 * Creates new chat without sending it to the server
+	 * @param chatName
+	 * @param localUser
+	 * @param otherUsers
+	 * @return
+	 */
+	public static Chat newChatDB(String chatName, User localUser, User... otherUsers){
+
+		return new Chat(chatName, localUser, Arrays.asList(otherUsers));
 	}
 
 	public static Chat preConfigServer(String chatName, String chatID, String localUserID,

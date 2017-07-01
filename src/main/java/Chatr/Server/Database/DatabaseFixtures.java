@@ -35,7 +35,7 @@ class DatabaseFixtures {
 	private static void userSet1(Database db) throws InterruptedException {
 		User jDoe = getDoe();
 		User dTrump = getTrump();
-		Chat chat = Chat.newChat("Randomness", jDoe, dTrump);
+		Chat chat = Chat.newChatDB("Randomness", jDoe, dTrump);
 		db.addUser(jDoe);
 		db.addUser(dTrump);
 		db.addChat(chat);
@@ -111,7 +111,7 @@ class DatabaseFixtures {
 	private static void multiUserChat(Database db) throws InterruptedException {
 		User merkel = db.readUser("@aMerkel");
 		User trump = db.readUser("@dTrump");
-		Chat chat = Chat.newChat("FINANCIAL POWER", merkel, db.readUsers());
+		Chat chat = Chat.newChatDB("FINANCIAL POWER", merkel, db.readUsers());
 		db.addChat(chat);
 
 		db.addChat(chat);
@@ -152,7 +152,7 @@ class DatabaseFixtures {
 	private static User getMerkel() {
 		return new User("Angela Merkel",
 				"@aMerkel",
-				"angela@merkel.#",
+				"kasanloe@web.de",
 				"12345");
 	}
 
