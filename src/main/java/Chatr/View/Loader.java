@@ -30,15 +30,14 @@ import static java.util.concurrent.CompletableFuture.supplyAsync;
  */
 public class Loader {
 	private final static String DEFAULT_ENDING = "Controller";
+	private final static ExecutorService PARENT_CREATION_POOL = getExecutorService();
+	private static Executor FX_PLATFORM_EXECUTOR = Platform::runLater;
+	private static Logger log = LogManager.getLogger(Loader.class);
 	private ObjectProperty<Object> presenterProperty;
 	private javafx.fxml.FXMLLoader fxmlLoader;
 	private String bundleName;
 	private ResourceBundle bundle;
 	private URL resource;
-	private static Executor FX_PLATFORM_EXECUTOR = Platform::runLater;
-
-	private final static ExecutorService PARENT_CREATION_POOL = getExecutorService();
-	private static Logger log = LogManager.getLogger(Loader.class);
 
 	/**
 	 * Constructs the view lazily (fxml is not loaded) with empty injection
@@ -46,6 +45,32 @@ public class Loader {
 	 */
 	public Loader() {
 		this.init(getFXMLName());
+	}
+
+	static String stripEnding(String clazz) {
+		if (!clazz.endsWith(DEFAULT_ENDING)) {
+			return clazz;
+		}
+		int viewIndex = clazz.lastIndexOf(DEFAULT_ENDING);
+		return clazz.substring(0, viewIndex);
+	}
+
+	public static ResourceBundle getResourceBundle(String name) {
+		try {
+			return getBundle(name);
+		} catch (MissingResourceException ex) {
+			return null;
+		}
+	}
+
+	static ExecutorService getExecutorService() {
+		return Executors.newCachedThreadPool((r) -> {
+			Thread thread = Executors.defaultThreadFactory().newThread(r);
+			String name = thread.getName();
+			thread.setName("afterburner.fx-" + name);
+			thread.setDaemon(true);
+			return thread;
+		});
 	}
 
 	private void init(final String conventionalName) {
@@ -237,37 +262,11 @@ public class Loader {
 		return this.getClass().getPackage().getName() + "." + conventionalName;
 	}
 
-	static String stripEnding(String clazz) {
-		if (!clazz.endsWith(DEFAULT_ENDING)) {
-			return clazz;
-		}
-		int viewIndex = clazz.lastIndexOf(DEFAULT_ENDING);
-		return clazz.substring(0, viewIndex);
-	}
-
-	public static ResourceBundle getResourceBundle(String name) {
-		try {
-			return getBundle(name);
-		} catch (MissingResourceException ex) {
-			return null;
-		}
-	}
-
 	/**
 	 * @return an existing resource bundle, or null
 	 */
 	public ResourceBundle getResourceBundle() {
 		return this.bundle;
-	}
-
-	static ExecutorService getExecutorService() {
-		return Executors.newCachedThreadPool((r) -> {
-			Thread thread = Executors.defaultThreadFactory().newThread(r);
-			String name = thread.getName();
-			thread.setName("afterburner.fx-" + name);
-			thread.setDaemon(true);
-			return thread;
-		});
 	}
 
 	/**

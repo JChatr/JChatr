@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+
 <?import com.jfoenix.controls.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.image.*?>
@@ -12,17 +13,17 @@
 <AnchorPane fx:id="parent" minHeight="500.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Chatr.View.Login.LoginController">
    <children>
       <GridPane id="pane" minHeight="500.0" minWidth="600.0" prefWidth="900.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <columnConstraints>
-            <ColumnConstraints hgrow="ALWAYS" />
-            <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="415.0" />
-            <ColumnConstraints hgrow="ALWAYS" />
-         </columnConstraints>
-         <rowConstraints>
-            <RowConstraints vgrow="ALWAYS" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints vgrow="ALWAYS" />
-         </rowConstraints>
-         <children>
+             <columnConstraints>
+                <ColumnConstraints hgrow="ALWAYS" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="-Infinity" prefWidth="415.0" />
+                <ColumnConstraints hgrow="ALWAYS" />
+             </columnConstraints>
+             <rowConstraints>
+                <RowConstraints vgrow="ALWAYS" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints vgrow="ALWAYS" />
+             </rowConstraints>
+
             <VBox id="elementBox" fx:id="content" alignment="BOTTOM_LEFT" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.hgrow="NEVER" GridPane.rowIndex="1">
                <children>
                   <Label alignment="CENTER" text="Log in to Chatr!">
@@ -31,7 +32,8 @@
                      </VBox.margin>
                      <font>
                         <Font size="29.0" />
-                     </font></Label>
+                     </font>
+                  </Label>
                   <Label fx:id="userIdLabel" alignment="CENTER" prefHeight="23.0" prefWidth="215.0" styleClass="errorLabels" textAlignment="CENTER" textFill="WHITE" wrapText="true">
                      <VBox.margin>
                         <Insets left="100.0" />
@@ -214,14 +216,10 @@
                               <Insets bottom="10.0" top="10.0" />
                            </padding>
                         </HBox>
-                     </children>
-                     <VBox.margin>
-                        <Insets />
-                     </VBox.margin>
-                  </VBox>
+                    </children>
+                </VBox>
                </children>
             </VBox>
-         </children>
       </GridPane>
-   </children>
+    </children>
 </AnchorPane>

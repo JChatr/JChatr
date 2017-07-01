@@ -1,5 +1,0 @@
-package Chatr.Helper.Enums;
-
-public enum Request {
-	MESSAGE, STATUS, USER, USERS, CONNECTED, DISCONNECTED, NOTIFICATION, CONVERSATION
-}

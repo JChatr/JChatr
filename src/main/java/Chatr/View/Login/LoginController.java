@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 
 public class LoginController extends Loader implements Initializable {
 
+	private static Logger log = LogManager.getLogger(LoginController.class);
 	@FXML
 	private TextField userId;
 	@FXML
@@ -50,9 +51,6 @@ public class LoginController extends Loader implements Initializable {
 	private Label eMailLabel;
 	@FXML
 	private Label usernameLabel;
-
-	private static Logger log = LogManager.getLogger(LoginController.class);
-
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -175,7 +173,7 @@ public class LoginController extends Loader implements Initializable {
 			Login.registerUser(userID, email, userName, password);
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
-			Manager.startUpdateLoop();
+			//Manager.startUpdateLoop();
 			changeScene();
 		} else {
 			if (errorMessagesValidation.getUserIdErrorMessage() != null) {
@@ -224,8 +222,8 @@ public class LoginController extends Loader implements Initializable {
 		try {
 			User user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
-			Manager.startUpdateLoop();
 			JavaFX.primaryStage.setTitle("Chatr - " + user.getUserName());
+			Manager.initialPull();
 			changeScene();
 		} catch (UserIDException e) {
 			userIdLabel.setVisible(true);

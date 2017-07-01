@@ -3,7 +3,7 @@ package Chatr.Server;
 
 import Chatr.Controller.Manager;
 import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
+import Chatr.Helper.Enums.RequestType;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -15,8 +15,8 @@ import java.util.Set;
 /**
  * Transmission wrapper used  as a datastore in client / server communication
  */
-public class Transmission {
-	private Request type;
+public class Transmission implements Cloneable {
+	private RequestType type;
 	private Crud crud;
 	private String localUserID;
 	private String conversationID;
@@ -33,14 +33,17 @@ public class Transmission {
 	private byte[] img;
 	private byte[] voice;
 
-	public Transmission(Request type, Crud crud) {
+	public Transmission(RequestType type, Crud crud) {
 		this.type = type;
 		this.crud = crud;
-		this.localUserID = (Manager.localUser == null) ? "042b9135b65cc71d9c94df01add70cbf" :
-				Manager.getLocalUserID();
+		try {
+			this.localUserID = Manager.getLocalUser().get().getID();
+		} catch (NullPointerException e) {
+			this.localUserID = "DEFAULT042b9135b65cc71d9c94df01add70cbf";
+		}
 	}
 
-	public Request getRequestType() {
+	public RequestType getRequestType() {
 		return type;
 	}
 
@@ -66,11 +69,11 @@ public class Transmission {
 		return this;
 	}
 
-	public String getConversationID() {
+	public String getChatID() {
 		return this.conversationID;
 	}
 
-	public Transmission setConversationID(String conversationID) {
+	public Transmission setChatID(String conversationID) {
 		this.conversationID = conversationID;
 		return this;
 	}
@@ -147,6 +150,15 @@ public class Transmission {
 		return this;
 	}
 
+	public String getLocalUserID() {
+		return this.localUserID;
+	}
+
+	public Transmission setLocalUserID(String userID) {
+		this.localUserID = userID;
+		return this;
+	}
+
 	public Transmission reset() {
 		message = null;
 		messages = null;
@@ -164,6 +176,15 @@ public class Transmission {
 	}
 
 	@Override
+	protected Transmission clone() {
+		try {
+			return (Transmission) super.clone();
+		} catch (CloneNotSupportedException e) {
+		}
+		return null;
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		try {
@@ -173,6 +194,7 @@ public class Transmission {
 				}
 			}
 		} catch (IllegalAccessException e) {
+			return sb.toString();
 		}
 		return sb.toString();
 	}

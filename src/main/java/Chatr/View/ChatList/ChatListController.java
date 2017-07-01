@@ -3,6 +3,7 @@ package Chatr.View.ChatList;
 import Chatr.Controller.Manager;
 import Chatr.Model.Chat;
 import Chatr.View.ChatList.ChatCell.ChatCell;
+import Chatr.View.ChatList.NewChat.NewChatController;
 import Chatr.View.CurrentChat.CurrentChatController;
 import Chatr.View.Loader;
 import com.jfoenix.controls.JFXButton;
@@ -12,25 +13,25 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class ChatListController extends Loader {
+
+	private static Logger log = LogManager.getLogger(ChatListController.class);
 	@FXML
-	private Button newChat;
+	private SplitPane parent;
 	@FXML
-	private Button searchButton;
+	private JFXButton newChat;
 	@FXML
 	private Label userName;
 	@FXML
 	private ListView<Chat> chatsList;
 	@FXML
 	private AnchorPane currentChatAnchor;
-
 	private CurrentChatController currentChat;
-	private static Logger log = LogManager.getLogger(ChatListController.class);
-
 
 	@FXML
 	private void initialize() {
@@ -64,6 +65,13 @@ public class ChatListController extends Loader {
 		Bindings.bindContent(chatsList.getItems(), Manager.getUserChats());
 	}
 
+	@FXML
+	private void onNewChatButtonClick() {
+		AnchorPane parent = (AnchorPane) this.parent.getParent();
+		NewChatController ncc = new NewChatController(parent);
+		parent.getChildren().add(ncc.getView());
+	}
+
 	/**
 	 * sets new Chat in Manager and creates corresponding chat Window
 	 *
@@ -71,7 +79,7 @@ public class ChatListController extends Loader {
 	 */
 	private void switchChat(Chat chat) {
 		Manager.setCurrentChat(chat);
-		currentChat.switchChat(chat.getID().get());
+		currentChat.switchChat(chat.getID());
 		log.debug("switched to Chat: " + chat);
 	}
 
@@ -85,7 +93,4 @@ public class ChatListController extends Loader {
 		currentChatAnchor.getChildren().add(parent);
 	}
 
-//	private void emojiClicked(){
-//		System.out.println("Smiley klicked");
-//	}
 }

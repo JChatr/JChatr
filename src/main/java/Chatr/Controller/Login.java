@@ -8,7 +8,6 @@ import Chatr.Model.ErrorMessagesValidation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,13 +28,13 @@ public class Login {
 	 */
 	public static User loginUser(String userID, String password) {
 		validateUser(userID, password);
-		User user = Connection.readUser(userID);
-		if (user == null ) {
+		User user = Connection.readUserLogin(userID);
+		if (user == null) {
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
 		}
-		if(!HashGen.checkPW(password, user.getPassword())){
+		if (!HashGen.checkPW(password, user.getPassword())) {
 			String errorMessage = "UserID or password invalid";
 			log.error(errorMessage);
 			throw new UserIDException(errorMessage);
@@ -52,12 +51,12 @@ public class Login {
 	 * @return Returns a new object of user
 	 */
 	public static User registerUser(String userID, String eMail, String userName, String password) {
-		User user = new User(userID);
-		user.setUserName(userName);
-		user.setEmail(eMail);
-		user.setPassword(HashGen.hashPW(password));
-		Connection.createUser(userID, user);
-		log.info(String.format("registered User %s|%s", user.getUserID(), user.getUserName()));
+		validateUser(userID, eMail, password, userName);
+		validateUniqueID(userID);
+
+		User user = new User(userName, userID, eMail, HashGen.hashPW(password));
+		Connection.createUser(user);
+		log.info(String.format("registered User %s|%s", user.getID(), user.getUserName()));
 		return user;
 	}
 
@@ -178,8 +177,8 @@ public class Login {
 	 */
 	private static boolean validateUniqueID(String userID) throws UserIDException {
 		User user;
-		if ((user = Connection.readUser(userID)) != null) {
-			log.trace(String.format("read User %s|%s from server", user.getUserID(), user.getUserName()));
+		if ((user = Connection.readUserLogin(userID)) != null) {
+			log.trace(String.format("read User %s|%s from server", user.getID(), user.getUserName()));
 			String errorMessage = "UserId is already in use.";
 			log.error(errorMessage, userID);
 			throw new UserIDException(errorMessage);
@@ -219,6 +218,7 @@ public class Login {
 			throw new EmailException(errorMessage);
 		}
 	}
+
 }
 
 

@@ -23,6 +23,7 @@ import java.util.function.Function;
 
 class ChatCellController extends Loader {
 
+	private static Logger log = LogManager.getLogger(ChatCellController.class);
 	@FXML
 	private ImageView thumbnail;
 	@FXML
@@ -37,7 +38,6 @@ class ChatCellController extends Loader {
 	private AnchorPane parent;
 	private int unreadMessages;
 	private Chat chat;
-	private static Logger log = LogManager.getLogger(ChatCellController.class);
 
 	ChatCellController() {
 		load(this);

@@ -3,6 +3,7 @@
     /*-fx-border-radius: 18px;*/
     -fx-background-radius: 6px;
 }
+
 #text-right {
     -fx-text-fill: #ffffff;
 }
@@ -16,10 +17,19 @@
     -fx-text-fill: #000000;
 }
 
-.userIdMessageCell{
+
+.userIdMessageCell {
     -fx-text-fill: #3192ce !important;
 }
-/*
-.timestampMessageCell{
-    -fx-text-fill: dimgrey !important;
-}*/
+
+#name-background {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #444444;
+}
+
+#timestamp-background {
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #444444;
+}
+
+

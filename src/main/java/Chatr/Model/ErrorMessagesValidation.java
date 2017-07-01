@@ -18,12 +18,12 @@ public class ErrorMessagesValidation {
 		this.errorMessages = errorMessages;
 	}
 
-	public void setErrorexisting(boolean errorexisting) {
-		this.errorexisting = errorexisting;
-	}
-
 	public boolean isErrorexisting() {
 		return errorexisting;
+	}
+
+	public void setErrorexisting(boolean errorexisting) {
+		this.errorexisting = errorexisting;
 	}
 
 	public String getUserIdErrorMessage() {

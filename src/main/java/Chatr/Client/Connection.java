@@ -1,7 +1,5 @@
 package Chatr.Client;
 
-import Chatr.Helper.Enums.Crud;
-import Chatr.Helper.Enums.Request;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -11,68 +9,70 @@ import java.util.List;
 import java.util.Set;
 
 import static Chatr.Helper.Enums.Crud.*;
-import static Chatr.Helper.Enums.Request.*;
+import static Chatr.Helper.Enums.RequestType.*;
 
-public class Connection {
+public final class Connection {
 
-	private Connection() {
-	}
+	private static final Client client = new Client();
 
 	/**
 	 * creates a new conversation on the server and adds the specified users
 	 *
-	 * @param conversationID ID of the new conversation
-	 * @param userIDs        users to add to the conversation
+	 * @param chat Chat to create on the server
 	 * @return if the operation was successful
 	 */
-	public static boolean createConversation(String conversationID, Set<String> userIDs) {
-		Transmission request = build(CONVERSATION, CREATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+	public static void createChat(Chat chat) {
+		Transmission request = new Transmission(CHAT, CREATE).setChat(chat);
+		client.sendAsync(request);
 	}
 
 	/**
-	 * TODO: change the method of getting new conversations. Really dirty right now
-	 * read all conversations for that user
+	 * Read all conversations for that user
+	 * (Waits for server response)
 	 *
 	 * @param userID User ID to get the conversations for
 	 * @return the users conversations
 	 */
-	public static Set<Chat> readAllConversations(String userID) {
-		Transmission request = build(CONVERSATION, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getChats();
+	public static Set<Chat> readAllUserChats(String userID) {
+		Transmission request = new Transmission(CHAT, READ).setUserID(userID);
+		return client.send(request).getChats();
+	}
+
+	/**
+	 *
+	 * @param chat the chat to overwrite on the database
+	 */
+	public static void updateChat(Chat chat) {
+		Transmission request = new Transmission(CHAT, UPDATE)
+				.setChat(chat);
+		client.sendAsync(request);
 	}
 
 	/**
 	 * Deletes the conversation from the server
 	 *
-	 * @param conversationID ID of the conversation to delete
+	 * @param chatID ID of the conversation to delete
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteConversation(String conversationID) {
-		Transmission request = build(CONVERSATION, DELETE, conversationID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
-	}
-
-	public static boolean updateConversationUsers(String conversationID, Set<String> userIDs) {
-		Transmission request = build(CONVERSATION, UPDATE, conversationID, userIDs);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+	public static void deleteChat(String chatID) {
+		Transmission request = new Transmission(CHAT, DELETE)
+				.setChatID(chatID);
+		client.sendAsync(request);
 	}
 
 	/**
 	 * read new messages from the specified conversation
+	 * (Waits for server response)
 	 *
 	 * @param conversationID ID of the conversation to forceUpdate
 	 * @param newest         newest message in the local copy of the conversation
 	 * @return new Messages from the server
 	 */
 	public static List<Message> readNewMessages(String conversationID, Long newest) {
-		Transmission request = build(MESSAGE, READ, conversationID, newest);
-		Transmission response = new Client().get(request);
-		return response.getMessages();
+		Transmission request = new Transmission(MESSAGE, READ)
+				.setChatID(conversationID)
+				.setTimestamp(newest);
+		return client.send(request).getMessages();
 	}
 
 	/**
@@ -82,62 +82,51 @@ public class Connection {
 	 * @param message        Message to get
 	 * @return if the operation was successful
 	 */
-	public static boolean addMessage(String conversationID, Message message) {
-		Transmission request = build(MESSAGE, CREATE, conversationID, message);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+	public static void addMessage(String conversationID, Message message) {
+		Transmission request = new Transmission(MESSAGE, CREATE)
+				.setChatID(conversationID)
+				.setMessage(message);
+		client.sendAsync(request);
 	}
-
 
 	/**
 	 * creates a new user on the server
 	 *
-	 * @param userID   ID of the User to create
-	 * @param userData the new Users data
+	 * @param user the new Users data
 	 * @return if the operation was successful
 	 */
-	public static boolean createUser(String userID, User userData) {
-		Transmission request = build(USER, CREATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
+	public static void createUser(User user) {
+		Transmission request = new Transmission(LOGIN, CREATE)
+				.setUserID(user.getID())
+				.setUser(user);
+		client.sendAsync(request);
 	}
 
 	/**
 	 * read the User with the specified ID from the server
 	 * returns an empty user if there is no user with that ID
+	 * (Waits for server response)
 	 *
 	 * @param userID ID of the User to fetch
 	 * @return User Object from the server
 	 */
-	public static User readUser(String userID) {
-		Transmission request = build(USER, READ, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getUser();
+	public static User readUserLogin(String userID) {
+		Transmission request = new Transmission(LOGIN, READ)
+				.setUserID(userID);
+		return client.send(request).getUser();
 	}
 
 	/**
 	 * gets all users known to the user
+	 * (Waits for server response)
 	 *
 	 * @return all users known to the server
 	 */
 	public static Set<User> readUsers() {
-		Transmission request = build(USERS, READ, null, null);
-		Transmission response = new Client().get(request);
-		return response.getUsers();
+		Transmission request = new Transmission(USERS, READ);
+		return client.send(request).getUsers();
 	}
 
-	/**
-	 * forceUpdate the specified users data
-	 *
-	 * @param userID   ID of the user to forceUpdate information for
-	 * @param userData new data of the user
-	 * @return if the operation was successful
-	 */
-	public static boolean updateUser(String userID, User userData) {
-		Transmission request = build(USER, UPDATE, userID, userData);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
-	}
 
 	/**
 	 * deletes the specified user from the Server
@@ -145,49 +134,9 @@ public class Connection {
 	 * @param userID ID of the user
 	 * @return if the operation was successful
 	 */
-	public static boolean deleteUser(String userID) {
-		Transmission request = build(USER, DELETE, userID, null);
-		Transmission response = new Client().get(request);
-		return response.getStatus();
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Transmission build(Request type, Crud operation, String ID, Object data) {
-		Transmission request = new Transmission(type, operation);
-		switch (type) {
-			case MESSAGE:
-				switch(operation){
-					case CREATE:
-						request.setConversationID(ID).setMessage((Message) data);
-						break;
-					case READ:
-						request.setConversationID(ID).setTimestamp((Long) data);
-						break;
-				}
-				break;
-			case CONVERSATION:
-				switch (operation) {
-					case CREATE:
-						request.setConversationID(ID).setUserIDs((Set<String>) data);
-						break;
-					case READ:
-						request.setUserID(ID);
-						break;
-					case UPDATE:
-						request.setConversationID(ID).setUserIDs((Set<String>) data);
-						break;
-					case DELETE:
-						request.setConversationID(ID);
-						break;
-				}
-				break;
-			case USER:
-				request.setUserID(ID).setUser((User) data);
-				break;
-			case USERS:
-				request.setUserID(ID);
-				break;
-		}
-		return request;
+	public static void deleteUser(String userID) {
+		Transmission request = new Transmission(USER, DELETE)
+				.setUserID(userID);
+		client.sendAsync(request);
 	}
 }

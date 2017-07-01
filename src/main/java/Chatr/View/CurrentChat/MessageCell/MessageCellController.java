@@ -20,6 +20,12 @@ import org.apache.logging.log4j.Logger;
  * renders the Message items in the current Chat box
  */
 class MessageCellController extends Loader {
+	private final static int MAX_WIDTH = 600;
+	private final static int MIN_WIDTH = 50;
+	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
+	private final static int WIDTH_PADDING = 20;
+	private static int MIN_HEIGHT = 40;
+	private static Logger log = LogManager.getLogger(MessageCellController.class);
 	@FXML
 	private HBox parent;
 	@FXML
@@ -36,14 +42,6 @@ class MessageCellController extends Loader {
 	private Pane background;
 	@FXML
 	private ImageView userThumbnail;
-
-	private final static int MAX_WIDTH = 600;
-	private final static int MIN_WIDTH = 50;
-	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
-	private  static int MIN_HEIGHT = 40;
-	private final static int WIDTH_PADDING = 20;
-
-	private static Logger log = LogManager.getLogger(MessageCellController.class);
 
 	MessageCellController() {
 		load(this);
@@ -77,7 +75,8 @@ class MessageCellController extends Loader {
 		text.setText("");
 		timestamp.setText("");
 		alignRight();
-		userThumbnail.imageProperty().setValue(null);
+		userThumbnail.imageProperty().unbind();
+		userThumbnail.setImage(null);
 		textBox.setPrefWidth(MIN_WIDTH);
 		textBox.setMaxWidth(MAX_WIDTH);
 		parent.setPrefHeight(MIN_HEIGHT);
@@ -129,12 +128,14 @@ class MessageCellController extends Loader {
 		});
 	}
 
-	private void linkProperties(){
+	private void linkProperties() {
 		userName.managedProperty().bind(userName.visibleProperty());
 	}
 
 	private void displayUserThumbnail(String sender) {
-		userThumbnail.imageProperty().setValue(SwingFXUtils.toFXImage(Manager.getUserImage(sender), null));
+		userThumbnail.imageProperty().unbind();
+		userThumbnail.setImage(null);
+		userThumbnail.imageProperty().bind(Manager.getUserImage(sender));
 	}
 
 	/**
