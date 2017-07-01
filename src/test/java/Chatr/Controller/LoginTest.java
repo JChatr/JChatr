@@ -1,5 +1,6 @@
 package Chatr.Controller;
 
+import Chatr.Helper.HashGen;
 import Chatr.Model.ErrorMessagesValidation;
 import Chatr.Model.Exceptions.UserIDException;
 import Chatr.Model.User;
@@ -41,7 +42,8 @@ public class LoginTest {
 	@Test
 	public void loginValidUser() {
 		User l = Login.loginUser("@aMerkel", "12345");
-		User ref = new User("", "@aMerkel", "", "");
+		System.out.println("login merkel");
+		User ref = new User("Angela Merkel", "@aMerkel", "angela@merkel.de", "12345");
 		assertEquals(ref, l);
 	}
 

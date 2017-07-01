@@ -12,6 +12,9 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
@@ -23,6 +26,12 @@ public class CurrentChatController extends Loader {
 	private static Logger log = LogManager.getLogger(CurrentChatController.class);
 	@FXML
 	private ListView<Message> currentMessages;
+	@FXML
+	private AnchorPane chatHeader;
+	@FXML
+	private GridPane startMessage;
+	@FXML
+	private HBox bottomHBox;
 	@FXML
 	private Label currentChatName;
 	@FXML
@@ -46,11 +55,10 @@ public class CurrentChatController extends Loader {
 	@FXML
 	private FlowPane gifPane;
 	@FXML
-	private Button gifButton;
-	@FXML
 	private TextField gifText;
 	@FXML
 	private ScrollPane gifScroll;
+
 	private String chatID;
 	private boolean sidebarVisible;
 
@@ -62,6 +70,18 @@ public class CurrentChatController extends Loader {
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
+		bindings();
+		chatHeader.setVisible(false);
+		currentMessages.setVisible(false);
+		bottomHBox.setVisible(false);
+		startMessage.setVisible(true);
+	}
+
+	private void bindings(){
+		chatHeader.managedProperty().bind(chatHeader.visibleProperty());
+		currentMessages.managedProperty().bind(currentMessages.visibleProperty());
+		startMessage.managedProperty().bind(startMessage.visibleProperty());
+		bottomHBox.managedProperty().bind(bottomHBox.visibleProperty());
 		gifPane.setVgap(2);
 		gifPane.setHgap(2);
 		gifPane.setPrefWrapLength(gifPane.getWidth());
@@ -181,6 +201,11 @@ public class CurrentChatController extends Loader {
 		currentChatUsers.textProperty().set("");
 		textInput.clear();
 		chatID = "";
+		chatHeader.setVisible(true);
+		currentMessages.setVisible(true);
+		bottomHBox.setVisible(true);
+		startMessage.setVisible(false);
+
 	}
 
 	/**

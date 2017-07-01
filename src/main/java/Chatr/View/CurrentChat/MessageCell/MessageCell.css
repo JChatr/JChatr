@@ -1,7 +1,7 @@
 #background-right {
-    -fx-background-color: rgb(0, 132, 255);
+    -fx-background-color: #419fd9;
     /*-fx-border-radius: 18px;*/
-    -fx-background-radius: 18px;
+    -fx-background-radius: 6px;
 }
 
 #text-right {
@@ -10,11 +10,16 @@
 
 #background-left {
     -fx-background-color: rgb(241, 240, 240);
-    -fx-background-radius: 18px;
+    -fx-background-radius: 6px;
 }
 
 #text-left {
     -fx-text-fill: #000000;
+}
+
+
+.userIdMessageCell {
+    -fx-text-fill: #3192ce !important;
 }
 
 #name-background {
@@ -26,4 +31,5 @@
     -fx-text-fill: #ffffff;
     -fx-background-color: #444444;
 }
+
 

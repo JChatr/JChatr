@@ -24,3 +24,4 @@
 .persistent-prompt:focused {
     -fx-prompt-text-fill: derive(-fx-control-inner-background, -30%) !important;
 }
+

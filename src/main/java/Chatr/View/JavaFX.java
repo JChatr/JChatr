@@ -1,5 +1,6 @@
 package Chatr.View;
 
+
 import Chatr.Client.Client;
 import Chatr.Client.Connection;
 import Chatr.Controller.Manager;
@@ -16,7 +17,7 @@ import org.apache.logging.log4j.spi.CleanableThreadContextMap;
 import java.lang.reflect.Field;
 
 public class JavaFX extends Application {
-	private Stage primaryStage;
+	public static Stage primaryStage;
 	private AnchorPane rootLayout;
 	private AnchorPane currentChat;
 	private Logger log = LogManager.getLogger(JavaFX.class);
@@ -48,8 +49,7 @@ public class JavaFX extends Application {
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
 		scene.getStylesheets().addAll(
-//				getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
-				getClass().getResource("/css/chatr.css").toExternalForm()
+				getClass().getResource("/Chatr/View/chatr.css").toExternalForm()
 		);
 		primaryStage.setScene(scene);
 	}

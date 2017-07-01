@@ -61,7 +61,7 @@ public class ChatListController extends Loader {
 	 * all links are guaranteed to get updated at a specified interval
 	 */
 	private void linkUpdateProperties() {
-		userName.textProperty().bind(Manager.getLocalUserName());
+		//userName.textProperty().bind(Manager.getLocalUserName());
 		Bindings.bindContent(chatsList.getItems(), Manager.getUserChats());
 	}
 
@@ -92,4 +92,5 @@ public class ChatListController extends Loader {
 		currentChatAnchor.getChildren().clear();
 		currentChatAnchor.getChildren().add(parent);
 	}
+
 }
