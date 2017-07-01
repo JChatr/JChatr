@@ -104,6 +104,8 @@ public class CurrentChatController extends Loader {
 		//Changes view when tabs are pressed
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
+					//Only gif tab
+					/*
 					if (newValue.getId().equals("gifTab")) {
 						showGIFs("", 25, 0, false);
 					} else if (newValue.getId().equals("emojiTab")) {
@@ -113,6 +115,8 @@ public class CurrentChatController extends Loader {
 					} else {
 						gifPane.getChildren().clear();
 					}
+					*/
+					//showGIFs("", 25, 0, false);
 				});
 	}
 
@@ -170,17 +174,19 @@ public class CurrentChatController extends Loader {
 			gifIV.setFitWidth(gifSize[i]);
 			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
 			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
-			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId()));
+			int width = Integer.parseInt(gifFeed.getDataList().get(i).getImages().getFixedHeight().getWidth());
+			int height = Integer.parseInt(gifFeed.getDataList().get(i).getImages().getFixedHeight().getHeight());
+			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId(), width, height));
 			gifPane.getChildren().add(gifIV);
 			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
 		ImageView sep = new ImageView("/icons/gifsep.png");
 		sep.setFitHeight(0);
 		sep.setFitWidth(gifPane.getWidth());
-		Button moreGif = new Button("more GIfs");
-		moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
 		gifPane.getChildren().add(sep);
-		if (moreBtn || (feedSize % 25 == 0)) {
+		if (moreBtn || (feedSize%25 != 0)) {
+			Button moreGif = new Button("more GIFs");
+			moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
 			gifPane.getChildren().add(moreGif);
 		}
 	}
@@ -244,9 +250,9 @@ public class CurrentChatController extends Loader {
 	 *
 	 * @param url Giphy url
 	 */
-	private void sendGIF(String url) {
-		Manager.addMessage(url, MessageType.GIF);
-		log.debug("GIF sendAsync: " + url);
+	private void sendGIF(String url, int width, int height) {
+		Manager.addMessage(url, MessageType.GIF, width, height, null);
+		log.debug("GIF send: " + url);
 	}
 
 	/**
@@ -265,6 +271,7 @@ public class CurrentChatController extends Loader {
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
+		showGIFs("", 25, 0, false);
 	}
 
 	/**
@@ -274,6 +281,7 @@ public class CurrentChatController extends Loader {
 	private void onGIFButtonClick() {
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
+		gifPane.getChildren().clear();
 		showGIFs(gifSearch, 25, 0, true);
 	}
 

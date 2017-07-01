@@ -5,6 +5,8 @@ import Chatr.Helper.DateFormatter;
 import Chatr.Helper.ImageLoader;
 import Chatr.Model.Message;
 import Chatr.View.Loader;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -17,6 +19,9 @@ import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+
 /**
  * renders the Message items in the current Chat box
  */
@@ -27,6 +32,7 @@ class GIFCellController extends Loader {
 	private final static int WIDTH_PADDING = 20;
 	private static int MIN_HEIGHT = 40;
 	private static Logger log = LogManager.getLogger(GIFCellController.class);
+	private Executor pool = Executors.newFixedThreadPool(4);
 	@FXML
 	private HBox parent;
 	@FXML
@@ -60,11 +66,25 @@ class GIFCellController extends Loader {
 		userThumbnail.setManaged(false);
 		userName.setText(message.getSender());
 		timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
-		Image img = ImageLoader.loadImageNoData(message.getContent());
-		gifIV.setFitWidth(img.getWidth());
-		gifIV.setFitHeight(img.getHeight());
-		gifIV.imageProperty().set(img);
-		if (!Manager.getLocalUserID().equals(message.getSender())) {
+
+		gifIV.setFitWidth(message.getWidth());
+		gifIV.setFitHeight(message.getHeight());
+		final ObjectProperty<Image> gifObj = new SimpleObjectProperty<>();
+		Image loading = new Image("/icons/loading.gif", message.getWidth(), message.getHeight(), false, true);
+		gifObj.set(loading);
+		gifIV.imageProperty().bind(gifObj);
+		if (message.getGifImg() == null) {
+			log.trace("No cached gif found, will load gif");
+			pool.execute(() -> {
+				Image img = ImageLoader.loadImage(message.getContent(), message.getWidth(), message.getHeight(), false, false);
+				gifObj.set(img);
+				message.setGifImg(img);
+				//error, height und width müssen gesetzt werden, da sonst gui abkackt
+			});
+		} else {
+			gifObj.set(message.getGifImg());
+		}
+		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
 			userThumbnail.setManaged(true);
 			displayUserThumbnail(message.getSender());
 			alignLeft();
@@ -117,6 +137,7 @@ class GIFCellController extends Loader {
 		userThumbnail.toFront();
 		gifIV.setId("text-right");
 		userName.setId("text-right");
+		timestamp.setId("timestamp-background");
 	}
 
 	/**

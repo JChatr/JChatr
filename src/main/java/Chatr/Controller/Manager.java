@@ -40,6 +40,10 @@ public class Manager {
 		currentChat.get().addMessage(content, messageType);
 	}
 
+	public static Message addMessage(String content, MessageType messageType, int width, int height, Image gifImg) {
+		return currentChat.get().addMessage(content, messageType, width, height, gifImg);
+	}
+
 	public static ObjectProperty<Chat> getCurrentChat() {
 		return currentChat;
 	}
