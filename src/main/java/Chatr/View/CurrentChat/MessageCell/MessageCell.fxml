@@ -65,7 +65,7 @@
                 </Label>
             </children>
             <HBox.margin>
-                <Insets bottom="1.0" top="1.0" />
+                <Insets bottom="1.0" right="10.0" top="1.0" />
             </HBox.margin>
         </GridPane>
         <ImageView fx:id="userThumbnail" fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" HBox.hgrow="NEVER">

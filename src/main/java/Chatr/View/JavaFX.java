@@ -1,6 +1,5 @@
 package Chatr.View;
 
-import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Login.LoginController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -37,13 +36,8 @@ public class JavaFX extends Application {
 		LoginController login = new LoginController();
 		Scene scene = new Scene(login.getView());
 		scene.getStylesheets().addAll(
-				//getClass().getResource("/jbootx/bootstrap3.css").toExternalForm(),
-				getClass().getResource("/css/chatr.css").toExternalForm()
+				getClass().getResource("/Chatr/View/chatr.css").toExternalForm()
 		);
 		primaryStage.setScene(scene);
-	}
-
-	public void setStageTitle(String s){
-		this.primaryStage.setTitle(s);
 	}
 }
