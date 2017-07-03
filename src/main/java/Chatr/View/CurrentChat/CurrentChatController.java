@@ -21,6 +21,8 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.Collections;
+
 
 public class CurrentChatController extends Loader {
 	private static Logger log = LogManager.getLogger(CurrentChatController.class);
@@ -101,6 +103,8 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
+
+
 		//Changes view when tabs are pressed
 		sidebar.getSelectionModel().selectedItemProperty().addListener(
 				(observable, oldValue, newValue) -> {
@@ -211,7 +215,7 @@ public class CurrentChatController extends Loader {
 		currentMessages.setVisible(true);
 		bottomHBox.setVisible(true);
 		startMessage.setVisible(false);
-
+		//gifPane.getChildren().clear();
 	}
 
 	/**
@@ -271,7 +275,10 @@ public class CurrentChatController extends Loader {
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
-		showGIFs("", 25, 0, false);
+		if(sidebarVisible) {
+			gifPane.getChildren().clear();
+			showGIFs("", 25, 0, false);
+		}
 	}
 
 	/**
