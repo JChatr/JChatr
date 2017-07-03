@@ -35,7 +35,7 @@ public class Server extends WebSocketServer {
 			server = new Server(port);
 			server.start();
 		} catch (UnknownHostException e) {
-			log.error("failed to start server", e);
+			log.error("failed to getLinks server", e);
 			throw e;
 		}
 		Runtime.getRuntime().addShutdownHook(new Thread(() -> {

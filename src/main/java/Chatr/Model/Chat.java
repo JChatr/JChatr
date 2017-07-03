@@ -81,7 +81,6 @@ public class Chat {
 	 * @return
 	 */
 	public static Chat newChatDB(String chatName, User localUser, Collection<User> otherUsers){
-
 		return new Chat(chatName, localUser, otherUsers);
 	}
 
@@ -93,7 +92,6 @@ public class Chat {
 	 * @return
 	 */
 	public static Chat newChatDB(String chatName, User localUser, User... otherUsers){
-
 		return new Chat(chatName, localUser, Arrays.asList(otherUsers));
 	}
 
