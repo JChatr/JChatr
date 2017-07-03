@@ -10,10 +10,7 @@ import com.jfoenix.controls.JFXButton;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,6 +28,8 @@ public class ChatListController extends Loader {
 	private ListView<Chat> chatsList;
 	@FXML
 	private AnchorPane currentChatAnchor;
+	@FXML
+	private TextField searchBox;
 	private CurrentChatController currentChat;
 
 	@FXML
@@ -61,8 +60,8 @@ public class ChatListController extends Loader {
 	 * all links are guaranteed to get updated at a specified interval
 	 */
 	private void linkUpdateProperties() {
-		//userName.textProperty().bind(Manager.getLocalUserName());
-		Bindings.bindContent(chatsList.getItems(), Manager.getUserChats());
+		SearchMediator mediator = new SearchMediator(chatsList.getItems(), searchBox.textProperty());
+		Bindings.bindContent(mediator.getLinks(), Manager.getUserChats());
 	}
 
 	@FXML

@@ -12,6 +12,7 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -90,11 +91,12 @@ public class CurrentChatController extends Loader {
 	}
 
 	private void addListeners() {
-		// if \n in the text field sendAsync the message
-		textInput.textProperty().addListener((obs, oldText, newText) -> {
-			if (newText.contains("\n"))
+		textInput.setOnKeyPressed((event)->{
+			if(event.getCode()== KeyCode.ENTER){
 				onSendButtonClick();
+			}
 		});
+		// if \n in the text field sendAsync the message
 		// if visible property of sidebar is changed update to managed property to match
 		sidebar.managedProperty().bind(sidebar.visibleProperty());
 		chatBox.widthProperty().addListener((observable, oldValue, newValue) -> {
@@ -243,8 +245,8 @@ public class CurrentChatController extends Loader {
 		String userInput = textInput.getText();
 		if (!userInput.trim().isEmpty()) {
 			Manager.addMessage(userInput, MessageType.TEXT);
-			Platform.runLater(() -> textInput.clear());
 		}
+		Platform.runLater(() -> textInput.clear());
 	}
 
 	@FXML
