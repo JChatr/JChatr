@@ -39,6 +39,8 @@ class UserCellLargeController extends Loader {
 		userName.setText(user.getUserName());
 		String time = "online";
 		timestamp.setText(time);
+		userImage.setImage(user.getImage().get());
+
 	}
 
 	private void reset() {

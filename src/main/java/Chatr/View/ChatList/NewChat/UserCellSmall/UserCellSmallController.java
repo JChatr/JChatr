@@ -26,7 +26,7 @@ public class UserCellSmallController extends Loader {
 
 	public void setInfo(User user) {
 //		this.user = user;
-//		img.setImage(user.getPicture());
+//      img.setImage(user.getImage().get());
 		name.setText(user.getID());
 	}
 

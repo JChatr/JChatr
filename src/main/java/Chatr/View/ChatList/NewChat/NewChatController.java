@@ -26,6 +26,7 @@ import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.text.html.ImageView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -39,8 +40,7 @@ public class NewChatController extends Loader {
 	private GridPane namePanel;
 	@FXML
 	private VBox usersPanel;
-	@FXML
-	private JFXButton nextButton;
+
 	@FXML
 	private ListView<User> users;
 	@FXML

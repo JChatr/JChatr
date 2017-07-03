@@ -34,3 +34,11 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0;
 }
+
+.backButton{
+    -fx-image: url("/icons/back.png") !important;
+}
+
+.nextButton{
+    -fx-image: url("/icons/next.png") !important;
+}
