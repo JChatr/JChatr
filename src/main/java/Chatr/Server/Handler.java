@@ -29,7 +29,7 @@ public abstract class Handler {
 	 * sends the given transmission to the to Users
 	 *
 	 * @param transmission transmission to sendAsync
-	 * @param users        users to sendAsync to
+	 * @param userIDs        users to sendAsync to
 	 */
 	void notify(final Transmission transmission, final Collection<String> userIDs) {
 		userIDs.forEach(user -> notify(transmission, user));

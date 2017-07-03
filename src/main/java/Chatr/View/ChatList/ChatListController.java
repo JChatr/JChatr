@@ -61,7 +61,7 @@ public class ChatListController extends Loader {
 	 */
 	private void linkUpdateProperties() {
 		SearchMediator mediator = new SearchMediator(chatsList.getItems(), searchBox.textProperty());
-		Bindings.bindContent(mediator.start(), Manager.getUserChats());
+		Bindings.bindContent(mediator.getLinks(), Manager.getUserChats());
 	}
 
 	@FXML

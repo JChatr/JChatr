@@ -139,39 +139,11 @@ public class CurrentChatController extends Loader {
 		if (feedSize == 0) {
 			return;
 		}
+
 		int gifSize[] = new int[feedSize];
-		for (int i = 0; i < feedSize; i++) {
-			gifSize[i] = Integer.valueOf(gifFeed.getDataList().get(i).getImages().getFixedHeightSmall().getWidth());
-		}
-		int maxSize = (int) gifScroll.getWidth();
-		int sizeSum = 0;
-		int indexSum = 0;
-		for (int i = 0; i < feedSize; i++) {
-			maxSize -= (2 * gifPane.getHgap());
-			indexSum++;
-			sizeSum += gifSize[i];
-			if (sizeSum > maxSize) {
-				int runter = sizeSum - maxSize;
-				int hoch = maxSize - (sizeSum - gifSize[i]);
-				if (hoch < runter) {
-					sizeSum -= gifSize[i];
-					double scale = (double) sizeSum / maxSize;
-					i--;
-					indexSum--;
-					for (int u = 0; u < indexSum; u++) {
-						gifSize[i - u] = (int) (gifSize[i - u] / scale);
-					}
-				} else {
-					double scale = (double) sizeSum / maxSize;
-					for (int u = 0; u < indexSum; u++) {
-						gifSize[i - u] = (int) (gifSize[i - u] / scale);
-					}
-				}
-				indexSum = 0;
-				sizeSum = 0;
-				maxSize = (int) gifScroll.getWidth();
-			}
-		}
+
+		gifSize = GIFLoader.calcWidth(gifSize, gifFeed, (int) gifScroll.getWidth(), feedSize, (int) gifPane.getHgap());
+
 		for (int i = 0; i < feedSize; i++) {
 			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
 			ImageView gifIV = new ImageView();
@@ -184,6 +156,7 @@ public class CurrentChatController extends Loader {
 			gifPane.getChildren().add(gifIV);
 			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
+
 		ImageView sep = new ImageView("/icons/gifsep.png");
 		sep.setFitHeight(0);
 		sep.setFitWidth(gifPane.getWidth());
@@ -255,8 +228,11 @@ public class CurrentChatController extends Loader {
 	 * @param url Giphy url
 	 */
 	private void sendGIF(String url, int width, int height) {
+		if(width>500){
+			width = 500;
+		}
 		Manager.addMessage(url, MessageType.GIF, width, height, null);
-		log.debug("GIF send: " + url);
+		log.error("Gif send with h,w,url:" + height + "," + width + "," + url);
 	}
 
 	/**

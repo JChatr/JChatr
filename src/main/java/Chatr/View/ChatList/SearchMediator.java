@@ -1,44 +1,55 @@
 package Chatr.View.ChatList;
 
 import Chatr.Model.Chat;
-import Chatr.Model.Message;
 import Chatr.Model.User;
+import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ListView;
 
 import java.util.List;
 
 class SearchMediator {
-	private ObservableList<Chat> displayChats;
+	private ObservableList<Chat> renderChats;
 	private ObservableList<Chat> linkChats;
 	private StringProperty userInput;
 
+	/**
+	 *
+	 * @param chats
+	 * @param userInput
+	 */
 	SearchMediator(ObservableList<Chat> chats, StringProperty userInput) {
-		this.displayChats = chats;
+		this.renderChats = chats;
 		this.linkChats = FXCollections.observableArrayList();
 		this.userInput = userInput;
+		linkChats.addListener((ListChangeListener<? super Chat>) c -> {
+			c.next();
+			Platform.runLater(() -> {
+				renderChats.addAll(c.getAddedSubList());
+				renderChats.removeAll(c.getRemoved());
+			});
+		});
 		userInput.addListener((observable, oldValue, newValue) -> {
-			System.out.println(newValue);
-
+			search(newValue, renderChats);
 		});
 	}
 
-	public ObservableList<Chat> start() {
-		linkChats.addListener((ListChangeListener<? super Chat>) c -> {
-			c.next();
-			displayChats.addAll(c.getAddedSubList());
-			displayChats.removeAll(c.getRemoved());
-			System.out.println("changed display");
-		});
-		userInput.addListener((observable, oldValue, newValue) -> {
-			search(newValue, displayChats);
-		});
+	/**
+	 *
+	 * @return
+	 */
+	public ObservableList<Chat> getLinks() {
 		return linkChats;
 	}
 
+	/**
+	 *
+	 * @param search
+	 * @param newChats
+	 * @return
+	 */
 	private ObservableList<Chat> search(String search, ObservableList<Chat> newChats) {
 		newChats.clear();
 		if (search.trim().isEmpty()) {
@@ -57,6 +68,12 @@ class SearchMediator {
 		return newChats;
 	}
 
+	/**
+	 * checks if the search String is contained in the given List of Users
+	 * @param search search query
+	 * @param users users to search through
+	 * @return if the String was contained within
+	 */
 	private boolean containedInUsers(String search, List<User> users) {
 		for (User user : users) {
 			if (user.getID().contains(search)
