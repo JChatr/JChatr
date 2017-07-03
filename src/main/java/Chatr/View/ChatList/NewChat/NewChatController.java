@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
@@ -64,10 +65,20 @@ public class NewChatController extends Loader {
 	@FXML
 	private void initialize() {
 		linkProperties();
+		addListeners();
 		// set the panels up in the default configuration
 		switchPanels(false);
 		users.setCellFactory(param -> new UserCellLarge());
 		UsersMultipleSelections();
+	}
+
+
+	private void addListeners() {
+		chatNameField.setOnKeyPressed((event) -> {
+			if (event.getCode() == KeyCode.ENTER) {
+				onCreateButtonClick();
+			}
+		});
 	}
 
 	/**
