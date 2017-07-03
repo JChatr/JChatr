@@ -125,7 +125,7 @@
                     <content>
                         <VBox>
                             <children>
-                                <ScrollPane fx:id="gifScroll" hbarPolicy="NEVER" VBox.vgrow="ALWAYS">
+                                <ScrollPane fx:id="gifScroll" hbarPolicy="NEVER" maxWidth="315.0" minWidth="315.0" prefWidth="315.0" VBox.vgrow="ALWAYS">
                                     <content>
                                         <FlowPane fx:id="gifPane" />
                                     </content>

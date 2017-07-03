@@ -113,14 +113,23 @@ class HandlerFactory {
 			switch (request.getCRUD()) {
 				case CREATE: {
 					boolean success = super.database.addChat(request.getChat());
+					Chat c= request.getChat();
 					Set<User> members = super.database.getChatMembers(request.getChat().getID());
-					notify(request.reset()
-									.setStatus(success),
+					for (User member : members){
+						if(!member.getID().equals(senderID)){
+							notify(request.reset().setStatus(success).setChat(
+								super.database.readChat(c.getID(),member.getID()))
+								,member.getID());
+						}
+
+					}
+					/*notify(request.reset()
+									.setStatus(success).setChat(c),
 							members.stream()
 									.filter(user -> !user.getID().equals(senderID))
 									.map(User::getID)
 									.collect(Collectors.toList())
-					);
+					);*/
 					break;
 				}
 				case READ: {

@@ -95,6 +95,13 @@ class DatabaseFixtures {
 				356,
 				200,
 				null));
+		db.addMessage(chat.getID(), new Message(
+				maroko.getID(),
+				"https://media0.giphy.com/media/YIgKKIj5d4CQ/200.gif?response_id=595a1ad643c9378c71945239",
+				MessageType.GIF,
+				355,
+				200,
+				null));
 	}
 
 	/**
