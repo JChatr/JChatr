@@ -157,6 +157,8 @@ public class CurrentChatController extends Loader {
 			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
 		}
 
+		//Test
+
 		ImageView sep = new ImageView("/icons/gifsep.png");
 		sep.setFitHeight(0);
 		sep.setFitWidth(gifPane.getWidth());
