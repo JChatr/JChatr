@@ -91,7 +91,10 @@ class DatabaseFixtures {
 		db.addMessage(chat.getID(), new Message(
 				hawk.getID(),
 				"https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded",
-				MessageType.GIF));
+				MessageType.GIF,
+				356,
+				200,
+				null));
 	}
 
 	/**
@@ -133,7 +136,10 @@ class DatabaseFixtures {
 		db.addMessage(chat.getID(), new Message(
 				trump.getID(),
 				"https://media3.giphy.com/media/3o7TKtivOfkxkD5cME/200.gif?response_id=5949138b79bc94ce4087b4e2",
-				MessageType.GIF));
+				MessageType.GIF,
+				356,
+				200,
+				null));
 		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
 				merkel.getID(),
