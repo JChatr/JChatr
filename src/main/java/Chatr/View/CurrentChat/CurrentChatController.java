@@ -3,26 +3,25 @@ package Chatr.View.CurrentChat;
 import Chatr.Controller.Manager;
 import Chatr.Helper.Enums.MessageType;
 import Chatr.Helper.GIFLoader;
+import Chatr.Helper.GifImage;
 import Chatr.Model.Message;
 import Chatr.View.CurrentChat.MessageCell.MessageCell;
 import Chatr.View.Loader;
-import at.mukprojects.giphy4j.entity.giphy.GiphyImage;
-import at.mukprojects.giphy4j.entity.search.SearchFeed;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Collections;
 
 
 public class CurrentChatController extends Loader {
@@ -64,12 +63,15 @@ public class CurrentChatController extends Loader {
 
 	private String chatID;
 	private boolean sidebarVisible;
+	private GIFLoader gifLoader;
+	private int gifOffset = 25;
 
 	/**
 	 * init UI links to Manager class and set up event Methods
 	 */
 	@FXML
 	private void initialize() {
+		gifLoader = new GIFLoader();
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
@@ -80,7 +82,7 @@ public class CurrentChatController extends Loader {
 		startMessage.setVisible(true);
 	}
 
-	private void bindings(){
+	private void bindings() {
 		chatHeader.managedProperty().bind(chatHeader.visibleProperty());
 		currentMessages.managedProperty().bind(currentMessages.visibleProperty());
 		startMessage.managedProperty().bind(startMessage.visibleProperty());
@@ -91,8 +93,8 @@ public class CurrentChatController extends Loader {
 	}
 
 	private void addListeners() {
-		textInput.setOnKeyPressed((event)->{
-			if(event.getCode()== KeyCode.ENTER){
+		textInput.setOnKeyPressed((event) -> {
+			if (event.getCode() == KeyCode.ENTER) {
 				onSendButtonClick();
 			}
 		});
@@ -105,71 +107,33 @@ public class CurrentChatController extends Loader {
 				sidebarVisible = false;
 			}
 		});
-
-
-		//Changes view when tabs are pressed
-		sidebar.getSelectionModel().selectedItemProperty().addListener(
-				(observable, oldValue, newValue) -> {
-					//Only gif tab
-					/*
-					if (newValue.getId().equals("gifTab")) {
-						showGIFs("", 25, 0, false);
-					} else if (newValue.getId().equals("emojiTab")) {
-						gifPane.getChildren().clear();
-					} else if (newValue.getId().equals("stickerTab")) {
-						gifPane.getChildren().clear();
-					} else {
-						gifPane.getChildren().clear();
-					}
-					*/
-					//showGIFs("", 25, 0, false);
-				});
+		gifScroll.vvalueProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue.doubleValue() > 0.75) {
+				gifOffset += 25;
+				showGIFs(gifText.getText(), gifOffset, gifOffset - 25);
+				log.trace("sent request for more gifs");
+			}
+		});
 	}
 
 	/**
 	 * Searches GIFs on giphy and displays them
 	 *
-	 * @param searchstring Search gifs with this string, if empty diaplays trending gifs
+	 * @param searchString Search gifs with this string, if empty diaplays trending gifs
 	 * @param limit        Limits how many gifs are shown
 	 * @param offset       Offset from the giflist
-	 * @param moreBtn      Boolean if the more Gifs button shall be shown or not
 	 */
-	public void showGIFs(String searchstring, int limit, int offset, boolean moreBtn) {
-		SearchFeed gifFeed = GIFLoader.getGIFUrl(searchstring, limit, offset);
-		log.trace("GIF feed size: " + gifFeed.getDataList().size() + " Limit: " + limit + " Offset: " + offset);
-		int feedSize = gifFeed.getDataList().size();
-		if (feedSize == 0) {
-			return;
-		}
-
-		int gifSize[] = new int[feedSize];
-
-		gifSize = GIFLoader.calcWidth(gifSize, gifFeed, (int) gifScroll.getWidth(), feedSize, (int) gifPane.getHgap());
-
-		for (int i = 0; i < feedSize; i++) {
-			GiphyImage gifImage = gifFeed.getDataList().get(i).getImages().getFixedHeightSmall();
-			ImageView gifIV = new ImageView();
-			gifIV.setFitWidth(gifSize[i]);
-			gifIV.setFitHeight(Double.parseDouble(gifImage.getHeight()));
-			gifIV.setId(gifFeed.getDataList().get(i).getImages().getFixedHeight().getUrl());
-			int width = Integer.parseInt(gifFeed.getDataList().get(i).getImages().getFixedHeight().getWidth());
-			int height = Integer.parseInt(gifFeed.getDataList().get(i).getImages().getFixedHeight().getHeight());
-			gifIV.setOnMouseClicked(event -> sendGIF(gifIV.getId(), width, height));
-			gifPane.getChildren().add(gifIV);
-			gifIV.imageProperty().bind(GIFLoader.loadGIF(gifImage));
-		}
-
-		ImageView sep = new ImageView("/icons/gifsep.png");
-		sep.setFitHeight(0);
-		sep.setFitWidth(gifPane.getWidth());
-		gifPane.getChildren().add(sep);
-		if (moreBtn || (feedSize%25 != 0)) {
-			Button moreGif = new Button("more GIFs");
-			moreGif.setOnAction(event -> moreGIFs(searchstring, limit, moreGif));
-			gifPane.getChildren().add(moreGif);
-		}
+	private void showGIFs(String searchString, int limit, int offset) {
+		ObservableList<GifImage> images = gifLoader.getGIFs(searchString, limit, offset);
+		images.addListener((ListChangeListener<GifImage>) c -> {
+			c.next();
+			c.getAddedSubList().forEach(image -> {
+				image.setOnMouseClicked(event ->
+						sendGIF(image.getId(), image.getWidth(), image.getHeight()));
+				Platform.runLater(() -> gifPane.getChildren().add(image));
+			});
+		});
 	}
-
 
 	public void switchChat(String chatID) {
 		reset();
@@ -190,7 +154,7 @@ public class CurrentChatController extends Loader {
 		currentMessages.setVisible(true);
 		bottomHBox.setVisible(true);
 		startMessage.setVisible(false);
-		//gifPane.getChildren().clear();
+		gifOffset = 0;
 	}
 
 	/**
@@ -198,30 +162,12 @@ public class CurrentChatController extends Loader {
 	 * all links are guaranteed to get updated at a specified interval
 	 */
 	private void linkProperties() {
-		Bindings.bindContent(
-				currentMessages.itemsProperty().get(), Manager.getChatMessages(chatID)
-		);
+		Bindings.bindContent(currentMessages.itemsProperty().get(),
+				Manager.getChatMessages(chatID));
 		currentChatName.textProperty().bind(Manager.getChatName(chatID));
 		currentChatUsers.textProperty().bind(Bindings.concat(
 				Manager.getChatMembers(chatID)
 		));
-	}
-
-	/**
-	 * Loads and displays more gifs
-	 *
-	 * @param searchstring Search query for the gif search
-	 * @param limit        Limit the returned gifs
-	 * @param button       The more Gifs button
-	 */
-	private void moreGIFs(String searchstring, int limit, Object button) {
-		if (limit < 100) {
-			limit = limit + 25;
-			gifPane.getChildren().remove(button);
-			showGIFs(searchstring, limit, (limit - 25), true);
-		} else {
-			gifPane.getChildren().remove(button);
-		}
 	}
 
 	/**
@@ -230,11 +176,11 @@ public class CurrentChatController extends Loader {
 	 * @param url Giphy url
 	 */
 	private void sendGIF(String url, int width, int height) {
-		if(width>500){
+		if (width > 500) {
 			width = 500;
 		}
 		Manager.addMessage(url, MessageType.GIF, width, height, null);
-		log.error("Gif send with h,w,url:" + height + "," + width + "," + url);
+		log.trace("Gif send with h,w,url:" + height + "," + width + "," + url);
 	}
 
 	/**
@@ -253,10 +199,11 @@ public class CurrentChatController extends Loader {
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
-		if(sidebarVisible) {
+		if (sidebarVisible) {
 			gifPane.getChildren().clear();
-			showGIFs("", 25, 0, false);
+			showGIFs("", 25, 0);
 		}
+		gifOffset = 25;
 	}
 
 	/**
@@ -267,7 +214,7 @@ public class CurrentChatController extends Loader {
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
 		gifPane.getChildren().clear();
-		showGIFs(gifSearch, 25, 0, true);
+		showGIFs(gifSearch, 25, 0);
 	}
 
 }
