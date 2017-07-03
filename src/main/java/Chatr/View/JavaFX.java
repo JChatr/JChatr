@@ -36,8 +36,8 @@ public class JavaFX extends Application {
 		this.primaryStage = primaryStage;
 		this.primaryStage.setTitle("Chatr");
 		initializeLoginLayout();
-		primaryStage.setMinWidth(800);
-		primaryStage.setMinHeight(550);
+		primaryStage.setMinWidth(1050);
+		primaryStage.setMinHeight(600);
 		primaryStage.show();
 	}
 
