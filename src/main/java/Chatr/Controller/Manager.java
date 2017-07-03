@@ -31,7 +31,6 @@ public class Manager {
 	public static void main(String[] args) {
 		initialize();
 
-		log.info(String.format("Connecting to : %s", CONFIG.SERVER_ADDRESS));
 		JavaFX.initGUI(args);
 	}
 
