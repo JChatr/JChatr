@@ -1,10 +1,6 @@
 package Chatr.View;
 
 
-import Chatr.Client.Client;
-import Chatr.Client.Connection;
-import Chatr.Controller.Manager;
-import Chatr.View.ChatList.ChatListController;
 import Chatr.View.Login.LoginController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,9 +8,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.spi.CleanableThreadContextMap;
-
-import java.lang.reflect.Field;
 
 public class JavaFX extends Application {
 	public static Stage primaryStage;
@@ -28,7 +21,6 @@ public class JavaFX extends Application {
 
 	@Override
 	public void stop() throws Exception {
-		System.out.println("stopped");
 	}
 
 	@Override
