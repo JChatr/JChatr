@@ -77,7 +77,7 @@ class GIFCellController extends Loader {
 		gifObj.set(loading);
 		gifIV.imageProperty().bind(gifObj);
 		if (message.getGifImg() == null) {
-			log.trace("No cached gif found, will load gif");
+			log.trace(String.format("No cached Gif found for %s. Loading form Server. Height %d, width %d.", message.getContent(), message.getHeight(), message.getWidth()));
 			pool.execute(() -> {
 				Image img = ImageLoader.loadImage(message.getContent(), message.getWidth(), message.getHeight(), false, false);
 				gifObj.set(img);
@@ -85,6 +85,7 @@ class GIFCellController extends Loader {
 				//error, height und width müssen gesetzt werden, da sonst gui abkackt
 			});
 		} else {
+			log.trace(String.format("cached Gif found for %s. Using cache. Height %d, width %d", message.getContent(), message.getHeight(), message.getWidth()));
 			gifObj.set(message.getGifImg());
 		}
 		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
