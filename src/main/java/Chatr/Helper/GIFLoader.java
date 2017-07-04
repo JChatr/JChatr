@@ -105,12 +105,12 @@ public class GIFLoader {
 		gifPool.submit(() -> {
 			SearchFeed gifFeed = trendingFeed;
 			if (!searchString.trim().isEmpty()) {
-				System.out.println("loading gifs");
+				log.debug("loading gifs");
 				gifFeed = loadURLs(searchString, limit, offset);
 			}
 			int feedSize = gifFeed.getDataList().size();
 			if (feedSize == 0 || trendingCounter.get() == 2) {
-				System.out.println("returned trending");
+				log.debug("returned trending");
 				return;
 			}
 			int gifSize[] = new int[feedSize];
