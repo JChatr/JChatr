@@ -88,6 +88,7 @@ class DatabaseFixtures {
 				maroko.getID(),
 				"Ich heiße Matthias!",
 				MessageType.TEXT));
+		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
 				hawk.getID(),
 				"https://media1.giphy.com/media/3oKIPf3C7HqqYBVcCk/200.gif?response_id=5947ca346dd3d014d370dded",
@@ -95,6 +96,7 @@ class DatabaseFixtures {
 				356,
 				200,
 				null));
+		Thread.sleep(2);
 		db.addMessage(chat.getID(), new Message(
 				maroko.getID(),
 				"https://media0.giphy.com/media/YIgKKIj5d4CQ/200.gif?response_id=595a1ad643c9378c71945239",
@@ -102,6 +104,7 @@ class DatabaseFixtures {
 				355,
 				200,
 				null));
+		Thread.sleep(2);
 	}
 
 	/**

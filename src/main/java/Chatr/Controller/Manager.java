@@ -34,11 +34,26 @@ public class Manager {
 		JavaFX.initGUI(args);
 	}
 
-
+	/**
+	 * method adds a message to the current chat
+	 *
+	 * @param content Messagestring
+	 * @param messageType the messagetype you want to use
+	 */
 	public static void addMessage(String content, MessageType messageType) {
 		currentChat.get().addMessage(content, messageType);
 	}
 
+	/**
+	 * Method adds a GIF to the current conversation
+	 *
+	 * @param content content of the message
+	 * @param messageType the type of the message
+	 * @param width the width of the GIF
+	 * @param height the hight of the GIF
+	 * @param gifImg the GIF-Immage Object
+	 * @return
+	 */
 	public static Message addMessage(String content, MessageType messageType, int width, int height, Image gifImg) {
 		return currentChat.get().addMessage(content, messageType, width, height, gifImg);
 	}
@@ -96,6 +111,7 @@ public class Manager {
 		}
 		return localUser.get().getImage();
 	}
+
 
 	private static void initialize() {
 		localUser = new SimpleObjectProperty<>();
