@@ -195,6 +195,9 @@ public class LoginController extends Loader implements Initializable {
 		}
 	}
 
+	/**
+	 * Resets the content of the errormessages shown in the GUI and sets the errormessage invisible
+	 */
 	private void resetErrorMessages() {
 		userIdLabel.setVisible(false);
 		eMailLabel.setVisible(false);
@@ -205,6 +208,9 @@ public class LoginController extends Loader implements Initializable {
 		resetPasswordErrorMessage();
 	}
 
+	/**
+	 * Resets the content of the passworderrormessage shown in the GUI and sets the passworderrormessage invisible
+	 */
 	private void resetPasswordErrorMessage() {
 		passwordLabel.setVisible(false);
 		passwordLabel.setText("");

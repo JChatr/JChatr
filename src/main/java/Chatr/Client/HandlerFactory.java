@@ -12,6 +12,11 @@ import java.util.List;
 
 class HandlerFactory {
 
+	/**
+	 *
+	 * @param requestType Type you want to get
+	 * @return Instanace of type you want to get
+	 */
 	static Handler getInstance(RequestType requestType) {
 		switch (requestType) {
 			case MESSAGE:

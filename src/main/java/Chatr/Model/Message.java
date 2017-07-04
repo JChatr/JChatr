@@ -9,7 +9,6 @@ import java.util.Objects;
 
 public class Message {
 	private static Logger log = LogManager.getLogger(Message.class);
-	// timestamp is always guaranteed to be set
 	private final Long timestamp = System.currentTimeMillis();
 	private String sender;
 	private String content;

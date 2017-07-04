@@ -141,6 +141,9 @@ public class CurrentChatController extends Loader {
 		linkProperties();
 	}
 
+	/**
+	 * method manages the visibility of GUI elements
+	 */
 	private void reset() {
 		currentMessages.itemsProperty().unbind();
 		currentMessages.itemsProperty().getValue().clear();
@@ -195,6 +198,9 @@ public class CurrentChatController extends Loader {
 		Platform.runLater(() -> textInput.clear());
 	}
 
+	/**
+	 * Method to be executed when the emoji button is clicked
+	 */
 	@FXML
 	private void onEmojiButtonClick() {
 		sidebarVisible = !sidebarVisible;
