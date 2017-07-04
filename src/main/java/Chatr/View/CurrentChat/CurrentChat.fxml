@@ -48,15 +48,6 @@
                                 </Label>
                             </children>
                         </VBox>
-                  <JFXRippler maskType="CIRCLE" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                     <control>
-                           <Button id="chatInfoButton" fx:id="chatInfoButton" contentDisplay="GRAPHIC_ONLY" mnemonicParsing="false" prefHeight="35.0" prefWidth="35.0" styleClass="img-button" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-                        <font>
-                           <Font size="11.0" />
-                        </font>
-                        </Button>
-                     </control>
-                  </JFXRippler>
                     </children>
                     <VBox.margin>
                         <Insets />
