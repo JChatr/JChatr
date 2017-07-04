@@ -80,7 +80,7 @@ class GIFCellController extends Loader {
 		gifIV.setFitHeight(message.getHeight());
 
 		if (message.getGifImg() == null) {
-			log.trace(String.format("No cached Gif found for %s. Loading form Server", message.getContent()));
+			log.trace(String.format("No cached Gif found for %s. Loading form Server. Height %d, width %d.", message.getContent(), message.getHeight(), message.getWidth()));
 			ObjectProperty<Image> image = gifLoader.loadGIF(
 					message.getContent(),
 					message.getWidth(),
@@ -89,7 +89,7 @@ class GIFCellController extends Loader {
 			image.addListener((observable, oldValue, newValue) ->
 					message.setGifImg(newValue));
 		} else {
-			log.trace(String.format("cached Gif found for %s. Using cache", message.getContent()));
+			log.trace(String.format("cached Gif found for %s. Using cache. Height %d, width %d", message.getContent(), message.getHeight(), message.getWidth()));
 			gifIV.setImage(message.getGifImg());
 		}
 	}

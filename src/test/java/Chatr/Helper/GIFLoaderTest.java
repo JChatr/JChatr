@@ -12,13 +12,13 @@ import static org.junit.Assert.assertEquals;
 public class GIFLoaderTest {
     @Test
     public void noFeedsize(){
-        GIFLoader gifload = new GIFLoader();
+        GIFLoader gifload = GIFLoader.getInstance();
         ObservableList<GifImage> gifImages = gifload.getGIFs("qwertzuikjhgfdxcvbhgfdrtzhgfe34567uhgzuikjhuijhgfedcvgz7ztg", 25, 0);
         assertEquals(0, gifImages.size());
     }
     @Test
     public void gifLoadingTest(){
-        GIFLoader gifload = new GIFLoader();
+        GIFLoader gifload = GIFLoader.getInstance();
         ObservableList<GifImage> gifImages = gifload.getGIFs("cat", 25, 0);
         //getGIFs loads in another thread, needs time to complete
         try {
