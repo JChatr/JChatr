@@ -2,11 +2,10 @@ package Chatr.View.CurrentChat.MessageCell;
 
 import Chatr.Controller.Manager;
 import Chatr.Helper.DateFormatter;
-import Chatr.Helper.ImageLoader;
+import Chatr.Helper.GIFLoader;
 import Chatr.Model.Message;
 import Chatr.View.Loader;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -15,7 +14,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,8 +29,6 @@ class GIFCellController extends Loader {
 	private final static int MAX_HEIGHT = Integer.MAX_VALUE;
 	private final static int WIDTH_PADDING = 20;
 	private static int MIN_HEIGHT = 40;
-	private static Logger log = LogManager.getLogger(GIFCellController.class);
-	private Executor pool = Executors.newFixedThreadPool(4);
 	@FXML
 	private HBox parent;
 	@FXML
@@ -50,10 +46,15 @@ class GIFCellController extends Loader {
 	@FXML
 	private ImageView gifIV;
 
+	private GIFLoader gifLoader;
+	private static Logger log = LogManager.getLogger(GIFCellController.class);
+
+
 	GIFCellController() {
 		load(this);
 		linkProperties();
 		addListeners();
+		gifLoader = GIFLoader.getInstance();
 	}
 
 	/**
@@ -66,28 +67,30 @@ class GIFCellController extends Loader {
 		userThumbnail.setManaged(false);
 		userName.setText(message.getSender());
 		timestamp.setText(DateFormatter.convertTimestamp(message.getTime()));
-
-		gifIV.setFitWidth(message.getWidth());
-		gifIV.setFitHeight(message.getHeight());
-		final ObjectProperty<Image> gifObj = new SimpleObjectProperty<>();
-		Image loading = new Image("/icons/loading.gif", message.getWidth(), message.getHeight(), false, true);
-		gifObj.set(loading);
-		gifIV.imageProperty().bind(gifObj);
-		if (message.getGifImg() == null) {
-			log.trace("No cached gif found, will load gif");
-			pool.execute(() -> {
-				Image img = ImageLoader.loadImage(message.getContent(), message.getWidth(), message.getHeight(), false, false);
-				gifObj.set(img);
-				message.setGifImg(img);
-				//error, height und width müssen gesetzt werden, da sonst gui abkackt
-			});
-		} else {
-			gifObj.set(message.getGifImg());
-		}
+		getGif(message, gifIV);
 		if (!Manager.getLocalUserID().contentEquals(message.getSender())) {
 			userThumbnail.setManaged(true);
 			displayUserThumbnail(message.getSender());
 			alignLeft();
+		}
+	}
+
+	private void getGif(Message message, ImageView gifIV) {
+		gifIV.setFitWidth(message.getWidth());
+		gifIV.setFitHeight(message.getHeight());
+
+		if (message.getGifImg() == null) {
+			log.trace(String.format("No cached Gif found for %s. Loading form Server", message.getContent()));
+			ObjectProperty<Image> image = gifLoader.loadGIF(
+					message.getContent(),
+					message.getWidth(),
+					message.getHeight());
+			gifIV.imageProperty().bind(image);
+			image.addListener((observable, oldValue, newValue) ->
+					message.setGifImg(newValue));
+		} else {
+			log.trace(String.format("cached Gif found for %s. Using cache", message.getContent()));
+			gifIV.setImage(message.getGifImg());
 		}
 	}
 

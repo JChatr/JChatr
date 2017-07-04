@@ -71,7 +71,7 @@ public class CurrentChatController extends Loader {
 	 */
 	@FXML
 	private void initialize() {
-		gifLoader = new GIFLoader();
+		gifLoader = GIFLoader.getInstance();
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
@@ -82,6 +82,9 @@ public class CurrentChatController extends Loader {
 		startMessage.setVisible(true);
 	}
 
+	/**
+	 *
+	 */
 	private void bindings() {
 		chatHeader.managedProperty().bind(chatHeader.visibleProperty());
 		currentMessages.managedProperty().bind(currentMessages.visibleProperty());
@@ -92,6 +95,9 @@ public class CurrentChatController extends Loader {
 		gifPane.setPrefWrapLength(gifPane.getWidth());
 	}
 
+	/**
+	 *
+	 */
 	private void addListeners() {
 		textInput.setOnKeyPressed((event) -> {
 			if (event.getCode() == KeyCode.ENTER) {
@@ -108,7 +114,7 @@ public class CurrentChatController extends Loader {
 			}
 		});
 		gifScroll.vvalueProperty().addListener((observable, oldValue, newValue) -> {
-			if (newValue.doubleValue() > 0.75) {
+			if (newValue.doubleValue() > 0.5) {
 				gifOffset += 25;
 				showGIFs(gifText.getText(), gifOffset, gifOffset - 25);
 				log.trace("sent request for more gifs");
@@ -135,6 +141,9 @@ public class CurrentChatController extends Loader {
 		});
 	}
 
+	/**
+	 * @param chatID
+	 */
 	public void switchChat(String chatID) {
 		reset();
 		this.chatID = chatID;
@@ -183,7 +192,8 @@ public class CurrentChatController extends Loader {
 			width = 500;
 		}
 		Manager.addMessage(url, MessageType.GIF, width, height, null);
-		log.trace("Gif send with h,w,url:" + height + "," + width + "," + url);
+		log.trace(String.format("GIF sent with width: %d, height: %d, URL: %s",
+				width, height, url));
 	}
 
 	/**

@@ -9,6 +9,7 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 class SearchMediator {
 	private ObservableList<Chat> renderChats;
@@ -16,7 +17,6 @@ class SearchMediator {
 	private StringProperty userInput;
 
 	/**
-	 *
 	 * @param chats
 	 * @param userInput
 	 */
@@ -37,7 +37,6 @@ class SearchMediator {
 	}
 
 	/**
-	 *
 	 * @return
 	 */
 	public ObservableList<Chat> getLinks() {
@@ -45,7 +44,6 @@ class SearchMediator {
 	}
 
 	/**
-	 *
 	 * @param search
 	 * @param newChats
 	 * @return
@@ -56,29 +54,31 @@ class SearchMediator {
 			newChats.addAll(linkChats);
 			return newChats;
 		}
-		linkChats.forEach(chat -> {
-			String query = search.toLowerCase();
-			if (chat.getName().get().toLowerCase().contains(query)
-					|| chat.getID().toLowerCase().contains(query)
-					|| containedInUsers(query, chat.getMembers())) {
-				newChats.add(chat);
-			}
-		});
-		System.out.println("linkChats = " + newChats);
+
+		final String query = search.toLowerCase();
+		newChats.addAll(
+				linkChats.parallelStream()
+						.filter(chat ->
+								chat.getName().get().toLowerCase().contains(query)
+										|| chat.getID().toLowerCase().contains(query)
+										|| containedInUsers(query, chat.getMembers()))
+						.collect(Collectors.toList())
+		);
 		return newChats;
 	}
 
 	/**
 	 * checks if the search String is contained in the given List of Users
+	 *
 	 * @param search search query
-	 * @param users users to search through
+	 * @param users  users to search through
 	 * @return if the String was contained within
 	 */
 	private boolean containedInUsers(String search, List<User> users) {
 		for (User user : users) {
-			if (user.getID().contains(search)
-					|| user.getUserName().contains(search)
-					|| user.getEmail().contains(search)) {
+			if (user.getID().toLowerCase().contains(search)
+					|| user.getUserName().toLowerCase().contains(search)
+					|| user.getEmail().toLowerCase().contains(search)) {
 				return true;
 			}
 		}

@@ -29,7 +29,6 @@ public class Message {
 	}
 
 	public Message(String sender, String content, MessageType messageType, int width, int height, Image gifImg) {
-		log.trace("Gif message created with width,height:" + width + "," + height + "and url: " + content);
 		this.sender = sender;
 		this.content = content;
 		this.messageType = messageType;
