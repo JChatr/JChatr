@@ -13,10 +13,6 @@ import javafx.scene.image.Image;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import javax.net.ssl.HttpsURLConnection;
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,47 +22,32 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Returns an Observable list of all loaded Images
  */
 public class GIFLoader {
-	private ExecutorService executor;
-	private volatile SearchFeed feed;
+	private ExecutorService gifPool;
+	private volatile SearchFeed trendingFeed;
 	private Giphy giphy;
-	private AtomicInteger trendingFeed;
+	private AtomicInteger trendingCounter;
 	private static Logger log = LogManager.getLogger(GIFLoader.class);
 	private volatile Image loadingImage;
-	private volatile static GIFLoader instance;
 
-	private GIFLoader() {
-		ThreadPoolExecutor ex = new ThreadPoolExecutor(
-				6,
-				10,
-				10 * 60,
+	public GIFLoader() {
+		gifPool = new ThreadPoolExecutor(
+				4,
+				4,
+				60L,
 				TimeUnit.SECONDS,
-				new LinkedBlockingDeque<>());
-		ex.allowsCoreThreadTimeOut();
-		ex.setThreadFactory(runnable -> {
-			Thread t =  new Thread(runnable);
-			t.setName("GifLoading Thread");
-			t.setDaemon(true);
-			return t;
-		});
-		executor = ex;
+				new ArrayBlockingQueue<>(200));
 		this.giphy = new Giphy("dc6zaTOxFJmzC");
-		trendingFeed = new AtomicInteger();
+		trendingCounter = new AtomicInteger();
 		preloadTrending();
 		loadDefaultImage();
 	}
 
-	public static GIFLoader getInstance() {
-		if (instance == null) {
-			instance = new GIFLoader();
-		}
-		return instance;
-	}
 
 	/**
 	 * loads and caches the default loading animation asynchronously
 	 */
 	private void loadDefaultImage() {
-		executor.submit(() -> {
+		gifPool.submit(() -> {
 			loadingImage = new Image("icons/loading.gif",
 					300,
 					300,
@@ -79,12 +60,12 @@ public class GIFLoader {
 	 * pre-loads the trending Feed to be able to display some gif images as soon as the User clicks the GIF button
 	 */
 	private void preloadTrending() {
-		executor.submit(() -> {
+		gifPool.submit(() -> {
 			log.info("Test");
 			try {
-				if (feed == null) {
-					feed = giphy.trend();
-					trendingFeed.set(1);
+				if (trendingFeed == null) {
+					trendingFeed = giphy.trend();
+					trendingCounter.set(1);
 				}
 			} catch (GiphyException e) {
 				log.error("Could not load trending gifs!", e);
@@ -93,21 +74,20 @@ public class GIFLoader {
 	}
 
 	/**
-	 * loads the GIF feed for the given searchString from the GIPHY API
+	 * loads the GIF trendingFeed for the given searchString from the GIPHY API
 	 *
 	 * @param searchString The search query. If empty get trending gifs
 	 * @param limit        The limit of how many gifs you want to load (giphy max is 100)
 	 * @param offset       The offset in the searchfeed
 	 * @return Returns the searchfeed
 	 */
-	private SearchFeed loadURLs(SearchFeed feed, String searchString, int limit, int offset) {
+	private SearchFeed loadURLs(String searchString, int limit, int offset) {
+		SearchFeed feed = null;
 		try {
-			if (!searchString.trim().isEmpty()) {
-				feed = giphy.search(searchString, limit, offset);
-				trendingFeed.set(0);
-			}
+			feed = giphy.search(searchString, limit, offset);
+			resetTrending();
 		} catch (GiphyException e) {
-			log.error("Could not load gif feed!", e);
+			log.error("Could not load gif trendingFeed!", e);
 		}
 		return feed;
 	}
@@ -120,15 +100,19 @@ public class GIFLoader {
 	 * @param offset       offset from the starting point of the query result
 	 * @return an ObservableList of GifImages that get populated as soon as they are loaded from the server
 	 */
-	public ObservableList<GifImage> getGIFs(String searchString, int limit, int offset) {
+	public synchronized ObservableList<GifImage> getGIFs(String searchString, int limit, int offset) {
 		ObservableList<GifImage> images = FXCollections.observableArrayList();
-		executor.submit(() -> {
-			SearchFeed gifFeed = loadURLs(feed, searchString, limit, offset);
+		gifPool.submit(() -> {
+			SearchFeed gifFeed = trendingFeed;
+			if (!searchString.trim().isEmpty()) {
+				System.out.println("loading gifs");
+				gifFeed = loadURLs(searchString, limit, offset);
+			}
 			int feedSize = gifFeed.getDataList().size();
-			if (feedSize == 0 || trendingFeed.get() == 2) {
+			if (feedSize == 0 || trendingCounter.get() == 2) {
+				System.out.println("returned trending");
 				return;
 			}
-
 			int gifSize[] = new int[feedSize];
 			gifSize = calcWidth(gifSize, gifFeed, 315, feedSize, 2);
 			for (int i = 0; i < feedSize; i++) {
@@ -155,9 +139,13 @@ public class GIFLoader {
 				images.add(imageView);
 				imageView.imageProperty().bind(loadGIF(gifImage));
 			}
-			if (trendingFeed.get() == 1) trendingFeed.set(2);
+			if (trendingCounter.get() == 1) trendingCounter.set(2);
 		});
 		return images;
+	}
+
+	public void resetTrending() {
+		trendingCounter.set(1);
 	}
 
 	/**
@@ -166,23 +154,20 @@ public class GIFLoader {
 	 * @param gifImage The Gifimage that should be loaded
 	 * @return Returns gifimage as ObjectProperty
 	 */
-	public ObjectProperty<Image> loadGIF(final GiphyImage gifImage) {
-		return loadGIF(gifImage.getUrl(),
-				Integer.parseInt(gifImage.getWidth()),
-				Integer.parseInt(gifImage.getHeight())
-		);
-	}
-
-	public ObjectProperty<Image> loadGIF(final String url, final int width, final int height) {
+	private ObjectProperty<Image> loadGIF(final GiphyImage gifImage) {
 		final ObjectProperty<Image> gifObj = new SimpleObjectProperty<>();
 		gifObj.set(loadingImage);
-		executor.submit(() -> {
-			Image gifImg = httpsGet(url, width, height, false, false);
-			gifObj.set(gifImg);
-			log.trace("loaded gif: " + url);
-			return null;
+		String urlStr = gifImage.getUrl();
+		gifPool.submit(() -> {
+			gifObj.set(ImageLoader.loadImage(urlStr,
+					Integer.parseInt(gifImage.getWidth()),
+					Integer.parseInt(gifImage.getHeight()),
+					true,
+					true));
+			log.trace("loaded gif " + gifImage.getUrl());
 		});
 		return gifObj;
+
 	}
 
 	/**
@@ -234,31 +219,5 @@ public class GIFLoader {
 			}
 		}
 		return gifSize;
-	}
-
-	/**
-	 * Loads an Image over an https connection
-	 *
-	 * @param urlStr        The image url
-	 * @param width         The width the image shall have
-	 * @param height        The hight the image shall have
-	 * @param preserveRatio If the ratio shall be preserved
-	 * @param smooth        If a smooth filter shall be applied
-	 * @return Returns loaded image
-	 */
-	private Image httpsGet(String urlStr, int width, int height, boolean preserveRatio, boolean smooth) {
-		Image img = null;
-		try {
-			URLConnection conn;
-			URL url = new URL(urlStr);
-			conn = url.openConnection();
-			HttpsURLConnection httpsConn = (HttpsURLConnection) conn;
-			httpsConn.setRequestProperty("User-Agent", "Wget/1.9.1");
-			httpsConn.setRequestProperty("Accept", "image/gif");
-			img = new Image(httpsConn.getInputStream(), width, height, preserveRatio, smooth);
-		} catch (IOException e) {
-			log.error(String.format("Error while loading image! urlString is: %s", urlStr), e);
-		}
-		return img;
 	}
 }

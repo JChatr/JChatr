@@ -71,7 +71,7 @@ public class CurrentChatController extends Loader {
 	 */
 	@FXML
 	private void initialize() {
-		gifLoader = GIFLoader.getInstance();
+		gifLoader = new GIFLoader();
 		addListeners();
 		currentMessages.setCellFactory(param -> new MessageCell());
 		sidebar.setVisible(sidebarVisible);
@@ -216,8 +216,12 @@ public class CurrentChatController extends Loader {
 		sidebarVisible = !sidebarVisible;
 		sidebar.setVisible(sidebarVisible);
 		if (sidebarVisible) {
+			showGIFs(gifText.getText(), 25, 0);
+		} else {
 			gifPane.getChildren().clear();
-			showGIFs("", 25, 0);
+			gifText.setText("");
+			gifScroll.setVvalue(0);
+			gifLoader.resetTrending();
 		}
 		gifOffset = 25;
 	}
@@ -229,8 +233,7 @@ public class CurrentChatController extends Loader {
 	private void onGIFButtonClick() {
 		gifPane.getChildren().clear();
 		String gifSearch = gifText.getText();
-		gifPane.getChildren().clear();
+		gifOffset = 25;
 		showGIFs(gifSearch, 25, 0);
 	}
-
 }
