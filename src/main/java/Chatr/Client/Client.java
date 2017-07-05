@@ -27,6 +27,7 @@ public class Client {
 
 	public Client() {
 		try {
+
 			socketClient = new WebSocketClient(new URI(String.format("ws://%s:%d",
 					CONFIG.SERVER_ADDRESS,
 					CONFIG.SERVER_PORT)),
