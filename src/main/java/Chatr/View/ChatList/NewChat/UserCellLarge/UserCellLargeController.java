@@ -39,7 +39,7 @@ class UserCellLargeController extends Loader {
 		userName.setText(user.getUserName());
 		String time = "online";
 		timestamp.setText(time);
-		userImage.setImage(user.getImage().get());
+		userImage.imageProperty().bind(user.getImage());
 
 	}
 
@@ -48,5 +48,7 @@ class UserCellLargeController extends Loader {
 		userName.setText("");
 		userName.setId("");
 		timestamp.setText("");
+		userImage.imageProperty().unbind();
+		userImage.setImage(null);
 	}
 }

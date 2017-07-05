@@ -42,7 +42,6 @@ public class LoginTest {
 	@Test
 	public void loginValidUser() {
 		User l = Login.loginUser("@aMerkel", "12345");
-		System.out.println("login merkel");
 		User ref = new User("Angela Merkel", "@aMerkel", "angela@merkel.de", "12345");
 		assertEquals(ref, l);
 	}

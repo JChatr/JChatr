@@ -171,7 +171,6 @@ public class LoginController extends Loader implements Initializable {
 		ErrorMessagesValidation errorMessagesValidation = Login.validateUser(userID, email, password, userName);
 
 		if (!errorMessagesValidation.isErrorexisting()) {
-			System.out.println("no errors");
 			Login.registerUser(userID, email, userName, password);
 			onLoginButtonClick();
 			Manager.setLocalUser(user);
@@ -225,7 +224,6 @@ public class LoginController extends Loader implements Initializable {
 		log.info("Login Button pressed");
 		String userID = this.userId.getText();
 		String password = this.password.getText();
-		System.out.println(userID + password);
 		resetErrorMessages();
 		try {
 			user = Login.loginUser(userID, password);

@@ -25,13 +25,14 @@ public class UserCellSmallController extends Loader {
 	}
 
 	public void setInfo(User user) {
-//		this.user = user;
-//      img.setImage(user.getImage().get());
+
+		img.imageProperty().bind(user.getImage());
 		name.setText(user.getID());
 	}
 
 	private void reset() {
 		img.setImage(null);
 		name.setText("");
+		img.imageProperty().unbind();
 	}
 }
