@@ -1,5 +1,6 @@
 package Chatr.Server;
 
+import Chatr.Helper.CONFIG;
 import Chatr.Helper.JSONTransformer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,16 +24,15 @@ public class Server extends WebSocketServer {
 	public static Logger log = LogManager.getLogger(Server.class);
 
 	public Server(int port) throws UnknownHostException {
-		super(new InetSocketAddress(port));
+		super(new InetSocketAddress(CONFIG.SERVER_ADDRESS, port));
 
 	}
 
 	static public void main(String args[]) throws UnknownHostException {
-		int port = 3456;
 		WebSocketImpl.DEBUG = false;
 		final Server server;
 		try {
-			server = new Server(port);
+			server = new Server(CONFIG.SERVER_PORT);
 			server.start();
 		} catch (UnknownHostException e) {
 			log.error("failed to getLinks server", e);

@@ -21,13 +21,16 @@ import java.util.List;
  * Connects to the server and sends / receives Requests
  */
 public class Client {
-	private WebSocketClient socketClient;
+	private static WebSocketClient socketClient;
 	private List<Listener> listeners = new ArrayList<>();
 	private static Logger log = LogManager.getLogger(Client.class);
 
 	public Client() {
 		try {
-			socketClient = new WebSocketClient(new URI(CONFIG.SERVER_ADDRESS), new Draft_17()) {
+			socketClient = new WebSocketClient(new URI(String.format("ws://%s:%d",
+					CONFIG.SERVER_ADDRESS,
+					CONFIG.SERVER_PORT)),
+					new Draft_17()) {
 				@Override
 				public void onOpen(ServerHandshake serverHandshake) {
 					log.info("Client open connection");
@@ -75,6 +78,7 @@ public class Client {
 	 */
 	public void sendAsync(Transmission request) {
 		socketClient.send(JSONTransformer.toJSON(request));
+
 	}
 
 	/**
@@ -94,6 +98,10 @@ public class Client {
 		}
 		log.error("request timeout... retrying");
 		return send(request);
+	}
+
+	public static void close() {
+		socketClient.close();
 	}
 
 	/**

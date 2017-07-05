@@ -1,6 +1,7 @@
 package Chatr.View;
 
 
+import Chatr.Client.Client;
 import Chatr.View.Login.LoginController;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -21,6 +22,8 @@ public class JavaFX extends Application {
 
 	@Override
 	public void stop() throws Exception {
+		Client.close();
+		System.exit(0);
 	}
 
 	@Override
