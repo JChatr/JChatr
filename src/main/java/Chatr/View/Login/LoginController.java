@@ -51,6 +51,7 @@ public class LoginController extends Loader implements Initializable {
 	private Label eMailLabel;
 	@FXML
 	private Label usernameLabel;
+	private User user;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -170,10 +171,10 @@ public class LoginController extends Loader implements Initializable {
 		ErrorMessagesValidation errorMessagesValidation = Login.validateUser(userID, email, password, userName);
 
 		if (!errorMessagesValidation.isErrorexisting()) {
+			System.out.println("no errors");
 			Login.registerUser(userID, email, userName, password);
-			User user = Login.loginUser(userID, password);
+			onLoginButtonClick();
 			Manager.setLocalUser(user);
-			//Manager.startUpdateLoop();
 			changeScene();
 		} else {
 			if (errorMessagesValidation.getUserIdErrorMessage() != null) {
@@ -224,9 +225,10 @@ public class LoginController extends Loader implements Initializable {
 		log.info("Login Button pressed");
 		String userID = this.userId.getText();
 		String password = this.password.getText();
+		System.out.println(userID + password);
 		resetErrorMessages();
 		try {
-			User user = Login.loginUser(userID, password);
+			user = Login.loginUser(userID, password);
 			Manager.setLocalUser(user);
 			JavaFX.primaryStage.setTitle("Chatr - " + user.getUserName());
 			Manager.initialPull();
