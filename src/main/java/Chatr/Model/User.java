@@ -35,7 +35,7 @@ public class User {
 		this.userID = userID;
 		this.email = email;
 		this.status = Status.ONLINE;
-		this.password = HashGen.hashPW(password);
+		this.password = password;
 	}
 
 	public String getPassword() {

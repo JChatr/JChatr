@@ -2,6 +2,7 @@ package Chatr.Server.Database;
 
 
 import Chatr.Helper.Enums.MessageType;
+import Chatr.Helper.HashGen;
 import Chatr.Model.Chat;
 import Chatr.Model.Message;
 import Chatr.Model.User;
@@ -162,42 +163,42 @@ class DatabaseFixtures {
 		return new User("Matthias",
 				"@maroko96",
 				"maroko96@web.de",
-				"12345");
+				HashGen.hashPW("12345"));
 	}
 
 	private static User getMerkel() {
 		return new User("Angela Merkel",
 				"@aMerkel",
 				"kasanloe@web.de",
-				"12345");
+				HashGen.hashPW("12345"));
 	}
 
 	private static User getDoe() {
 		return new User("John Doe",
 				"@jDoe",
 				"jd-jd@doe.com",
-				"12345");
+				HashGen.hashPW("12345"));
 	}
 
 	private static User getJohnson() {
 		return new User("Boris Jonson",
 				"@bJohnson",
 				"bj@brexit.co.uk",
-				"12345");
+				HashGen.hashPW("12345"));
 	}
 
 	private static User getTrump() {
 		return new User("Donald Trump",
 				"@dTrump",
 				"trump@whitehouse.gov",
-				"12345");
+				HashGen.hashPW("12345"));
 	}
 
 	private static User addHawk() {
 		return new User("Simon Haag",
 				"@herrhawk",
 				"haagsimon@outlook.de",
-				"123passwort");
+				HashGen.hashPW("12345"));
 	}
 }
 
