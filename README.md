@@ -1,5 +1,5 @@
 # **Chatr**
-![image](https://gitlab.mi.hdm-stuttgart.de/dank-memes/SD2_Chatr/raw/master/src/main/resources/img/PhotoFunia-1499079435.jpg)
+![image](https://gitlab.mi.hdm-stuttgart.de/dank-memes/SD2_Chatr/raw/master/src/main/resources/img/PhotoFunia-1499079435_small.jpg)
 ## HowTo
 
 1. Starte `main`-Methode in Server.java
